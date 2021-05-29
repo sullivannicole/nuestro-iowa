@@ -14,8 +14,10 @@ tab_2 <- argonTabItem(
     argonRow(argonColumn(br(), h1("County:")) %>% argonTextColor(color = "primary") %>% argonMargin(orientation = 'l', value = 2),
               argonColumn(width = 10, pickerInput("county_choice", width = "100%", # Make it span the entire column, resizing automatically
                          label = "", 
-                         choices = county_names$county_name, 
-                         selected = "Adair",
+                         choices = c( "Dallas","Guthrie", "Jasper", "Madison","Marshall", "Polk", "Warren"),
+                         # When ready to go to whole state, delete line above and un-comment line below:
+                         # choices = county_names$county_name, 
+                         selected = "Dallas",
                          multiple = FALSE,
                          options = list(create = FALSE,
                                         style = "btn-danger",

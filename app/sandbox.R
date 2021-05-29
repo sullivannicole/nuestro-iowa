@@ -1,3 +1,6 @@
+# This script is used to explore ACS variables and
+# add relevant variables to the create_data_extracts.R script
+
 # Pull all available variables
 acs_vars <- load_variables(acs_yr, "acs5", cache = TRUE)
 

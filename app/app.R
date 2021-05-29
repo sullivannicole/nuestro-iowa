@@ -52,7 +52,8 @@ shiny::shinyApp(
     gfonts::use_font("karla", "www/css/karla.css"),
     tags$style(type = "text/css", ".header-container {position:absolute; top:0; bottom:0; right:0; left:0;}
                                     .map-container {position:absolute; right:0; left:0; /*z-index: -1;*/ padding: 40px 20px 40px 20px; background-color: #e9ecef;}
-                                    .map-btn-container {position: absolute; z-index: 1; padding-top: 50px}"),
+                                    .map-btn-container {position: absolute; z-index: 1; padding-top: 50px}
+                                    .navbar-vertical.navbar-expand-md {overflow-y: hidden !important; padding-left: 40px !important; padding-right: 40px !important;} "),
     # navbar = argonNav, 
     # header = argonHeader,
     body = argonDashBody(
@@ -71,18 +72,35 @@ shiny::shinyApp(
     output$state_total_latinx <- renderText({ 
       
       # % of state that's Latinx
-      ia_state_pc_latinx <- ia_state %>%
-        filter(variable %in% c("B01001I_001", "B01001_001") & year == acs_yr) %>%
-        spread(variable, value = estimate) %>%
-        fill("B01001I_001", .direction = "updown") %>%
-        fill("B01001_001", .direction = "updown") %>%
-        filter(row_number() == 1) %>%
-        mutate(pc_of_state_latinx = B01001I_001/B01001_001*100)
+      # ia_state_pc_latinx <- ia_state %>%
+        # filter(variable %in% c("B01001I_001", "B01001_001") & year == acs_yr) %>%
+        # spread(variable, value = estimate) %>%
+        # fill("B01001I_001", .direction = "updown") %>%
+        # fill("B01001_001", .direction = "updown") %>%
+        # filter(row_number() == 1) %>%
+        # mutate(pc_of_state_latinx = B01001I_001/B01001_001*100)
       
-      glue("{round(ia_state_pc_latinx$B01001I_001/1000, 0)}K Latinx in the state of Iowa")})
+      # glue("{round(ia_state_pc_latinx$B01001I_001/1000, 0)}K Latinx in the state of Iowa")})
+      
+      
+      # % of metro that's Latinx
+      ia_metro_pc_latinx <- ia_metro_labeled %>%
+        filter(variable %in% c("B01001I_001", "B01001_001") & year == acs_yr) %>%
+        tibble() %>%
+        select(-geometry) %>%
+        group_by(variable, variable_group, variable_index) %>%
+        summarize(estimate = sum(estimate)) %>%
+        ungroup() %>%
+        spread(variable, value = estimate) %>%
+        tidyr::fill("B01001I_001", .direction = "updown") %>%
+        tidyr::fill("B01001_001", .direction = "updown") %>%
+        filter(row_number() == 1) %>%
+        mutate(pc_of_metro_latinx = B01001I_001/B01001_001*100)
+      
+      glue("{round(ia_metro_pc_latinx$B01001I_001/1000, 0)}K Latinx in the Iowa 7-county metro")})
     
     output$state_pc_latinx <- renderText({
-      
+
       # % of state that's Latinx
       ia_state_pc_latinx <- ia_state %>%
         filter(variable %in% c("B01001I_001", "B01001_001") & year == acs_yr) %>%
@@ -91,25 +109,53 @@ shiny::shinyApp(
         fill("B01001_001", .direction = "updown") %>%
         filter(row_number() == 1) %>%
         mutate(pc_of_state_latinx = B01001I_001/B01001_001*100)
-      
+
       glue("{round(ia_state_pc_latinx$pc_of_state_latinx)}% of the state pop.")
-      
+
       })
 
     output$state_pc_latinx_trend <- renderPlot({
       
       # % of state that's Latinx over time
-      ia_state_pc_latinx_trend <- ia_state %>%
+      # ia_state_pc_latinx_trend <- ia_state %>%
+      #   filter(variable %in% c("B01001I_001", "B01001_001")) %>%
+      #   group_by(year) %>%
+      #   mutate(denom = ifelse(variable == "B01001_001", estimate, NA)) %>%	
+      #   arrange(year, variable) %>%
+      #   fill(denom, .direction = "down") %>%
+      #   ungroup() %>%
+      #   mutate(pc_latinx = estimate/denom*100) %>%
+      #   filter(pc_latinx != 100)
+      # 
+      # ia_state_pc_latinx_trend %>%
+      #   mutate(year = lubridate::ymd(year, truncated = 2L)) %>%
+      # ggplot(aes(year, pc_latinx)) +
+      #   geom_line(color = "#63CF89", size = 0.8) +
+      #   geom_point(shape = 21, fill = "white", color = "#63CF89", size = 2, stroke = 1.5) +
+      #   labs(x = "",
+      #        y = "") +
+      #   theme_minimal() +
+      #   theme(panel.grid = element_blank(),
+      #         axis.text.y = element_text(size = 13, family = "Karla"),
+      #         axis.text.x = element_blank())
+      
+      # % of metro that's Latinx over time
+      ia_metro_pc_latinx_trend <- ia_metro_labeled %>%
+        tibble() %>%
+        select(-geometry) %>%
         filter(variable %in% c("B01001I_001", "B01001_001")) %>%
+        group_by(year, variable) %>%
+        summarize(estimate = sum(estimate)) %>%
+        ungroup() %>%
         group_by(year) %>%
-        mutate(denom = ifelse(variable == "B01001_001", estimate, NA)) %>%	
+        mutate(denom = ifelse(variable == "B01001_001", estimate, NA)) %>%
         arrange(year, variable) %>%
         fill(denom, .direction = "down") %>%
         ungroup() %>%
         mutate(pc_latinx = estimate/denom*100) %>%
         filter(pc_latinx != 100)
       
-      ia_state_pc_latinx_trend %>%
+      ia_metro_pc_latinx_trend %>%
         mutate(year = lubridate::ymd(year, truncated = 2L)) %>%
       ggplot(aes(year, pc_latinx)) +
         geom_line(color = "#63CF89", size = 0.8) +
@@ -143,15 +189,16 @@ shiny::shinyApp(
       #Dark blue to white palette
       # pal <- colorNumeric(c("#02152E", "#5E72E4", "#5DCEF0", "white"), NULL)
     
-    ia_shp_data %>%
-      filter(variable_group == "B03003" & variable_index == '003') %>%
+    # ia_data_labeled %>%
+    iowa_metro_labeled %>%
+      filter(variable_group == "B03001" & variable_index == '003') %>%
       rename(var = !!map_var()) %>%
       leaflet() %>%
       addTiles(urlTemplate = argon_map, attribution = map_attr) %>%
       # addProviderTiles("CartoDB.Positron") %>%
       addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 0.9,
                   fillColor = ~pal(var),
-                  label = ~paste0(NAME, ": ", formatC(var, big.mark = ","), map_symbol())) %>%
+                  label = ~paste0(county_name, ": ", formatC(var, big.mark = ","), map_symbol())) %>% # use NAME variable for county
       addLegend(pal = pal, values = ~var, opacity = 1.0)
     })
     

@@ -19,21 +19,21 @@ setwd("app")
 # Get Hispanic-related variables
 # hispanic_vars <- read_csv(glue("data/acs5_{acs_yr}_hispanic_variables.csv"))
 
-# Get state data
+#-------------
+# State data
+#-------------
+
 ia_state <- read_csv(glue("data/ia_state_{acs_yr-10}_{acs_yr}.csv"))
 
-# Get transformed county dataset for plots
-ia_data_labeled <- read_csv(glue("data/ia_county_{acs_yr}_tidied.csv")) %>%
-  mutate(GEOID = as.character(GEOID))
+#--------------
+# County data
+#--------------
 
-# Create list of county names for dropdown selection on tab 2
-county_names <- ia_data_labeled %>%
-  distinct(county_name)
+# Data is included in shapefile
+ia_data_labeled <- st_read(glue("data/ia_counties_{acs_yr}.shp"))
 
-# Pull shapefile for mapping data
-ia_shp <- st_read("data/ia_counties_map.shp")
+#-------------
+# Tract data
+#-------------
 
-# # Join shapefile to data
-ia_shp_data <- ia_shp %>%
-  left_join(ia_data_labeled, by = "GEOID")
-  
+ia_metro_labeled <- st_read(glue("data/ia_metro_tracts_data_{acs_yr}.shp"))
