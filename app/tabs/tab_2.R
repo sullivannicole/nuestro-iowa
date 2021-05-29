@@ -122,7 +122,15 @@ argonCard(
   shadow_size = NULL,
   hover_shadow = FALSE,
   border_level = 0,
-  width = 12
+  width = 12,
+  argonRow(argonColumn(width = 8,
+                       plotOutput("chicklet_insurance")),
+           argonColumn(h3("Health insurance coverage"),
+                       "Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text."))
 )
 )
 
