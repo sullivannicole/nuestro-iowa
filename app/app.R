@@ -6,18 +6,20 @@ library(magrittr)
 library(leaflet)
 library(shinyWidgets)
 library(gfonts)
+library(plotly)
+library(scales)
 
 # install.packages(c("usethis", "gitcreds", "gh"))
-library(usethis)
-library(gitcreds)
-library(gh)
+# library(usethis)
+# library(gitcreds)
+# library(gh)
 
 # usethis::use_git_config(user.name = "sullivannicole", user.email = "nicasull@gmail.com")
 # usethis::create_github_token()
 # gitcreds::gitcreds_set()
 # gh::gh_whoami()
 # usethis::git_sitrep()
-credentials::ssh_setup_github()
+# credentials::ssh_setup_github()
 
 # setup_font(
 #   id = "karla",
