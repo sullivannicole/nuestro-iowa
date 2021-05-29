@@ -48,7 +48,7 @@ tab_1 <- argonTabItem(
                   # div(style = "display: inline-block", h4(" ")),
                   # div(style = "display: inline-block;", textOutput("state_pc_latinx") %>% h4()),
                   br(),
-                  argonProgress(value = 6, status = "warning", text = "total state pop.")
+                  argonProgress(value = 8, status = "warning", text = "total metro pop.")
                   ),
         argonCard(width = 4,
                   center = TRUE,
@@ -56,7 +56,7 @@ tab_1 <- argonTabItem(
                   border_level = 2,
                   hover_shadow = TRUE,
                   hover_lift = TRUE,
-                  h1("+2% of the pop since 2009"),
+                  h1("+1.3% of the metro pop since 2009"),
                   plotOutput("state_pc_latinx_trend", height = "60%", width = "100%")
         ),
         argonCard(width = 4,

@@ -7,6 +7,9 @@ argonSidebar <- argonDashSidebar(
   id = "my_sidebar",
   # brand_url = "https://www.alexitoiowa.org/",
   # brand_logo = "nuestro_iowa_white.svg",
+  br(),
+  br(),
+  br(),
   argonImage(src = "nuestro_iowa_white.svg"),
   argonSidebarHeader(title = "Main Menu") %>% argonTextColor(color = "white"),
   argonSidebarMenu(
