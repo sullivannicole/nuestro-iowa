@@ -4,7 +4,7 @@ argonSidebar <- argonDashSidebar(
   background = "danger",
   size = "md",
   side = "left",
-  id = "my_sidebar",
+  id = "app_sidebar",
   # brand_url = "https://www.alexitoiowa.org/",
   # brand_logo = "nuestro_iowa_white.svg",
   br(),
@@ -14,16 +14,28 @@ argonSidebar <- argonDashSidebar(
   argonSidebarHeader(title = "Main Menu") %>% argonTextColor(color = "white"),
   argonSidebarMenu(
     argonSidebarItem(
-      tabName = "tab_1",
+      tabName = "tab_1_alt_a",
       "Overview"
     ),
+    # argonSidebarItem(
+    #   tabName = "tab_1_alt_a",
+    #   "Overview Alt A"
+    # ),
+    # argonSidebarItem(
+    #   tabName = "tab_2",
+    #   "County Profiles"
+    # ),
     argonSidebarItem(
-      tabName = "tab_2",
-      "County Profiles"
+      tabName = "tab_2_alt_a",
+      "Geo-profiles"
     ),
     argonSidebarItem(
-      tabName = "tabs",
+      tabName = "tab_3",
       "Compare"
+    ),
+    argonSidebarItem(
+      tabName = "tabs2",
+      "Disparities"
     ),
     argonSidebarItem(
       tabName = "tab_0",

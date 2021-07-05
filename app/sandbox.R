@@ -18,8 +18,129 @@ ia <- get_acs(geography = "county",
               year = acs_yr)
 
 # Look at concepts
-look_at_vars <- ia_data_labeled <- ia %>% 
-  left_join(v19, by = c("variable" = "name")) %>%
-  mutate(variable2 = variable,
-         GEOID = as.character(GEOID)) %>%
+look_at_vars <- ia %>%
+  # tibble() %>%
+  # select(-geometry) %>%
+  left_join(acs_vars %>% distinct(name, label, concept), by = c("variable" = "name")) %>%
+  distinct(variable, label, concept) %>%
+  mutate(variable2 = variable) %>%
   separate(variable2, into = c("variable_group", "variable_index"), sep = "_")
+
+metro_county_list <- c("Warren", "Dallas", "Jasper", "Polk", "Guthrie", "Marshall", "Madison")
+
+#-------------------------
+# Pull from data.iowa.gov
+#-------------------------
+
+library(RSocrata)
+
+# key_set("data.iowa_api_secret")
+# key_set("data.iowa_password")
+# key_set("data.iowa_app_token")
+
+# Code pulling businesses & predicting race by surname
+# Realized registered agent is likely NOT the owner
+# and therefore the classification isn't useful
+
+# ia_businesses <- read.socrata(
+#   "https://data.iowa.gov/resource/ez5t-3qay.json",
+#   app_token = key_get("data.iowa_app_token"),
+#   email     = "nicasull@gmail.com",
+#   password  = key_get("data.iowa_password")
+# )
+# 
+# ia_businesses_unnested <- ia_businesses %>%
+#   unnest(ra_location.coordinates) %>%
+#   group_by(corp_number) %>%
+#   mutate(ra_location_coords = paste(ra_location.coordinates, collapse = ", ")) %>%
+#   ungroup() %>%
+#   select(-ra_location.coordinates) %>%
+#   unique() %>%
+#   unnest(ho_location.coordinates) %>%
+#   group_by(corp_number) %>%
+#   mutate(ho_location_coords = paste(ho_location.coordinates, collapse = ", ")) %>%
+#   select(-ho_location.coordinates) %>%
+#   unique()
+# 
+# write_csv(ia_businesses_unnested, glue("app/data/ia_businesses_{Sys.Date()}.csv"))
+# 
+# ia_businesses_unnested <- read_csv("app/data/ia_businesses_2021-06-04.csv")
+# 
+# library(stringr)
+# 
+# ia_businesses_surname <- ia_businesses_unnested %>%
+#   mutate(ra = trimws(str_replace_all(registered_agent, "I|II|III|IV|INC|JR.", "")),
+#         surname = word(ra,-1))
+# 
+# library(wru)
+# 
+# # tigris::blocks("ia", county = "Polk")
+# 
+# test_df <- data.frame(surname = c("Sanchez", "Sullivan", "Perez"),
+#                       state = rep("ia", 3),
+#                       county = rep("153", 3),
+#                       tract = rep("011021", 3),
+#                       block = c("1012", "2009", "1038"))
+# 
+# census_ia <- get_census_data(key = key_get("census_api"), 
+#                              state = "IA",
+#                              age = FALSE, 
+#                              sex = FALSE)
+# 
+# saveRDS(census_ia, "app/data/wru_census_ia.RDS")
+# 
+# test_preds <- predict_race(
+#   test_df,
+#   census.surname = TRUE,
+#   surname.only = FALSE,
+#   surname.year = 2010,
+#   census.geo = "block",
+#   census.data = census_ia,
+#   # census.key = key_get("census_api"),
+#   age = FALSE,
+#   sex = FALSE,
+#   retry = 0
+# )
+
+# Explore data on disabled Hispanic Iowans
+
+ia_blind <- read.socrata(
+  "https://data.iowa.gov/resource/twt2-zx5z.json",
+  app_token = key_get("data.iowa_app_token"),
+  email     = "nicasull@gmail.com",
+  password  = key_get("data.iowa_password")
+)
+
+ia_blind_tidied <- ia_blind %>%
+  filter(hispanic == "Hispanic") %>%
+  group_by(federal_fiscal_year, gender) %>%
+  count()
+
+ia_blind_professions <- ia_blind %>%
+  filter(hispanic == "Hispanic")
+
+# Pandemic relief
+ia_pandemic_relief <- read.socrata(
+  "https://data.iowa.gov/resource/bqr9-xnsz.json",
+  app_token = key_get("data.iowa_app_token"),
+  email     = "nicasull@gmail.com",
+  password  = key_get("data.iowa_password")
+)
+
+ia_relief_latinx <- ia_pandemic_relief %>%
+  filter(raceethnicity %in% c("Hispanic", "Puerto Rican"))
+
+ia_relief_latinx_summary <- ia_relief_latinx %>%
+  mutate(jobsreported = as.numeric(jobsreported)) %>%
+  group_by(gender) %>%
+  summarize(jobs_saved = sum(jobsreported, na.rm = T))
+
+ia_shp %>%
+  mutate(input_status = ifelse(NAME == "Dallas", "1", "0")) %>%
+  ggplot(aes(fill = input_status)) +
+  geom_sf(color = "white") +
+  scale_fill_manual(values = c("lightgrey", "#5E72E4")) +
+  # labs(title = glue("{input$county_choice}\n\n")) +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", color = "#5E72E4"),
+        legend.position = "none")

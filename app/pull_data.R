@@ -30,10 +30,10 @@ ia_state <- read_csv(glue("data/ia_state_{acs_yr-10}_{acs_yr}.csv"))
 #--------------
 
 # Data is included in shapefile
-ia_data_labeled <- st_read(glue("data/ia_counties_{acs_yr}.shp"))
+ia_counties_tidy <- st_read(glue("data/ia_counties_{acs_yr}.shp"))
 
 #-------------
 # Tract data
 #-------------
 
-ia_metro_labeled <- st_read(glue("data/ia_metro_tracts_data_{acs_yr}.shp"))
+ia_metro_tracts_tidy <- st_read(glue("data/ia_metro_tracts_data_{acs_yr}.shp"))
