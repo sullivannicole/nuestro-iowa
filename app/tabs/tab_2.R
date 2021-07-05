@@ -1,5 +1,7 @@
 tab_2 <- argonTabItem(
   tabName = "tab_2",
+  
+  # Card 1: Demographics--------------------------------------------------------
   argonCard(
     title = "Birth & migration",
     hover_lift = FALSE,
@@ -9,7 +11,6 @@ tab_2 <- argonTabItem(
     border_level = 0,
     width = 12,
     
-    # Card 1: Demographics--------------------------------------------------------
     # Row 1: Select county to filter entire tab
     argonRow(argonColumn(br(), h1("County:")) %>% argonTextColor(color = "primary") %>% argonMargin(orientation = 'l', value = 2),
               argonColumn(width = 10, pickerInput("county_choice", width = "100%", # Make it span the entire column, resizing automatically

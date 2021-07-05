@@ -1,0 +1,94 @@
+/* Sidebar */
+.navbar-vertical.navbar-expand-md {
+                          overflow-y: hidden !important;
+                          padding-left: 40px !important; 
+                          padding-right: 40px !important;
+}
+/* Tab 1 */
+.header-container {
+                    position:absolute; 
+                    top:0; 
+                    bottom:0;
+                    right:0; 
+                    left:0;
+                    }
+     
+/* Tab 1 Alt-A */               
+.tab-1-header-container {
+                    position:absolute; 
+                    top:0; 
+                    bottom:0;
+                    right:0; 
+                    left:0;
+}
+
+.tab-1-about-container {
+                position:absolute; 
+                right:0; 
+                left:0;
+                overflow: hidden;
+                padding: 100px;
+                background-color: #5E72E4;
+ }
+ 
+ .tab-1-sponsors-container {
+                position:absolute; 
+                right:0; 
+                left:0;
+                overflow: hidden;
+                padding: 100px;
+                background-color: #172B4D;
+ }
+ 
+ .tab-1-sponsors-column {
+
+   display: block;
+   margin-left: auto;
+   margin-right: auto;
+   color: white;
+   text-align: center;
+ }
+
+/* Tab 2 */                    
+.tab-2-header-div {
+                    position:absolute; 
+                    right:0;
+                    left:0;
+                    top:0;
+                    overflow: hidden;
+                    background-image: linear-gradient(to right, #EA445B,  #EC603E);
+                    }
+                    
+.map-container {
+                position:absolute; 
+                right:0; 
+                left:0;
+                overflow: hidden;
+                padding: 40px 20px 40px 20px; 
+                background-color: #e9ecef;
+ }
+ 
+.map-btn-container {
+                    position: absolute; 
+                    z-index: 1; 
+                    padding-top: 50px
+}
+
+/* Tab 2 Alt A*/
+#region_pop {
+  color: white;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+#region_latinx_pop {
+  color: white;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+#region_pc_latinx {
+  color: white;
+  font-size: 25px;
+  font-weight: bold;
+}
