@@ -12,7 +12,7 @@ tab_2_alt_a <- argonTabItem(
                argonColumn(width = 1),
                argonColumn(width = 4,
                            div(style = "height: 45px"),
-                           argonRow(argonH1(display = 3, "Region") %>% argonTextColor("white")),
+                           argonRow(argonH1(display = 3, "County") %>% argonTextColor("white")),
                            argonRow(pickerInput("county_choice2",
                                                 # width = "100%", # Make it span the entire column, resizing automatically
                                                 label = "",
@@ -51,27 +51,23 @@ tab_2_alt_a <- argonTabItem(
   # Div wrap around cards under header to push down 550px
   
   # # Row 1: Cards
-  div(style = "padding-top: 550px;",
-        
-        argonRow(
-          argonCard(
-          title = "Placeholder 1",
-          hover_lift = FALSE,
-          shadow = TRUE,
-          shadow_size = NULL,
-          hover_shadow = FALSE,
-          border_level = 0,
-          width = 6),
-
-        argonCard(
-          title = "Placeholder 2",
-          hover_lift = FALSE,
-          shadow = TRUE,
-          shadow_size = NULL,
-          hover_shadow = FALSE,
-          border_level = 0,
-          width = 6))
-
+  div(style = "padding: 650px 15px 0px 45px;
+               margin-bottom: 125px",
+      
+      argonRow(argonColumn(width = 8,
+                           argonH1("Overview", display = 3),
+                           htmlOutput("overview")),
+               # tags$ul(
+               #   tags$li(textOutput("median_age")),
+               #   tags$li(textOutput("median_male_age")),
+               #   tags$li(textOutput("median_female_age")))),
+               
+               argonCard(width = 4,
+                         title = "Fast Facts",
+                         "Placeholder text. Placeholder text.")
+               
+      ) # End row
+      
   ), # End div wrap around cards at top
   # 
   # # Row 2: Map
@@ -87,126 +83,195 @@ tab_2_alt_a <- argonTabItem(
   br(),
   br(),
   br(),
-   
+  
   
   # Div around everything under map to push items down
   div(style = "padding-top: 480px;",
       
-  # Card 1: Demographics--------------------------------------------------------
-  argonCard(
-    title = "Birth & migration",
-    hover_lift = FALSE,
-    shadow = TRUE,
-    shadow_size = NULL,
-    hover_shadow = FALSE,
-    border_level = 0,
-    width = 12,
-
-    # Row 1: arcplot showing birthplace/origin
-    argonRow(argonColumn(width = 8,
-                         plotOutput("arcplot_origin2")),
-             argonColumn(br(),
-                         br(),
-                         br(),
-                         h3("Birthplace"),
-                         textOutput("arcplot_origin_text2"))
-    ),
-
-    # Row 4: arcplot of heritage of county's Latinx
-    argonRow(argonColumn(width = 8,
-                         plotOutput("arcplot_heritage2")),
-             argonColumn(br(),
-                         br(),
-                         br(),
-                         br(),
-                         h3("Ancestral origin"),
-                         "Placeholder text. Placeholder text.
+      # Card 1: Demographics--------------------------------------------------------
+      argonCard(
+        title = "Demographics",
+        hover_lift = FALSE,
+        shadow = TRUE,
+        shadow_size = NULL,
+        hover_shadow = FALSE,
+        border_level = 0,
+        width = 12,
+        
+        # Arcplot showing birthplace/origin
+        argonRow(argonColumn(width = 8,
+                             plotOutput("arcplot_origin2")),
+                 argonColumn(div(style = "height: 85px;"), # spacer div
+                             h3("Birthplace"),
+                             textOutput("arcplot_origin_text2"))
+        ),
+        
+        # Relationship status bar
+        argonRow(argonColumn(width = 8,
+                             plotOutput("bar_status")),
+                 argonColumn(
+                   div(style = "height: 85px;"), # spacer div
+                   h3("Marital status"),
+                   "Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text.")),
-
-    # Row 4: arcplot showing % of county that's Latinx
-    argonRow(argonColumn(width = 8,
-                         plotOutput("arcplot2")),
-             argonColumn(br(),
-                         br(),
-                         br(),
-                         "Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text."))
-
-  ),
-  # End Card 1--------------------------------------------------------
-  br(),
-  br(),
-
-  # Card 2: Economics & Workforce--------------------------------------------------------
-  argonCard(
-    title = "Economics & Workforce",
-    hover_lift = FALSE,
-    shadow = TRUE,
-    shadow_size = NULL,
-    hover_shadow = FALSE,
-    border_level = 0,
-    width = 12,
-    argonRow(argonColumn(width = 8,
-                         plotOutput("chicklet_poverty2")),
-             argonColumn(br(),
-                         br(),
-                         br(),
-                         br(),
-                         h3("Poverty status by age group"),
-                         "Placeholder text. Placeholder text.
+        
+        # Language spoken at home lollipop
+        argonRow(argonColumn(width = 8,
+                             plotlyOutput("lollipop_language")),
+                 argonColumn(
+                   div(style = "height: 85px;"), # spacer div
+                   h3("Language spoken at home"),
+                   "Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text.")),
-    argonRow(argonColumn(width = 8,
-                         plotlyOutput("lollipop_transportation2")),
-             argonColumn(br(),
-                         br(),
-                         br(),
-                         br(),
-                         h3("Means of transportation to work"),
-                         "Placeholder text. Placeholder text.
+        
+        # Arcplot of heritage of county's Latinx
+        argonRow(argonColumn(width = 8,
+                             plotOutput("arcplot_heritage2")),
+                 argonColumn(br(),
+                             br(),
+                             br(),
+                             br(),
+                             h3("Ancestral origin"),
+                             "Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.")),
+        
+        # Row 4: arcplot showing % of county that's Latinx - not necessary anymore since it's in header
+      #   argonRow(argonColumn(width = 8,
+      #                        plotOutput("arcplot2")),
+      #            argonColumn(style = "height: 85px;",
+      #                        "Placeholder text. Placeholder text.
+      #                    Placeholder text. Placeholder text.
+      #                    Placeholder text. Placeholder text.
+      #                    Placeholder text. Placeholder text.
+      #                    Placeholder text. Placeholder text."))
+      #   
+      ), # End Card 1--------------------------------------------------------
+      
+      div(style = "height: 60px;"), # spacer div
+      
+      # Card 2: Economics & Workforce--------------------------------------------------------
+      argonCard(
+        title = "Economics & Workforce",
+        hover_lift = FALSE,
+        shadow = TRUE,
+        shadow_size = NULL,
+        hover_shadow = FALSE,
+        border_level = 0,
+        width = 12,
+        argonRow(argonColumn(width = 8,
+                             plotOutput("bar_gender_work")),
+                 argonColumn(div(style = "height: 85px;"),
+                             h3("Work experience by sex"),
+                             "Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.")),
+        argonRow(argonColumn(width = 8,
+                             plotOutput("arc_homeownership")),
+                 argonColumn(div(style = "height: 85px;"),
+                             h3("Homeownership"),
+                             "Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.")),
+        argonRow(argonColumn(width = 8,
+                             plotlyOutput("lollipop_transportation2")),
+                 argonColumn(div(style = "height: 85px;"),
+                             h3("Means of transportation to work"),
+                             "Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.")),
+        argonRow(argonColumn(width = 8,
+                             plotOutput("chicklet_poverty2")),
+                 argonColumn(div(style = "height: 85px;"),
+                             h3("Poverty status by age group"),
+                             "Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text.
+                              Placeholder text. Placeholder text."))
+        
+      ),
+      
+      # Card 3: Education--------------------------------------------------------
+      argonCard(
+        title = "Education",
+        hover_lift = FALSE,
+        shadow = TRUE,
+        shadow_size = NULL,
+        hover_shadow = FALSE,
+        border_level = 0,
+        width = 12,
+        argonRow(argonColumn(width = 8,
+                             plotlyOutput("lollipop_education")),
+                 argonColumn(div(style = "height: 100px;"),
+                             h3("Educational Attainment"),
+                             "Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.")),
+        argonRow(argonColumn(width = 8,
+                             plotOutput("arc_disciplines")),
+                 argonColumn(div(style = "height: 85px;"),
+                             h3("Disciplines of Bachelor's degrees"),
+                             "Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.")),
+        argonRow(argonColumn(width = 8,
+                             plotlyOutput("bar_computer")),
+                 argonColumn(div(style = "height: 85px;"),
+                             h3("Presence of a computer/internet in the home"),
+                             "Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.
+                         Placeholder text. Placeholder text.")),
+        argonRow(argonColumn(width = 8,
+                             plotOutput("arc_enrolled")),
+                 argonColumn(div(style = "height: 85px;"),
+                             h3("School enrollment status"),
+                             "Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text."))
-  ),
-
-  # Card 3: Education--------------------------------------------------------
-  argonCard(
-    title = "Education",
-    hover_lift = FALSE,
-    shadow = TRUE,
-    shadow_size = NULL,
-    hover_shadow = FALSE,
-    border_level = 0,
-    width = 12
-  ),
-
-  # Card 4: Health--------------------------------------------------------
-  argonCard(
-    title = "Health",
-    hover_lift = FALSE,
-    shadow = TRUE,
-    shadow_size = NULL,
-    hover_shadow = FALSE,
-    border_level = 0,
-    width = 12,
-    argonRow(argonColumn(width = 8,
-                         plotOutput("chicklet_insurance2")),
-             argonColumn(h3("Health insurance coverage"),
-                         "Placeholder text. Placeholder text.
+      ),
+      
+      # Card 4: Health--------------------------------------------------------
+      argonCard(
+        title = "Health",
+        hover_lift = FALSE,
+        shadow = TRUE,
+        shadow_size = NULL,
+        hover_shadow = FALSE,
+        border_level = 0,
+        width = 12,
+        argonRow(argonColumn(width = 8,
+                             plotOutput("chicklet_insurance2")),
+                 argonColumn(div(style = "height: 85px;"),
+                             h3("Health insurance coverage"),
+                             "Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text.
                          Placeholder text. Placeholder text."))
-  )
+      )
   ) # End of div wrap of everything under map
-
+  
 )

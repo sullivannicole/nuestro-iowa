@@ -1,7 +1,6 @@
 tab_3 <- argonTabItem(
   tabName = "tab_3",
   
-  # Card 1: Demographics--------------------------------------------------------
   argonCard(
     title = "Compare",
     hover_lift = FALSE,
@@ -24,7 +23,12 @@ tab_3 <- argonTabItem(
     argonRow(argonColumn(width = 1),
               argonColumn(width = 10, 
                     plotlyOutput("bar_median_age")),
-             argonColumn(width = 1)) 
+             argonColumn(width = 1)),
+    
+    argonRow(argonColumn(width = 1),
+             argonColumn(width = 10, 
+                         plotlyOutput("lollipop_income")),
+             argonColumn(width = 1))
   ))
 
 

@@ -1,3 +1,8 @@
+library(DescTools)
+library(readxl)
+library(janitor)
+library(lubridate)
+
 # This script is used to explore ACS variables and
 # add relevant variables to the create_data_extracts.R script
 
@@ -6,10 +11,15 @@ acs_vars <- load_variables(acs_yr, "acs5", cache = TRUE)
 
 # Hispanic variables only
 hispanic_vars <- acs_vars %>%
-  distinct(name, concept) %>%
+  separate(name, into = c("variable_group", "variable_index"), sep = "_") %>%
+  distinct(variable_group, concept) %>%
   filter(concept %like any% str_to_upper('%hispanic%')) %>%
-  filter(!concept %like any% str_to_upper('%white alone%')) %>%
-  distinct(name)
+  filter(!concept %like any% str_to_upper('%white alone%'))
+
+hispanic_vars_pull <- acs_vars %>%
+  distinct(variable_group, concept) %>%
+  filter(concept %like any% str_to_upper('%hispanic%')) %>%
+  filter(!concept %like any% str_to_upper('%white alone%'))
 
 # Pull Hispanic data
 ia <- get_acs(geography = "county",
@@ -27,6 +37,232 @@ look_at_vars <- ia %>%
   separate(variable2, into = c("variable_group", "variable_index"), sep = "_")
 
 metro_county_list <- c("Warren", "Dallas", "Jasper", "Polk", "Guthrie", "Marshall", "Madison")
+
+# New plots
+
+# County ages
+median_age <- ia_counties_tidy %>%
+  filter(variable_group == "B01002" & county_name == "Adair")
+
+# Median age
+glue("Median age in county: {median_age$estimate[median_age$variable_index == '001']} years (± {median_age$moe[median_age$variable_index == '001']})")
+
+# Median male age
+glue("Median age, male: {median_age$estimate[median_age$variable_index == '002']} years (± {median_age$moe[median_age$variable_index == '002']})")
+
+# Median female age
+glue("Median age, female: {median_age$estimate[median_age$variable_index == '003']} years (± {median_age$moe[median_age$variable_index == '003']})")
+
+hh_income <- ia_counties_tidy %>%
+  filter(variable_group == "B19013" & county_name == "Marshall")
+
+# Median income
+glue("Median household income, {unique(hh_income$county_name)}: ${format(hh_income$estimate, big.mark = ',')} (± ${format(hh_income$moe, big.mark = ',')})")
+
+# Hispanic ages
+median_age_hisp <- ia_counties_tidy %>%
+  filter(variable_group == "B01002I" & county_name == "Adair")
+
+# Median Latinx age
+glue("Median Latinx age: {median_age_hisp$estimate[median_age_hisp$variable_index == '001']} years (± {median_age_hisp$moe[median_age$variable_index == '001']})")
+
+# Median Latino age
+glue("Median Latino age: {median_age_hisp$estimate[median_age_hisp$variable_index == '002']} years (± {median_age_hisp$moe[median_age$variable_index == '002']})")
+
+# Median Latina age
+glue("Median Latina age: {median_age_hisp$estimate[median_age_hisp$variable_index == '003']} years (± {median_age_hisp$moe[median_age$variable_index == '003']})")
+
+# Median hh income
+hh_income_hisp <- ia_counties_tidy %>%
+  filter(variable_group == "B19013I" & county_name == "Marshall")
+
+glue("Median Latinx household income: ${format(hh_income_hisp$estimate, big.mark = ',')} (± ${format(hh_income_hisp$moe, big.mark = ',')})")
+
+# Relationship status
+status <- ia_counties_tidy %>%
+  filter(variable_group == "B12002I" & county_name == "Adair" & !variable_index %in% c("001", "002", "008")) %>%
+  filter(percent != 0) %>%
+  mutate(label = str_replace_all(label, ":", ", "),
+         label = str_replace_all(label, "married \\(", "married \n\\("),
+         gender = ifelse(substr(label, 1, 4) == "Male", "Male", "Female"),
+         label = str_remove_all(label, "Male, |Female, "))
+
+ggplot(status, aes(percent, label, fill = gender)) +
+  geom_bar(stat = "identity", width = 0.4, position = position_dodge()) +
+  geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent+moe_pc), 
+                width = 0.05, color = "#4f515c", position = position_dodge(0.4)) +
+  scale_fill_manual(values = c(hex_green, hex_purple)) +
+  labs(y = "", 
+       x = glue("% of Latinx pop. in {unique(status$county_name)}"),
+       fill = "") +
+  theme_minimal() +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
+  project_ggtheme
+
+# Household type
+gparents <- ia_counties_tidy %>%
+  filter(variable_group == "B10051I" & county_name == "Marshall") %>%
+  filter(percent != 0) %>%
+  mutate(label = str_replace_all(label, ":", ", "),
+         label = str_replace_all(label, "married \\(", "married \n\\("))
+
+# Language at home
+language_plot <- ia_counties_tidy %>%
+  filter(variable_group == "B16006" & county_name == "Marshall" & !(variable_index %in% c("001", "003")) & percent > 0) %>%
+  mutate(label = str_replace(label, ":", "\n")) %>%
+  ggplot(aes(text = glue("{round(percent, 1)}% \n {label}"))) +
+  geom_segment(aes(x=label, xend=label, y=0, yend=percent), color=hex_purple, size = 0.8) +
+  geom_point(aes(label, percent), color=hex_purple, size=3.5) +
+  labs(y = "% of Latinx pop.",
+       x = "Language spoken at home \nby English proficiency\n") +
+  coord_flip() +
+  theme_minimal() +
+  theme(panel.grid = element_blank())
+
+ggplotly(language_plot, tooltip = "text") %>%
+  layout(font = list(family = "Karla")) %>%
+  style(hoverlabel = list(bgcolor = "#172B4D",
+                          bordercolor = "#172B4D",
+                          font = list(family = "Karla", color = "white")))
+
+# Employment rate by gender
+gender_work <- ia_counties_tidy %>%
+  filter(variable_group == "B20005I" & county_name == "Marshall" & variable_index %in% c("005", "027", "028", "052", "074", "075") & percent > 0) %>%
+  mutate(label = str_remove(label, ", year-round in the past 12 months"),
+         label = str_replace_all(label, "s:", "s"),
+         label = str_replace_all(label, ":", ", "),
+         gender = ifelse(substr(label, 1, 4) == "Male", "Male", "Female"),
+         label = str_remove_all(label, "Male, |Female, "),
+         label = str_replace_all(label, ",", ", \n"))
+
+ggplot(gender_work, aes(percent, label, fill = gender)) +
+  geom_bar(stat = "identity", width = 0.4, position=position_dodge()) +
+  geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent+moe_pc), 
+                width = 0.1, color = "#4f515c", position = position_dodge(0.4)) +
+  scale_fill_manual(values = c(hex_pink, hex_purple)) +
+  labs(y = "", 
+       x = glue("% of Latinx pop. in {unique(gender_work$county_name)}")) +
+  labs(fill = "") +
+  theme_minimal() +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
+  project_ggtheme
+
+# Homeownership
+tenure <- ia_counties_tidy %>%
+  filter(variable_group == "B25003I" & county_name == "Adair" & variable_index != "001") %>%
+  mutate(ymax = cumsum(prop),
+         ymin = lag(ymax),
+         ymin = ifelse(is.na(ymin), 0, ymin),
+         label = as.factor(label)) %>%
+  mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
+
+tenure %>%
+  ggplot() +
+  ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
+  coord_fixed() +
+  scale_fill_manual(values = c("#5E72E4", "#172B4D")) +
+  scale_color_manual(values = c("#5E72E4", "#172B4D")) +
+  labs(color = "",
+       fill = "") +
+  arc_ggtheme
+
+# Enrolled in school
+school_enrollment <- ia_counties_tidy %>%
+  filter(variable_group == "B14007I" & county_name == "Adair" & !(variable_index %in% c("001", "002"))) %>%
+  mutate(label = str_remove(label, "Enrolled in school:"),
+         label = str_replace(label, "Enrolled in college", "College"),
+         label = ifelse(substr(label, 1, 2) == "En", "Pre-k through 12th", label)) %>%
+  group_by(label) %>%
+  summarize(prop = sum(prop)) %>%
+  ungroup() %>%
+  mutate(ymax = cumsum(prop),
+         ymin = lag(ymax),
+         ymin = ifelse(is.na(ymin), 0, ymin),
+         label = as.factor(label)) %>%
+  mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
+  
+school_enrollment %>%
+  ggplot() +
+  ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
+  coord_fixed() +
+  scale_fill_manual(values = c(hex_green, hex_purple, hex_pink)) +
+  scale_color_manual(values = c(hex_green, hex_purple, hex_pink)) +
+  labs(color = "",
+       fill = "") +
+  guides(fill=guide_legend(nrow=2,byrow=TRUE)) +
+  arc_ggtheme
+
+# Disciplines in school
+disciplines <- ia_counties_tidy %>%
+  filter(variable_group == "C15010I" & county_name == "Marshall" & !(variable_index %in% c("001")))  %>%
+  mutate(ymax = cumsum(prop),
+         ymin = lag(ymax),
+         ymin = ifelse(is.na(ymin), 0, ymin),
+         label = as.factor(label)) %>%
+  mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
+  
+disciplines %>%
+  ggplot() +
+  ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
+  coord_fixed() +
+  scale_fill_manual(values = c(hex_green, hex_purple, hex_pink, hex_blue_dk, hex_blue_lt)) +
+  scale_color_manual(values = c(hex_green, hex_purple, hex_pink, hex_blue_dk, hex_blue_lt)) +
+  labs(color = "",
+       fill = "") +
+  guides(fill=guide_legend(nrow=3,byrow=TRUE)) +
+  arc_ggtheme
+
+# Educational attainment
+education_plot <- ia_counties_tidy %>%
+  filter(variable_group == "C15002I" & county_name == "Marshall" & !(variable_index %in% c("001", "002", "007")))  %>%
+  mutate(gender = ifelse(substr(label, 1, 4) == "Male", "Male", "Female"),
+         label = str_remove_all(label, "Male:|Female:| degree|\\(includes equivalency\\)")) %>%
+  ggplot(aes(text = glue("{round(percent, 1)}% \n {label}"))) +
+  geom_linerange(aes(x = label, ymin = 0, ymax = percent, color = gender), 
+                 position = position_dodge(width = 0.3))+
+  geom_point(aes(x = label, y = percent, color = gender),
+             position = position_dodge(width = 0.3)) +
+  scale_color_manual(values = c(hex_pink, hex_blue_dk)) +
+  labs(y = "% of Latinx pop.",
+       x = "Educational attainment\n",
+       color = "") +
+  coord_flip() +
+  theme_minimal() +
+  theme(panel.grid = element_blank(),
+        legend.position = "bottom")
+
+ggplotly(education_plot, tooltip = "text") %>%
+  layout(font = list(family = "Karla")) %>%
+  style(hoverlabel = list(bgcolor = "#172B4D",
+                          bordercolor = "#172B4D",
+                          font = list(family = "Karla", color = "white")))
+
+# Presence of a computer/type of internet
+internet <- ia_counties_tidy %>%
+  filter(variable_group == "B28009I" & county_name == "Marshall" & !(variable_index %in% c("001", "002"))) %>%
+  mutate(label = str_remove_all(label, "Has a | subscription alone| subscription|With a |With "),
+         label = str_replace(label, "Without an", "Without"),
+         label = str_to_sentence(str_replace(label, ":", ",\n")),
+         text = paste0(label, ": ", round(percent, 1), "%"))
+
+
+internet_bar <- ggplot(internet, aes(percent, label, text = text)) +
+  geom_bar(stat = "identity", width = 0.4, fill = hex_orange) +
+  geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent+moe_pc), 
+                width = 0.1, color = "#4f515c") +
+  labs(y = "", 
+       x = glue("% of Latinx pop. in {unique(gender_work$county_name)}")) +
+  labs(fill = "") +
+  theme_minimal() +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
+  project_ggtheme
+
+ggplotly(internet_bar, tooltip = "text") %>%
+  layout(font = list(family = "Karla")) %>%
+  style(hoverlabel = list(bgcolor = "#172B4D",
+                          bordercolor = "#172B4D",
+                          font = list(family = "Karla", color = "white")))
+
 
 #-------------------------
 # Pull from data.iowa.gov
@@ -144,3 +380,71 @@ ia_shp %>%
   theme_void() +
   theme(plot.title = element_text(hjust = 0.5, face = "bold", color = "#5E72E4"),
         legend.position = "none")
+
+#-------------------------
+# Eliminating disparities
+#-------------------------
+
+disparities <- read_excel("data/eliminating_disparities.xlsx") %>%
+  clean_names() %>%
+  select(-c(x7, x14, x15, x18, year_8, year_11, latinx_dollars_earned_9, dollars_earned_eliminate_disparities_10)) %>%
+  rename(year = year_1,
+         latinx_dollars_earned = latinx_dollars_earned_5,
+         dollars_earned_eliminate_disparities = dollars_earned_eliminate_disparities_6)
+
+income_df <- disparities %>%
+  filter(year >= 2021) %>%
+  select(year, per_capita_income, per_capita_income_eliminating_disparities) %>%
+  mutate(per_capita_income_eliminating_disparities = per_capita_income + 
+           (per_capita_income_eliminating_disparities-per_capita_income)*0.9)
+
+ggplot(income_df, aes(year, per_capita_income_eliminating_disparities)) +
+  geom_line(aes(y = per_capita_income), color = hex_pink, size = 1.2) +
+  geom_line(aes(y = per_capita_income_eliminating_disparities), color = hex_green, size = 1.2) +
+  geom_ribbon(aes(ymin = per_capita_income, ymax = per_capita_income_eliminating_disparities), alpha = 0.2, fill = hex_green) +
+  theme(legend.position = "bottom") +
+  labs(y = "Per capita income (USD)\n") +
+  ylim(10000, 75000) +
+  # scale_x_continuous(limits = c(2021, 2050), expand = c(0, 0)) +
+  project_ggtheme
+
+# Interpolate the measured points with a spline to produce a nice curve:
+income_disparities <- disparities %>%
+  filter(year >= 2021) %>%
+  select(year, per_capita_income, per_capita_income_eliminating_disparities) %>%
+  mutate(per_capita_income_eliminating_disparities = per_capita_income_eliminating_disparities*0.25) %>%
+  gather(2:3, key = "future", value = "per_capita_income") %>%
+  filter(future == "per_capita_income") %>%
+  mutate(date = ymd(year, truncated = 2L))
+
+spline_df   <- spline(income_disparities$year, 
+                      income_disparities$per_capita_income, 
+                      n = 200, method = "nat") %>%
+  as.data.frame() %>%
+  rename(per_capita_income = y) %>%
+  mutate(date = format(date_decimal(x), "%m-%d-%Y"),
+         date = as_date(mdy(date)))
+
+# A data frame to produce a gradient effect over the filled area:
+grad_df <- data.frame(yintercept = seq(0, 8, length.out = 200), 
+                      alpha = seq(0.3, 0, length.out = 200))
+
+ggplot(income_disparities, aes(date, per_capita_income)) +
+  geom_hline(aes(yintercept = 2), alpha = 0.02) +
+  geom_area(data = spline_df, fill = "#80C020", alpha = 0.35) + 
+  geom_hline(data = grad_df, aes(yintercept = yintercept, alpha = alpha),
+             size = 2.5, colour = "white") +
+  geom_line(data = spline_df, colour = "#80C020", size = 1) +
+  geom_point(shape = 21, size = 2, color = "#80C020", fill = "white", stroke = 1.6) +
+  theme_bw()+
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.border       = element_blank(),
+        axis.line.x        = element_line(),
+        text               = element_text(size = 15),
+        plot.margin        = margin(unit(c(20, 20, 20, 20), "pt")),
+        axis.ticks         = element_blank(),
+        axis.text.y        = element_text(margin = margin(0,15,0,0, unit = "pt"))) +
+  scale_alpha_identity() +
+  scale_y_continuous(expand = c(0, 0))

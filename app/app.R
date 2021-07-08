@@ -14,6 +14,34 @@ library(ggchicklet)
 library(glue)
 library(tidyverse)
 
+# Primary
+hex_purple <- "#5E72E4" #primary
+hex_blue_lt <- "#5DCEF0" #info
+hex_green <- "#63CF89" #success
+hex_pink <- "#EA445B" #danger
+hex_orange <- "#EC603E" #warning
+hex_blue_dk <- "#172B4D" #default
+hex_grey <- "#51535e"
+
+project_ggtheme <- theme(panel.background = element_blank(),
+                         axis.ticks.x = element_blank(),
+                         panel.grid.minor = element_blank(),
+                         panel.grid.major = element_blank(),
+                         axis.line.y = element_line(color = "#cacee6", size = 0.8),
+                         axis.ticks.y = element_line(color = "#cacee6", size = 0.8),
+                         axis.text = element_text(family = "Karla", color = "#51535e", size = 14),
+                         axis.title = element_text(family = "Karla", color = "#51535e", size = 15),
+                         legend.position = "bottom",
+                         legend.text = element_text(family = "Karla", color = "#51535e", size = 13),
+                         legend.key = element_rect(fill = NA))
+
+arc_ggtheme <- theme(panel.background = element_rect(fill = NA),
+                     axis.text = element_blank(),
+                     axis.ticks = element_blank(),
+                     axis.title = element_blank(),
+                     legend.position = "bottom",
+                     legend.text = element_text(family = "Karla"))
+
 # setup_font(
 #   id = "karla",
 #   output_dir = "www/"
@@ -31,12 +59,13 @@ source("sidebar.R")
 source("footer.R")
 
 # elements
-source("tabs/tab_0.R")
+# source("tabs/tab_0.R")
 # source("tabs/tab_1.R")
 source("tabs/tab_1_alt_a.R")
 # source("tabs/tab_2.R")
 source("tabs/tab_2_alt_a.R")
 source("tabs/tab_3.R")
+source("tabs/tab_4.R")
 
 # App
 shiny::shinyApp(
@@ -54,13 +83,13 @@ shiny::shinyApp(
         # tab_2,
         tab_2_alt_a,
         tab_3,
-        tab_0
+        tab_4
       )
     ),
     footer = argonFooter
   ),
   server = function(input, output) {
-
+    
     # Tab 1-----------------------------------------------------------
     
     # output$state_total_latinx <- renderText({ 
@@ -428,8 +457,9 @@ shiny::shinyApp(
     
     #---------------------Begin Tab 2 Alt A-----------------------------
     
+    # Header
     output$highlighted_map <- renderPlot({
-
+      
       ia_county_shp %>%
         mutate(input_status = ifelse(NAME == input$county_choice2, "1", "0")) %>%
         ggplot(aes(fill = input_status)) +
@@ -439,7 +469,7 @@ shiny::shinyApp(
         theme(legend.position = "none",
               panel.background = element_rect(fill = "transparent", color = "transparent"),
               plot.background = element_rect(fill = "transparent", color = "transparent"))
-
+      
     }, bg ="transparent", height = 400, width = 500)
     
     output$region_pop <- renderText({
@@ -449,7 +479,7 @@ shiny::shinyApp(
       
       # Population with commas
       formatC(county_selected$estimate, format="d", big.mark=",")
-        
+      
       
     })
     
@@ -479,6 +509,57 @@ shiny::shinyApp(
       
     })
     
+    # Fact cards
+    # County ages
+    median_age_df <- reactive({
+      
+      ia_counties_tidy %>%
+        filter(variable_group == "B01002" & county_name == input$county_choice2)
+      
+    })
+    
+    median_age_hisp_df <- reactive({
+      
+     ia_counties_tidy %>%
+        filter(variable_group == "B01002I" & county_name == input$county_choice2)
+       
+    })
+    
+    hh_income_df <- reactive({
+      
+    ia_counties_tidy %>%
+      filter(variable_group == "B19013" & county_name == input$county_choice2)
+      
+    })
+    
+    hh_income_hisp_df <- reactive({
+      
+      ia_counties_tidy %>%
+        filter(variable_group == "B19013I" & county_name == input$county_choice2)
+      
+    })
+    
+    output$overview <- renderText({
+      
+      median_age <- median_age_df()
+      median_age_hisp <- median_age_hisp_df()
+      hh_income <- hh_income_df()
+      hh_income_hisp <- hh_income_hisp_df()
+      
+      glue("The median age of the county's population in 2019 was {median_age$estimate[median_age$variable_index == '001']} years (± {median_age$moe[median_age$variable_index == '001']}).
+           For females, the median was {median_age$estimate[median_age$variable_index == '003']} years (± {median_age$moe[median_age$variable_index == '003']}), while for males, the median was 
+           {median_age$estimate[median_age$variable_index == '002']} years (± {median_age$moe[median_age$variable_index == '002']}). For the Latinx population, the median
+           age was {median_age_hisp$estimate[median_age_hisp$variable_index == '001']} years (± {median_age_hisp$moe[median_age$variable_index == '001']}). Latino males
+           had a median age of {median_age_hisp$estimate[median_age_hisp$variable_index == '002']} years (± {median_age_hisp$moe[median_age$variable_index == '002']}), while the median age for Latinas
+           alone was {median_age_hisp$estimate[median_age_hisp$variable_index == '003']} years (± {median_age_hisp$moe[median_age$variable_index == '003']}).
+           <br></br>
+           The median household income for the county in 2019 was ${format(hh_income$estimate, big.mark = ',')} (± ${format(hh_income$moe, big.mark = ',')}) in 2019-inflation-adjusted dollars.
+           For the Latinx population, the median household income in the same year was ${format(hh_income_hisp$estimate, big.mark = ',')} (± ${format(hh_income_hisp$moe, big.mark = ',')}).")
+      
+      
+    })
+    
+    
     map_var2 <- reactive({if (input$unit2 == "as a %") "percent" else "estimate" })
     map_symbol2 <- reactive ({ if (input$unit2 == "as a %") "%" else ""})
     
@@ -503,6 +584,8 @@ shiny::shinyApp(
         addLegend(pal = pal, values = ~var, opacity = 0.3)
     })
     
+    # Card 1: Demographics--------------------------------------------------------
+    
     output$arcplot_origin2 <- renderPlot({
       
       pc_latin_origin <- ia_counties_tidy %>%
@@ -521,14 +604,11 @@ shiny::shinyApp(
         scale_color_manual(values = c("#5E72E4", "#172B4D", "#63CF89", "#5DCEF0")) +
         labs(color = "",
              fill = "") +
-        theme(panel.background = element_rect(fill = NA),
-              axis.text = element_blank(),
-              axis.ticks = element_blank(),
-              axis.title = element_blank(),
-              legend.position = "bottom") +
-        guides(fill=guide_legend(nrow=2,byrow=TRUE))
+        arc_ggtheme +
+        guides(fill = guide_legend(nrow = 2,byrow = TRUE))
       
     })
+    
     
     output$arcplot_origin_text2 <- renderText({ 
       
@@ -544,10 +624,59 @@ shiny::shinyApp(
       
       if (born_ia$percent > 0) born_ia_sentence <- glue("{born_ia$percent}%  of the county's Latinx are Iowa-born. ") else born_ia_sentence <- ""
       if (born_other_state$percent > 0) born_other_state_sentence <- glue("Another {born_other_state$percent}% of the county's Latinx Iowans were born in another state in the US. ") else born_other_state_sentence <- ""
-      if (native_born_outside$percent > 0) native_born_outside_sentence <- glue("Of the rest of the Latinx in {input$county_choice}, {native_born_outside$percent}% are native, born outside the US. ") else native_born_outside_sentence <- ""
+      if (native_born_outside$percent > 0) native_born_outside_sentence <- glue("Of the rest of the Latinx in {input$county_choice2}, {native_born_outside$percent}% are native, born outside the US. ") else native_born_outside_sentence <- ""
       if(foreign_born$percent > 0) foreign_born_sentence <- glue("An estimated {foreign_born$percent}% of the county's Latinx were foreign born. ") else foreign_born_sentence <- ""
       
       glue("{born_ia_sentence}{born_other_state_sentence}{native_born_outside_sentence}{foreign_born_sentence}")
+      
+    })
+    
+    output$bar_status <- renderPlot({
+      
+    # Relationship status
+      status <- ia_counties_tidy %>%
+        filter(variable_group == "B12002I" & county_name == input$county_choice2 & !variable_index %in% c("001", "002", "008")) %>%
+        filter(percent != 0) %>%
+        mutate(label = str_replace_all(label, ":", ", "),
+               label = str_replace_all(label, "married \\(", "married \n\\("),
+               gender = ifelse(substr(label, 1, 4) == "Male", "Male", "Female"),
+               label = str_remove_all(label, "Male, |Female, "))
+      
+      ggplot(status, aes(percent, label, fill = gender)) +
+        geom_bar(stat = "identity", width = 0.4, position = position_dodge()) +
+        geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent+moe_pc), 
+                      width = 0.05, color = "#4f515c", position = position_dodge(0.4)) +
+        scale_fill_manual(values = c(hex_green, hex_purple)) +
+        labs(y = "", 
+             x = glue("% of Latinx pop. in {unique(status$county_name)}"),
+             fill = "") +
+        theme_minimal() +
+        scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
+        project_ggtheme
+    
+    })
+    
+    output$lollipop_language <- renderPlotly({
+      
+      # Language at home
+      language_plot <- ia_counties_tidy %>%
+        filter(variable_group == "B16006" & county_name == input$county_choice2 & !(variable_index %in% c("001", "003")) & percent > 0) %>%
+        mutate(label = str_replace(label, ":", "\n")) %>%
+        ggplot(aes(text = glue("{round(percent, 1)}% \n {label}"))) +
+        geom_segment(aes(x=label, xend=label, y=0, yend=percent), color=hex_purple, size = 0.8) +
+        geom_point(aes(label, percent), color=hex_purple, size=3.5) +
+        labs(y = "% of Latinx pop.",
+             x = "Language spoken at home \nby English proficiency\n") +
+        coord_flip() +
+        theme_minimal() +
+        theme(panel.grid = element_blank(),
+              axis.title = element_text(color = "#51535e"))
+      
+      ggplotly(language_plot, tooltip = "text") %>%
+        layout(font = list(family = "Karla")) %>%
+        style(hoverlabel = list(bgcolor = "#172B4D",
+                                bordercolor = "#172B4D",
+                                font = list(family = "Karla", color = "white")))
       
     })
     
@@ -572,12 +701,7 @@ shiny::shinyApp(
         scale_color_manual(values = c("#5E72E4",  "#172B4D","#EC603E", "#EA445B", "#63CF89", "#5DCEF0")) +
         labs(color = "",
              fill = "") +
-        theme(panel.background = element_rect(fill = NA),
-              axis.text = element_blank(),
-              axis.ticks = element_blank(),
-              axis.title = element_blank(),
-              legend.position = "bottom",
-              legend.text = element_text(family = "Karla")) +
+        arc_ggtheme +
         guides(fill=guide_legend(nrow=2,byrow=TRUE))
       
     })
@@ -601,12 +725,57 @@ shiny::shinyApp(
         scale_color_manual(values = c("#5E72E4", "#172B4D")) +
         labs(color = "",
              fill = "") +
-        theme(panel.background = element_rect(fill = NA),
-              axis.text = element_blank(),
-              axis.ticks = element_blank(),
-              axis.title = element_blank(),
-              legend.position = "bottom",
-              legend.text = element_text(family = "Karla"))
+        arc_ggtheme
+      
+    })
+    
+    # Card 2: Economics & Workforce--------------------------------------------------------
+    output$bar_gender_work <- renderPlot({
+      
+      # Employment rate by gender
+      gender_work <- ia_counties_tidy %>%
+        filter(variable_group == "B20005I" & county_name == input$county_choice2 & variable_index %in% c("005", "027", "028", "052", "074", "075") & percent > 0) %>%
+        mutate(label = str_remove(label, ", year-round in the past 12 months"),
+               label = str_replace_all(label, "s:", "s"),
+               label = str_replace_all(label, ":", ", "),
+               gender = ifelse(substr(label, 1, 4) == "Male", "Male", "Female"),
+               label = str_remove_all(label, "Male, |Female, "),
+               label = str_replace_all(label, ",", ", \n"))
+      
+      ggplot(gender_work, aes(percent, label, fill = gender)) +
+        geom_bar(stat = "identity", width = 0.4, position=position_dodge()) +
+        geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent+moe_pc), 
+                      width = 0.1, color = "#4f515c", position = position_dodge(0.4)) +
+        scale_fill_manual(values = c(hex_pink, hex_purple)) +
+        labs(y = "", 
+             x = glue("% of Latinx pop. in {unique(gender_work$county_name)}")) +
+        labs(fill = "") +
+        theme_minimal() +
+        scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
+        project_ggtheme
+      
+    })
+    
+    output$arc_homeownership <- renderPlot({
+      
+      # Homeownership
+      tenure <- ia_counties_tidy %>%
+        filter(variable_group == "B25003I" & county_name == input$county_choice2 & variable_index != "001") %>%
+        mutate(ymax = cumsum(prop),
+               ymin = lag(ymax),
+               ymin = ifelse(is.na(ymin), 0, ymin),
+               label = as.factor(label)) %>%
+        mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
+      
+      tenure %>%
+        ggplot() +
+        ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
+        coord_fixed() +
+        scale_fill_manual(values = c("#5E72E4", "#172B4D")) +
+        scale_color_manual(values = c("#5E72E4", "#172B4D")) +
+        labs(color = "",
+             fill = "") +
+        arc_ggtheme
       
     })
     
@@ -631,12 +800,7 @@ shiny::shinyApp(
              y = "% of Latinx pop. in county") +
         theme_minimal() +
         scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
-        theme(panel.grid.minor =element_blank(),
-              panel.grid.major = element_blank(),
-              axis.line.y = element_line(color = "#cacee6", size = 0.8),
-              axis.ticks.y = element_line(color = "#cacee6", size = 0.8),
-              axis.text = element_text(family = "Karla", color = "#51535e", size = 14),
-              axis.title = element_text(family = "Karla", color = "#51535e", size = 15))
+        project_ggtheme
       
     })
     
@@ -680,15 +844,124 @@ shiny::shinyApp(
         theme(panel.background = element_rect(fill = "transparent")) +
         theme_minimal() +
         scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
-        theme(panel.grid.minor =element_blank(),
-              panel.grid.major = element_blank(),
-              axis.line.y = element_line(color = "#cacee6", size = 0.8),
-              axis.ticks.y = element_line(color = "#cacee6", size = 0.8),
-              axis.text = element_text(family = "Karla", color = "#51535e", size = 14),
-              axis.title = element_text(family = "Karla", color = "#51535e", size = 15))
+        project_ggtheme
       
     })
-  
+    
+    # Card 3: Education--------------------------------------------------------
+    # Educational attainment
+    output$lollipop_education <- renderPlotly({
+      
+      education_plot <- ia_counties_tidy %>%
+      filter(variable_group == "C15002I" & county_name == input$county_choice2 & !(variable_index %in% c("001", "002", "007")))  %>%
+      mutate(gender = ifelse(substr(label, 1, 4) == "Male", "Male", "Female"),
+             label = str_remove_all(label, "Male:|Female:| degree|\\(includes equivalency\\)")) %>%
+      ggplot(aes(text = glue("{round(percent, 1)}% \n {label}"))) +
+      geom_linerange(aes(x = label, ymin = 0, ymax = percent, color = gender), 
+                     position = position_dodge(width = 0.3))+
+      geom_point(aes(x = label, y = percent, color = gender),
+                 position = position_dodge(width = 0.3)) +
+      scale_color_manual(values = c(hex_pink, hex_blue_dk)) +
+      labs(y = "% of Latinx pop.",
+           x = "Educational attainment\n",
+           color = "") +
+      coord_flip() +
+      theme_minimal() +
+      theme(panel.grid = element_blank(),
+            legend.position = "bottom")
+    
+    ggplotly(education_plot, tooltip = "text") %>%
+      layout(font = list(family = "Karla")) %>%
+      style(hoverlabel = list(bgcolor = "#172B4D",
+                              bordercolor = "#172B4D",
+                              font = list(family = "Karla", color = "white")))
+    
+    })
+    
+    output$arc_disciplines <- renderPlot({
+      
+      # Disciplines in school
+      disciplines <- ia_counties_tidy %>%
+        filter(variable_group == "C15010I" & county_name == input$county_choice2 & !(variable_index %in% c("001")))  %>%
+        mutate(ymax = cumsum(prop),
+               ymin = lag(ymax),
+               ymin = ifelse(is.na(ymin), 0, ymin),
+               label = as.factor(label)) %>%
+        mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
+      
+      disciplines %>%
+        ggplot() +
+        ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
+        coord_fixed() +
+        scale_fill_manual(values = c(hex_green, hex_purple, hex_pink, hex_blue_dk, hex_blue_lt)) +
+        scale_color_manual(values = c(hex_green, hex_purple, hex_pink, hex_blue_dk, hex_blue_lt)) +
+        labs(color = "",
+             fill = "") +
+        guides(fill=guide_legend(nrow=3,byrow=TRUE)) +
+        arc_ggtheme
+      
+    })
+    
+    output$bar_computer <- renderPlotly({
+      
+      # Presence of a computer/type of internet
+      internet <- ia_counties_tidy %>%
+        filter(variable_group == "B28009I" & county_name == input$county_choice2 & !(variable_index %in% c("001", "002"))) %>%
+        mutate(label = str_remove_all(label, "Has a | subscription alone| subscription|With a |With "),
+               label = str_replace(label, "Without an", "Without"),
+               label = str_to_sentence(str_replace(label, ":", ",\n")),
+               text = paste0(label, ": ", round(percent, 1), "%"))
+      
+      
+      internet_bar <- ggplot(internet, aes(percent, label, text = text)) +
+        geom_bar(stat = "identity", width = 0.4, fill = hex_orange) +
+        geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent+moe_pc), 
+                      width = 0.1, color = "#4f515c") +
+        labs(y = "", 
+             x = glue("% of Latinx pop. in {unique(internet$county_name)}")) +
+        labs(fill = "") +
+        theme_minimal() +
+        scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
+        project_ggtheme
+      
+      ggplotly(internet_bar, tooltip = "text") %>%
+        layout(font = list(family = "Karla")) %>%
+        style(hoverlabel = list(bgcolor = "#172B4D",
+                                bordercolor = "#172B4D",
+                                font = list(family = "Karla", color = "white")))
+      
+    })
+    
+    output$arc_enrolled <- renderPlot({
+      
+      # Enrolled in school
+      school_enrollment <- ia_counties_tidy %>%
+        filter(variable_group == "B14007I" & county_name == input$county_choice2 & !(variable_index %in% c("001", "002"))) %>%
+        mutate(label = str_remove(label, "Enrolled in school:"),
+               label = str_replace(label, "Enrolled in college", "College"),
+               label = ifelse(substr(label, 1, 2) == "En", "Pre-k through 12th", label)) %>%
+        group_by(label) %>%
+        summarize(prop = sum(prop)) %>%
+        ungroup() %>%
+        mutate(ymax = cumsum(prop),
+               ymin = lag(ymax),
+               ymin = ifelse(is.na(ymin), 0, ymin),
+               label = as.factor(label)) %>%
+        mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
+      
+      school_enrollment %>%
+        ggplot() +
+        ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
+        coord_fixed() +
+        scale_fill_manual(values = c(hex_green, hex_purple, hex_pink, hex_blue_lt, hex_blue_dk)) +
+        scale_color_manual(values = c(hex_green, hex_purple, hex_pink, hex_blue_lt, hex_blue_dk)) +
+        labs(color = "",
+             fill = "") +
+        guides(fill=guide_legend(nrow=2,byrow=TRUE)) +
+        arc_ggtheme
+      
+    })
+    
     
     #---------------------End Tab 2 Alt A-----------------------
     
@@ -698,16 +971,160 @@ shiny::shinyApp(
     output$bar_median_age <- renderPlotly({
       
       median_age <- state_county %>%
-        filter(variable == "B01002I_001" & NAME %in% input$region_choice)
+        filter(variable == "B01002I_001" & NAME %in% input$region_choice) %>%
+        mutate(text = paste(NAME, ": ", estimate, " years"))
       
-      ggplot(median_age, aes(NAME, estimate, label = glue("{estimate}\n\n"))) +
+      age_plot <- ggplot(median_age, aes(NAME, estimate, text = text)) +
         geom_bar(stat = "identity", width = 0.1, fill = "#5E72E4") +
         # geom_text(aes(x = NAME, y = estimate), size = 3.5, family = "Karla") +
-        labs(x = "", y = "median age of Latinx pop. (in years)") +
+        labs(x = "", y = "Median age of Latinx pop. (in years)") +
         scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
         theme_minimal() +
         theme(panel.grid = element_blank(),
               axis.line.x = element_line(color = "#cacee6", size = 0.8))
+      
+      ggplotly(age_plot, tooltip = "text") %>%
+        layout(font = list(family = "Karla")) %>%
+        style(hoverlabel = list(bgcolor = "#172B4D",
+                                bordercolor = "#172B4D",
+                                font = list(family = "Karla", color = "white")))
+    })
+    
+    output$lollipop_income <- renderPlotly({
+      
+      income <- state_county %>%
+        filter(variable == "B19013I_001" & NAME %in% input$region_choice) %>%
+        mutate(text = paste0(NAME, ": $", format(estimate, big.mark = ",")))
+      
+      income_plot <- ggplot(income, aes(text = text)) +
+        geom_linerange(aes(x = NAME, ymin = 0, ymax = estimate), color = hex_blue_dk, size = 1)+
+        geom_point(aes(x = NAME, y = estimate), color = hex_blue_dk, size = 2.5) +
+        labs(x = "",
+             y = "Median household income\n\n",
+             color = "") +
+        coord_flip() +
+        theme_minimal() +
+        theme(panel.grid = element_blank(),
+              legend.position = "bottom",
+              axis.title = element_text(color = hex_grey))
+      
+      ggplotly(income_plot, tooltip = "text") %>%
+        layout(font = list(family = "Karla")) %>%
+        style(hoverlabel = list(bgcolor = "#172B4D",
+                                bordercolor = "#172B4D",
+                                font = list(family = "Karla", color = "white")))
+    })
+    
+    #---------------------End Tab 3--------------------------------------
+    
+    
+    #---------------------Begin Tab 4------------------------------------
+    
+    output$income_disparities <- renderPlotly({
+      
+      
+      income_df <- disparities %>%
+        filter(year >= 2021) %>%
+        select(year, per_capita_income, per_capita_income_eliminating_disparities) %>%
+        mutate(per_capita_income_eliminating_disparities = per_capita_income + 
+                 (per_capita_income_eliminating_disparities-per_capita_income)*input$income_knob/100,
+               text1 = paste0("With disparities: $", format(per_capita_income, big.mark = ",")),
+               text2 = paste0("Year: ", year, "\nWithout disparities: $", format(per_capita_income_eliminating_disparities, big.mark = ",")))
+      
+      income_plot <- ggplot(income_df, aes(year, per_capita_income_eliminating_disparities)) +
+        geom_line(aes(y = per_capita_income, text = text1, color = "With disparities \n(current trajectory)", group = 1), size = 1.2) +
+        geom_line(aes(y = per_capita_income_eliminating_disparities, text = text2, color = "Without disparities", group = 1), size = 1.2) +
+        scale_color_manual(values = c(hex_pink, hex_green)) +
+        geom_ribbon(aes(ymin = per_capita_income, ymax = per_capita_income_eliminating_disparities), alpha = 0.2, fill = hex_green) +
+        theme(legend.position = "bottom") +
+        labs(y = "Per capita income (USD)\n",
+             color = "") +
+        ylim(10000, 75000) +
+        # scale_x_continuous(limits = c(2021, 2050), expand = c(0, 0)) +
+        project_ggtheme
+      
+      ggplotly(income_plot, tooltip = 'text') %>%
+        config(displayModeBar = F) %>%
+        layout(legend = list(orientation = "h", x = 0.4, y = -0.25),
+               font = list(family = "Karla"),
+               hovermode = "x",
+               dragmode = "select",
+               height = 500) %>%
+        style(hoverlabel = list(#bgcolor = hex_purple,
+                                bordercolor = "white",
+                                font = list(family = "Karla", color = "white")))
+      
+    })
+    
+    output$earnings_disparities <- renderPlot({
+      
+      
+      dollars_df <- disparities %>%
+        filter(year >= 2021) %>%
+        select(year, latinx_dollars_earned, dollars_earned_eliminate_disparities) %>%
+        mutate(latinx_dollars_earned = latinx_dollars_earned/1000000000,
+               dollars_earned_eliminate_disparities = dollars_earned_eliminate_disparities/1000000000,
+               dollars_earned_eliminate_disparities = latinx_dollars_earned + 
+                 (dollars_earned_eliminate_disparities-latinx_dollars_earned)*input$earnings_knob/100)
+      
+      ggplot(dollars_df, aes(year, latinx_dollars_earned)) +
+        geom_line(aes(y = latinx_dollars_earned, color = "With disparities \n(current trajectory)"), size = 1.2) +
+        geom_line(aes(y = dollars_earned_eliminate_disparities, color = "Without disparities"), size = 1.2) +
+        scale_color_manual(values = c(hex_pink, hex_green)) +
+        geom_ribbon(aes(ymin = latinx_dollars_earned, ymax = dollars_earned_eliminate_disparities), alpha = 0.2, fill = hex_green) +
+        theme(legend.position = "bottom") +
+        labs(y = "Latinx dollars earned (in $B)\n",
+             color = "") +
+        ylim(0.9, 9) +
+        # scale_x_continuous(limits = c(2021, 2050), expand = c(0, 0)) +
+        project_ggtheme
+      
+    })
+    
+    output$poverty_disparities <- renderPlot({
+      
+      
+      poverty_df <- disparities %>%
+        filter(year >= 2021) %>%
+        select(year, latinx_people_in_poverty, poverty_with_disparities_eliminated) %>%
+        mutate(poverty_with_disparities_eliminated = latinx_people_in_poverty + 
+                 (poverty_with_disparities_eliminated-latinx_people_in_poverty)*input$poverty_knob/100)
+      
+      ggplot(poverty_df, aes(year, latinx_people_in_poverty)) +
+        geom_line(aes(y = latinx_people_in_poverty, color = "With disparities \n(current trajectory)"), size = 1.2) +
+        geom_line(aes(y = poverty_with_disparities_eliminated, color = "Without disparities"), size = 1.2) +
+        scale_color_manual(values = c(hex_pink, hex_green)) +
+        geom_ribbon(aes(ymin = latinx_people_in_poverty, ymax = poverty_with_disparities_eliminated), alpha = 0.2, fill = hex_green) +
+        theme(legend.position = "bottom") +
+        labs(y = "Latinx individuals in poverty\n",
+             color = "") +
+        ylim(3500, 24000) +
+        # scale_x_continuous(limits = c(2021, 2050), expand = c(0, 0)) +
+        project_ggtheme
+      
+    })
+    
+    output$homeowners_disparities <- renderPlot({
+      
+      
+      homeowners_df <- disparities %>%
+        filter(year >= 2021) %>%
+        select(year, latinx_homeowners, homeowners_eliminate_disparities) %>%
+        mutate(homeowners_eliminate_disparities = latinx_homeowners + 
+                 (homeowners_eliminate_disparities-latinx_homeowners)*input$homeowners_knob/100)
+      
+      ggplot(homeowners_df, aes(year, latinx_homeowners)) +
+        geom_line(aes(y = latinx_homeowners, color = "With disparities \n(current trajectory)"), size = 1.2) +
+        geom_line(aes(y = homeowners_eliminate_disparities, color = "Without disparities"), size = 1.2) +
+        scale_color_manual(values = c(hex_pink, hex_green)) +
+        geom_ribbon(aes(ymin = latinx_homeowners, ymax = homeowners_eliminate_disparities), alpha = 0.2, fill = hex_green) +
+        theme(legend.position = "bottom") +
+        labs(y = "Latinx individuals in poverty\n",
+             color = "") +
+        ylim(6200, 22000) +
+        # scale_x_continuous(limits = c(2021, 2050), expand = c(0, 0)) +
+        project_ggtheme
+      
     })
     
   }
