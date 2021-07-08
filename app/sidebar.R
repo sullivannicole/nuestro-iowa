@@ -15,7 +15,7 @@ argonSidebar <- argonDashSidebar(
   argonSidebarMenu(
     argonSidebarItem(
       tabName = "tab_1_alt_a",
-      "Overview"
+      "Nuestro Iowa"
     ),
     # argonSidebarItem(
     #   tabName = "tab_1_alt_a",
@@ -27,19 +27,15 @@ argonSidebar <- argonDashSidebar(
     # ),
     argonSidebarItem(
       tabName = "tab_2_alt_a",
-      "Geo-profiles"
+      "Nuestro county"
     ),
     argonSidebarItem(
       tabName = "tab_3",
-      "Compare"
+      "Nuestro community"
     ),
     argonSidebarItem(
-      tabName = "tabs2",
-      "Disparities"
-    ),
-    argonSidebarItem(
-      tabName = "tab_0",
-      "About"
+      tabName = "tab_4",
+      "Nuestro future"
     )
   ),
   argonSidebarDivider(),

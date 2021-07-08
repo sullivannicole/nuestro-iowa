@@ -49,33 +49,17 @@
    text-align: center;
  }
 
-/* Tab 2 */                    
+/* Tab 2 Alt A*/                    
 .tab-2-header-div {
                     position:absolute; 
                     right:0;
                     left:0;
                     top:0;
-                    overflow: hidden;
+                    overflow-x: hidden;
                     background-image: linear-gradient(to right, #EA445B,  #EC603E);
                     }
                     
-.map-container {
-                position:absolute; 
-                right:0; 
-                left:0;
-                overflow: hidden;
-                padding: 40px 20px 40px 20px; 
-                background-color: #e9ecef;
- }
- 
-.map-btn-container {
-                    position: absolute; 
-                    z-index: 1; 
-                    padding-top: 50px
-}
-
-/* Tab 2 Alt A*/
-#region_pop {
+ #region_pop {
   color: white;
   font-size: 25px;
   font-weight: bold;
@@ -91,4 +75,18 @@
   color: white;
   font-size: 25px;
   font-weight: bold;
+}
+.map-container {
+                position:absolute; 
+                right:0; 
+                left:0;
+                overflow: hidden;
+                padding: 40px 20px 40px 20px; 
+                background-color: #e9ecef;
+ }
+ 
+.map-btn-container {
+                    position: absolute; 
+                    z-index: 1; 
+                    padding-top: 50px
 }
