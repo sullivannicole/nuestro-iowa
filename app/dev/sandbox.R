@@ -39,22 +39,10 @@ look_at_vars <- ia %>%
 metro_county_list <- c("Warren", "Dallas", "Jasper", "Polk", "Guthrie", "Marshall", "Madison")
 
 # New plots
-chek_enroll <- ia_counties_tidy %>%
-  filter(variable_group == "B14007I" & county_name == "Dallas" & !(variable_index %in% c("001", "002"))) %>%
-  mutate(label = str_remove(label, "Enrolled in school:"),
-         label = str_replace(label, "Enrolled in college", "College"),
-         label = ifelse(substr(label, 1, 2) == "En", "Pre-k through 12th", label)) %>%
-  group_by(label) %>%
-  summarize(prop = sum(prop),
-            percent = sum(percent)) %>%
-  ungroup() %>%
-  mutate(ymax = cumsum(prop),
-         ymin = lag(ymax),
-         ymin = ifelse(is.na(ymin), 0, ymin),
-         label = as.factor(label)) %>%
-  mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
 
-chek_enroll$percent[substr(chek_enroll$label, 1, 7) == "College"] > 0
+
+
+
 
 #-------------------------
 # Pull from data.iowa.gov
