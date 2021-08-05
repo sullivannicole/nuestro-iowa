@@ -115,7 +115,7 @@ nu_future_server <- function(input, output, session) {
     
     homeowners_plot <- ggplot(homeowners_df, aes(year, latinx_homeowners)) +
       geom_line(aes(y = latinx_homeowners, color = "With disparities \n(current trajectory)", text = text1, group = 1), size = 1.2) +
-      geom_line(aes(y = homeowners_eliminate_disparities, color = "Without disparities", text = text2, group = 1), size = 1.2) +
+      geom_line(aes(y = homeowners_eliminate_disparities, color = "Without disparities", text = text2, ,group = 1), size = 1.2) +
       scale_color_manual(values = c(hex_pink, hex_green)) +
       geom_ribbon(aes(ymin = latinx_homeowners, ymax = homeowners_eliminate_disparities), alpha = 0.2, fill = hex_green) +
       theme(legend.position = "bottom") +

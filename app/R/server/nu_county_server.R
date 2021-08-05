@@ -131,16 +131,21 @@ nu_county_server <- function(input, output, session) {
   
   # Card 1: Demographics--------------------------------------------------------
   
-  output$arcplot_origin2 <- renderPlot({
+  origin_df <- reactive({
     
-    pc_latin_origin <- ia_counties_tidy %>%
+    ia_counties_tidy %>%
       filter(county_name == input$county_choice2 & variable_group == "B06004I" & variable_index != "001") %>%
       mutate(ymax = cumsum(prop),
              ymin = lag(ymax),
              ymin = ifelse(is.na(ymin), 0, ymin),
              label = str_replace_all(label, "Estimate!!Total:!!", "")) %>%
       mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
+
+  })
+  
+  output$arcplot_origin2 <- renderPlot({
     
+    origin_df() %>%
     pc_latin_origin %>%
       ggplot() +
       ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
@@ -157,43 +162,36 @@ nu_county_server <- function(input, output, session) {
   
   output$arcplot_origin_text2 <- renderText({ 
     
-    pc_latin_origin <- ia_counties_tidy %>%
-      filter(county_name == input$county_choice2 & variable_group == "B06004I" & variable_index != "001") %>%
-      mutate(label = str_replace_all(label, "Estimate!!Total:!!", ""),
-             percent = round(as.numeric(percent)))
-    
-    born_ia <- pc_latin_origin %>% filter(label == "Born in state of residence")
-    born_other_state <- pc_latin_origin %>% filter(label == "Born in other state in the United States")
-    native_born_outside <- pc_latin_origin %>% filter(label == "Native; born outside the United States")
-    foreign_born <- pc_latin_origin %>% filter(label == "Foreign born")
-    
-    if (born_ia$percent > 0) born_ia_sentence <- glue("{born_ia$percent}%  of the county's Latinx are Iowa-born. ") else born_ia_sentence <- ""
-    if (born_other_state$percent > 0) born_other_state_sentence <- glue("Another {born_other_state$percent}% of the county's Latinx Iowans were born in another state in the US. ") else born_other_state_sentence <- ""
-    if (native_born_outside$percent > 0) native_born_outside_sentence <- glue("Of the rest of the Latinx in {input$county_choice2}, {native_born_outside$percent}% are native, born outside the US. ") else native_born_outside_sentence <- ""
-    if(foreign_born$percent > 0) foreign_born_sentence <- glue("An estimated {foreign_born$percent}% of the county's Latinx were foreign born. ") else foreign_born_sentence <- ""
-    
-    glue("{born_ia_sentence}{born_other_state_sentence}{native_born_outside_sentence}{foreign_born_sentence}")
+    born_ia <- if(origin_df()$percent[origin_df()$label == "Born in state of residence"] > 0)  glue("{round(origin_df()$percent[origin_df()$label == 'Born in state of residence'], 1)}%  of the county's Latinx are Iowa-born. ") else NULL
+    born_other_state <- if(origin_df()$percent[substr(origin_df()$label, 9, 13) == "other"] > 0)  glue("Another {round(origin_df()$percent[substr(origin_df()$label, 9, 13) == 'other'], 1)}% of the county's Latinx Iowans were born in another state in the US. ") else NULL
+    native_born <- if(origin_df()$percent[substr(origin_df()$label, 1, 6) == "Native"] > 0) glue("Of the rest of the Latinx in {input$county_choice2}, {round(origin_df()$percent[substr(origin_df()$label, 1, 6) == 'Native'], 1)}% are native, born outside the US. ") else NULL
+    foreign_born <- if(origin_df()$percent[substr(origin_df()$label, 1, 7) == "Foreign"] > 0) glue("An estimated {round(origin_df()$percent[substr(origin_df()$label, 1, 7) == 'Foreign'], 1)}% of the county's Latinx were foreign born. ") else NULL
+
+   paste0(born_ia, born_other_state, native_born, foreign_born)
     
   })
   
-  output$bar_status <- renderPlot({
+  
+  status_df <- reactive({
     
-    # Relationship status
-    status <- ia_counties_tidy %>%
+    ia_counties_tidy %>%
       filter(variable_group == "B12002I" & county_name == input$county_choice2 & !variable_index %in% c("001", "002", "008")) %>%
       filter(percent != 0) %>%
       mutate(label = str_replace_all(label, ":", ", "),
              label = str_replace_all(label, "married \\(", "married \n\\("),
              gender = ifelse(substr(label, 1, 4) == "Male", "Male", "Female"),
              label = str_remove_all(label, "Male, |Female, "))
+  })
+  
+  output$bar_status <- renderPlot({
     
-    ggplot(status, aes(percent, label, fill = gender)) +
+    ggplot(status_df(), aes(percent, label, fill = gender)) +
       geom_bar(stat = "identity", width = 0.4, position = position_dodge()) +
       geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent+moe_pc), 
                     width = 0.05, color = "#4f515c", position = position_dodge(0.4)) +
       scale_fill_manual(values = c(hex_green, hex_purple)) +
       labs(y = "", 
-           x = glue("% of Latinx pop. in {unique(status$county_name)}"),
+           x = glue("% of Latinx pop. in {unique(status_df()$county_name)}"),
            fill = "") +
       theme_minimal() +
       scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
@@ -201,6 +199,21 @@ nu_county_server <- function(input, output, session) {
     
   })
   
+  output$bar_status_text <- renderText({ 
+    
+    # Max female status
+    max_fem <- max(status_df()$percent[status_df()$gender == "Female"])
+    max_fem_lab <- status_df()$label[status_df()$percent == max_fem]
+    
+    # Max male status
+    max_male <- max(status_df()$percent[status_df()$gender == "Male"])
+    max_male_lab <- status_df()$label[status_df()$percent == max_male]
+    
+    glue("The marital status with the largest share among Latinas ({round(max_fem, 1)}%) is '{str_to_lower(max_fem_lab)}'; amongst Latino males, the status with largest share ({round(max_male, 1)}%) is '{str_to_lower(max_male_lab)}'.")
+    
+  })
+  
+
   output$lollipop_language <- renderPlotly({
     
     # Language at home
@@ -225,7 +238,8 @@ nu_county_server <- function(input, output, session) {
     
   })
   
-  output$arcplot_heritage2 <- renderPlot({
+
+  heritage_df <- reactive({
     
     ia_counties_tidy %>%
       filter(county_name == input$county_choice2 & variable_group == "B03001" & variable_index %in% c("003", "004", "005", "006", "008", "016", "027")) %>%
@@ -238,8 +252,15 @@ nu_county_server <- function(input, output, session) {
              ymin = lag(ymax),
              ymin = ifelse(is.na(ymin), 0, ymin),
              label = trimws(str_replace_all(label, "Hispanic or Latino:|:", ""))) %>%
-      mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1) %>%
-      ggplot() +
+      mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
+    
+    
+  })
+  
+  output$arcplot_heritage2 <- renderPlot({
+    
+    
+      ggplot(heritage_df()) +
       ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
       coord_fixed() +
       scale_fill_manual(values = c("#5E72E4",  "#172B4D","#EC603E", "#EA445B", "#63CF89", "#5DCEF0")) +
@@ -250,35 +271,49 @@ nu_county_server <- function(input, output, session) {
       guides(fill=guide_legend(nrow=2,byrow=TRUE))
     
   })
-  
-  output$arcplot2 <- renderPlot({
+ 
+  output$heritage_text <- renderText({
     
-    pc_latin <- ia_counties_tidy %>%
-      filter(county_name == input$county_choice2 & variable_group == "B03003" & variable_index != '001') %>%
-      mutate(ymax = cumsum(prop),
-             ymin = lag(ymax),
-             ymin = ifelse(is.na(ymin), 0, ymin),
-             label = as.factor(label)) %>%
-      mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
+    mexican <- if(heritage_df()$percent[heritage_df()$label == "Mexican"] > 0)  glue("{round(heritage_df()$percent[heritage_df()$label == 'Mexican'], 1)}%  identify as Mexican. ") else NULL
+    puerto_rican <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 3) == "Pue"] > 0)  glue("Another {round(heritage_df()$percent[substr(heritage_df()$label, 1, 3) == 'Pue'], 1)}% of the county's Latinx are Puerto Rican. ") else NULL
+    cuban <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == "Cuban"] > 0) glue("In contrast, {round(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == 'Cuban'], 1)}% Latinx in the county identify as Cuban. ") else NULL
+    central <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 7) == "Central"] > 0) glue("Of the rest of the Latinx in {input$county_choice2}, {round(heritage_df()$percent[substr(heritage_df()$label, 1, 7) == 'Central'], 1)}% are Central American. ") else NULL
+    south <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == "South"] > 0) glue("An estimated {round(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == 'South'], 1)}% of the county's Latinx are of South American descent. ") else NULL
     
-    # Arc chart for % of county that's Latino
-    pc_latin %>%
-      ggplot() +
-      ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
-      coord_fixed() +
-      scale_fill_manual(values = c("#5E72E4", "#172B4D")) +
-      scale_color_manual(values = c("#5E72E4", "#172B4D")) +
-      labs(color = "",
-           fill = "") +
-      arc_ggtheme
+    
+    paste0("The county's Latinx community hails from diverse heritages. ", mexican, puerto_rican, cuban, central, south)
     
   })
   
+  # output$arcplot2 <- renderPlot({
+  #   
+  #   pc_latin <- ia_counties_tidy %>%
+  #     filter(county_name == input$county_choice2 & variable_group == "B03003" & variable_index != '001') %>%
+  #     mutate(ymax = cumsum(prop),
+  #            ymin = lag(ymax),
+  #            ymin = ifelse(is.na(ymin), 0, ymin),
+  #            label = as.factor(label)) %>%
+  #     mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
+  #   
+  #   # Arc chart for % of county that's Latino
+  #   pc_latin %>%
+  #     ggplot() +
+  #     ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
+  #     coord_fixed() +
+  #     scale_fill_manual(values = c("#5E72E4", "#172B4D")) +
+  #     scale_color_manual(values = c("#5E72E4", "#172B4D")) +
+  #     labs(color = "",
+  #          fill = "") +
+  #     arc_ggtheme
+  #   
+  # })
+  
   # Card 2: Economics & Workforce--------------------------------------------------------
-  output$bar_gender_work <- renderPlot({
+  
+  gender_work_df <- reactive({
     
     # Employment rate by gender
-    gender_work <- ia_counties_tidy %>%
+    ia_counties_tidy %>%
       filter(variable_group == "B20005I" & county_name == input$county_choice2 & variable_index %in% c("005", "027", "028", "052", "074", "075") & percent > 0) %>%
       mutate(label = str_remove(label, ", year-round in the past 12 months"),
              label = str_replace_all(label, "s:", "s"),
@@ -286,14 +321,18 @@ nu_county_server <- function(input, output, session) {
              gender = ifelse(substr(label, 1, 4) == "Male", "Male", "Female"),
              label = str_remove_all(label, "Male, |Female, "),
              label = str_replace_all(label, ",", ", \n"))
+
+  })
+  
+  output$bar_gender_work <- renderPlot({
     
-    ggplot(gender_work, aes(percent, label, fill = gender)) +
-      geom_bar(stat = "identity", width = 0.4, position=position_dodge()) +
-      geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent+moe_pc), 
+    ggplot(gender_work_df(), aes(percent, label, fill = gender)) +
+      geom_bar(stat = "identity", width = 0.4, position = position_dodge()) +
+      geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent + moe_pc), 
                     width = 0.1, color = "#4f515c", position = position_dodge(0.4)) +
       scale_fill_manual(values = c(hex_pink, hex_purple)) +
       labs(y = "", 
-           x = glue("% of Latinx pop. in {unique(gender_work$county_name)}")) +
+           x = glue("% of Latinx pop. in {unique(gender_work_df()$county_name)}")) +
       labs(fill = "") +
       theme_minimal() +
       scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
@@ -301,10 +340,26 @@ nu_county_server <- function(input, output, session) {
     
   })
   
-  output$arc_homeownership <- renderPlot({
+    
+  output$gender_work_text <- renderText({
+    
+    # Max female status
+    max_fem <- max(gender_work_df()$percent[gender_work_df()$gender == "Female"])
+    max_fem_lab <- gender_work_df()$label[gender_work_df()$percent == max_fem]
+    
+    # Max male status
+    max_male <- max(gender_work_df()$percent[gender_work_df()$gender == "Male"])
+    max_male_lab <- gender_work_df()$label[gender_work_df()$percent == max_male]
+    
+    glue("The employment status with the largest share among Latinas ({round(max_fem, 1)}%) is '{str_to_lower(max_fem_lab)}'; amongst Latino males, the status with largest share ({round(max_male, 1)}%) is '{str_to_lower(max_male_lab)}'.")
+    
+    
+  })
+  
+  tenure_df <- reactive({
     
     # Homeownership
-    tenure <- ia_counties_tidy %>%
+    ia_counties_tidy %>%
       filter(variable_group == "B25003I" & county_name == input$county_choice2 & variable_index != "001") %>%
       mutate(ymax = cumsum(prop),
              ymin = lag(ymax),
@@ -312,7 +367,11 @@ nu_county_server <- function(input, output, session) {
              label = as.factor(label)) %>%
       mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
     
-    tenure %>%
+  })
+  
+  output$arc_homeownership <- renderPlot({
+    
+    tenure_df() %>%
       ggplot() +
       ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
       coord_fixed() +
@@ -324,9 +383,18 @@ nu_county_server <- function(input, output, session) {
     
   })
   
-  # Lollipop chart of means of transportation to work
+
+  output$homeownership_text <- renderText({
+    
+    owners <- round(tenure_df()$percent[substr(tenure_df()$label, 1, 5) == 'Owner'], 1)
+    renters <- 100-owners
+    
+    glue("Tenure in the county is split between homeownership and renter-ship. {owners}% in the county are home-owning, while the other {renters}% rent a dwelling.")
+    
+    
+  })
   
-  output$chicklet_poverty2 <- renderPlot({
+  poverty_df <- reactive({
     
     ia_counties_tidy %>% 
       filter(county_name == input$county_choice2 & variable_group == "B17020I") %>%
@@ -337,7 +405,16 @@ nu_county_server <- function(input, output, session) {
       group_by(poverty_group) %>%
       summarize(percent = sum(percent)) %>%
       ungroup() %>%
-      filter(poverty_group != "Other" & percent > 0) %>%
+      filter(poverty_group != "Other" & percent > 0)
+    
+    
+  })
+  
+  # Lollipop chart of means of transportation to work
+  
+  output$chicklet_poverty2 <- renderPlot({
+    
+    poverty_df() %>%
       ggplot(aes(poverty_group, percent)) +
       geom_bar(stat = "identity", width = 0.1, fill = "#5E72E4", color = "#5E72E4") +
       coord_flip() +
@@ -349,6 +426,19 @@ nu_county_server <- function(input, output, session) {
     
   })
   
+
+  output$poverty_text <- renderText({
+    
+    
+    above <- if("At or above poverty" %in% poverty_df()$poverty_group)  glue("{round(poverty_df()$percent[substr(poverty_df()$poverty_group, 1, 2) == 'At'], 1)}% of the county's Latinx live at or above the federal poverty level. ") else NULL
+    below_59_under <- if("Below poverty, \naged 59 & under" %in% poverty_df()$poverty_group)  glue("In contrast, {round(poverty_df()$percent[substr(poverty_df()$poverty_group, 22, 23) == '59'], 1)}% live below federal poverty level and are under the age of 60. ") else NULL
+    below_60_over <- if("Below poverty, aged 60+" %in% poverty_df()$poverty_group) glue("Those over 60 and living below poverty form the remaining {round(poverty_df()$percent[substr(poverty_df()$poverty_group, 21, 22) == '60'], 1)}%. ") else NULL
+
+    paste0(above, below_59_under, below_60_over)
+    
+  })
+  
+    
   output$lollipop_transportation2 <- renderPlotly({
     
     # Means of transportation
@@ -370,28 +460,7 @@ nu_county_server <- function(input, output, session) {
                               font = list(family = "Karla", color = "white")))
     
   })
-  
-  output$chicklet_insurance2 <- renderPlot({
-    
-    insurance <- ia_counties_tidy %>%
-      filter(county_name == input$county_choice2 & variable_group == "C27001I" & variable_index %in% c("003", "004", "006", "007", "009", "010")) %>%
-      separate(label, into = c("age_group", "coverage_category"), sep = ":") %>%
-      mutate(age_group = str_squish(str_replace_all(age_group, "years", "")),
-             age_group = ifelse(age_group == "65 and over", "65+", age_group),
-             coverage_category = ifelse(coverage_category == "With health insurance coverage", "coverage", "no coverage"),
-             label = paste0(age_group, ": ", coverage_category))
-    
-    ggplot(insurance, aes(label, percent)) +
-      geom_chicklet(stat = "identity", width = 0.3, fill = "#63CF89") +
-      coord_flip() +
-      labs(y = "% of county's Latinx pop.",
-           x = "Age x health insurance") +
-      theme(panel.background = element_rect(fill = "transparent")) +
-      theme_minimal() +
-      scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
-      project_ggtheme
-    
-  })
+ 
   
   # Card 3: Education--------------------------------------------------------
   # Educational attainment
@@ -423,10 +492,11 @@ nu_county_server <- function(input, output, session) {
     
   })
   
-  output$arc_disciplines <- renderPlot({
+
+  disciplines_df <- reactive({
     
     # Disciplines in school
-    disciplines <- ia_counties_tidy %>%
+    ia_counties_tidy %>%
       filter(variable_group == "C15010I" & county_name == input$county_choice2 & !(variable_index %in% c("001")))  %>%
       mutate(ymax = cumsum(prop),
              ymin = lag(ymax),
@@ -434,7 +504,11 @@ nu_county_server <- function(input, output, session) {
              label = as.factor(label)) %>%
       mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
     
-    disciplines %>%
+  })
+  
+  output$arc_disciplines <- renderPlot({
+    
+    disciplines_df() %>%
       ggplot() +
       ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
       coord_fixed() +
@@ -447,6 +521,19 @@ nu_county_server <- function(input, output, session) {
     
   })
   
+  output$disciplines_text <- renderText({
+    
+    stem <- if(disciplines_df()$percent[disciplines_df()$label == "Science and Engineering"] > 0)  glue("{round(disciplines_df()$percent[disciplines_df()$label == 'Science and Engineering'], 1)}%  of Latinx college students are currently majoring in a STEM field. ") else NULL
+    business <- if(disciplines_df()$percent[substr(disciplines_df()$label, 1, 3) == "Bus"] > 0)  glue("Another {round(disciplines_df()$percent[substr(disciplines_df()$label, 1, 3) == 'Bus'], 1)}% of those Latinx students have selected Business as their major. ") else NULL
+    education <- if(disciplines_df()$percent[substr(disciplines_df()$label, 1, 3) == "Edu"] > 0) glue("An estimated {round(disciplines_df()$percent[substr(disciplines_df()$label, 1, 3) == 'Edu'], 1)}% of the county's Latinx students are expecting to graduate with an Education degree. ") else NULL
+    arts <- if(disciplines_df()$percent[substr(disciplines_df()$label, 1, 4) == "Arts"] > 0) glue("{round(disciplines_df()$percent[substr(disciplines_df()$label, 1, 4) == 'Arts'], 1)}% are currently pursuing degrees in Arts, Humanities and related disciplines. ") else NULL
+    # south <- if(disciplines_df()$percent[substr(disciplines_df()$label, 1, 5) == "South"] > 0) glue("An estimated {round(disciplines_df()$percent[substr(disciplines_df()$label, 1, 5) == 'South'], 1)}% of the county's Latinx are of South American descent. ") else NULL
+    
+    
+    paste0(stem, business, education, arts)
+    
+  })
+
   output$bar_computer <- renderPlotly({
     
     # Presence of a computer/type of internet
@@ -477,24 +564,31 @@ nu_county_server <- function(input, output, session) {
     
   })
   
-  output$arc_enrolled <- renderPlot({
+
+  enrollment_df <- reactive({
     
     # Enrolled in school
-    school_enrollment <- ia_counties_tidy %>%
+    
+    ia_counties_tidy %>%
       filter(variable_group == "B14007I" & county_name == input$county_choice2 & !(variable_index %in% c("001", "002"))) %>%
       mutate(label = str_remove(label, "Enrolled in school:"),
              label = str_replace(label, "Enrolled in college", "College"),
              label = ifelse(substr(label, 1, 2) == "En", "Pre-k through 12th", label)) %>%
       group_by(label) %>%
-      summarize(prop = sum(prop)) %>%
+      summarize(prop = sum(prop),
+                percent = sum(percent)) %>%
       ungroup() %>%
       mutate(ymax = cumsum(prop),
              ymin = lag(ymax),
              ymin = ifelse(is.na(ymin), 0, ymin),
              label = as.factor(label)) %>%
       mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
+
+  })
+  
+  output$arc_enrolled <- renderPlot({
     
-    school_enrollment %>%
+    enrollment_df() %>%
       ggplot() +
       ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
       coord_fixed() +
@@ -507,6 +601,59 @@ nu_county_server <- function(input, output, session) {
     
   })
   
+  output$enrollment_text <- renderText({
+    
+    college <- if(enrollment_df()$percent[substr(enrollment_df()$label, 1, 7) == "College"] > 0)  glue("{round(enrollment_df()$percent[substr(enrollment_df()$label, 1, 7) == 'College'], 1)}%  of the county's Latinx are in college degree program. ") else NULL
+    grad <- if(enrollment_df()$percent[substr(enrollment_df()$label, 1,4) == "Grad"] > 0)  glue("Meanwhile, {round(enrollment_df()$percent[substr(enrollment_df()$label, 1, 4) == 'Grad'], 1)}% are in graduate or professional school. ") else NULL
+    not_enrolled <- if(enrollment_df()$percent[substr(enrollment_df()$label, 1, 3) == "Not"] > 0) glue("An estimated {round(enrollment_df()$percent[substr(enrollment_df()$label, 1, 3) == 'Not'], 1)}% are not enrolled in school. ") else NULL
+    prek_12 <- if(enrollment_df()$percent[substr(enrollment_df()$label, 1, 4) == "Pre-"] > 0) glue("{round(enrollment_df()$percent[substr(enrollment_df()$label, 1, 4) == 'Pre-'], 1)}% are in preschool through grade 12. ") else NULL
+
+    paste0(college, grad, not_enrolled, prek_12)
+    
+  })
+  
+  #-------Card 4: Health
+  
+  insurance_df <- reactive({
+    
+    ia_counties_tidy %>%
+      filter(county_name == input$county_choice2 & variable_group == "C27001I" & variable_index %in% c("003", "004", "006", "007", "009", "010")) %>%
+      separate(label, into = c("age_group", "coverage_category"), sep = ":") %>%
+      mutate(age_group = str_squish(str_replace_all(age_group, "years", "")),
+             age_group = ifelse(age_group == "65 and over", "65+", age_group),
+             coverage_category = ifelse(coverage_category == "With health insurance coverage", "coverage", "no coverage"),
+             label = paste0(age_group, ": ", coverage_category))
+    
+  })
+  
+  output$chicklet_insurance2 <- renderPlot({
+    
+    ggplot(insurance_df(), aes(label, percent)) +
+      geom_chicklet(stat = "identity", width = 0.3, fill = "#63CF89") +
+      coord_flip() +
+      labs(y = "% of county's Latinx pop.",
+           x = "Age x health insurance") +
+      theme(panel.background = element_rect(fill = "transparent")) +
+      theme_minimal() +
+      scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+      project_ggtheme
+    
+  })
+  
+  output$insurance_text <- renderText({
+    
+    max_cov <- max(insurance_df()$percent[insurance_df()$coverage_category == "coverage"])
+    max_cov_group <- insurance_df()$age_group[insurance_df()$percent == max_cov]
+    
+    min_cov <- max(insurance_df()$percent[insurance_df()$coverage_category == "no coverage"])
+    min_cov_group <- insurance_df()$age_group[insurance_df()$percent == min_cov]
+    
+    glue("Having health insurance provides support for necessary medical care in both planned and unplanned circumstances. Amongst the Latinx community in the county, {round(max_cov, 1)}% are in the {max_cov_group} age group and have coverage. Conversely, the {min_cov_group} age group represent the largest group with no coverage ({round(min_cov, 1)}%).")
+    
+    
+  })
+  
+    
   dataset_download <- reactive({
     
     ia_counties_tidy %>%
@@ -519,6 +666,9 @@ nu_county_server <- function(input, output, session) {
       select(-c(denom, prop, percent, denom_moe, moe_pc, county_name))
   })
   
+
+  #---------------Data download accordion
+  
   output$download_data <- downloadHandler(
     filename = function() {
       paste(paste(input$dataset, collapse = ", "), " ", Sys.Date(), ".csv", sep = "")
@@ -527,7 +677,6 @@ nu_county_server <- function(input, output, session) {
       write_csv(dataset_download(), file)
     }
   )
-  
-  
+
   #---------------------End Tab 2 Alt A-----------------------
 }

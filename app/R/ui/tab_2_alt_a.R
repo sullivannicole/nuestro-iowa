@@ -112,11 +112,7 @@ tab_2_alt_a <- argonTabItem(
                  argonColumn(
                    div(style = "height: 85px;"), # spacer div
                    h3("Marital status"),
-                   "Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.")),
+                   textOutput("bar_status_text"))),
         
         # Language spoken at home lollipop
         argonRow(argonColumn(width = 8,
@@ -124,25 +120,19 @@ tab_2_alt_a <- argonTabItem(
                  argonColumn(
                    div(style = "height: 85px;"), # spacer div
                    h3("Language spoken at home"),
-                   "Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.")),
+                        "English proficiency levels vary amongst
+                        the county's Latinx community. While
+                        some households speak predominantly English
+                        at home, other households communicate wholesale
+                        en español. Hover over the graph to see the
+                        breakdowns.")),
         
         # Arcplot of heritage of county's Latinx
         argonRow(argonColumn(width = 8,
                              plotOutput("arcplot_heritage2")),
                  argonColumn(br(),
-                             br(),
-                             br(),
-                             br(),
                              h3("Ancestral origin"),
-                             "Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.")),
+                             textOutput("heritage_text"))),
         
         # Row 4: arcplot showing % of county that's Latinx - not necessary anymore since it's in header
         #   argonRow(argonColumn(width = 8,
@@ -170,39 +160,26 @@ tab_2_alt_a <- argonTabItem(
         argonRow(argonColumn(width = 8,
                              plotOutput("bar_gender_work")),
                  argonColumn(div(style = "height: 85px;"),
-                             h3("Work experience by sex"),
-                             "Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.")),
+                             h3("Employment status by sex"),
+                             textOutput("gender_work_text"))),
         argonRow(argonColumn(width = 8,
                              plotOutput("arc_homeownership")),
                  argonColumn(div(style = "height: 85px;"),
                              h3("Homeownership"),
-                             "Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.")),
+                             textOutput("homeownership_text"))),
         argonRow(argonColumn(width = 8,
                              plotlyOutput("lollipop_transportation2")),
-                 argonColumn(div(style = "height: 85px;"),
+                 argonColumn(div(style = "height: 50px;"),
                              h3("Means of transportation to work"),
-                             "Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.")),
+                             "Having proper means of transportation to work is
+                             integral to maintaining employment. Hover over the
+                             graph at level to explore the predominant means
+                             of transportation to work for the Latinx pop.")),
         argonRow(argonColumn(width = 8,
                              plotOutput("chicklet_poverty2")),
                  argonColumn(div(style = "height: 85px;"),
                              h3("Poverty status by age group"),
-                             "Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text.
-                              Placeholder text. Placeholder text."))
+                             textOutput("poverty_text")))
         
       ),
       
@@ -217,40 +194,30 @@ tab_2_alt_a <- argonTabItem(
         width = 12,
         argonRow(argonColumn(width = 8,
                              plotlyOutput("lollipop_education")),
-                 argonColumn(div(style = "height: 100px;"),
+                 argonColumn(div(style = "height: 120px;"),
                              h3("Educational Attainment"),
-                             "Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.")),
+                             "Educational attainment differ amongst Latinas
+                             and Latino males in the county. Hover over
+                             the graph to learn more.")),
         argonRow(argonColumn(width = 8,
                              plotOutput("arc_disciplines")),
-                 argonColumn(div(style = "height: 85px;"),
+                 argonColumn(div(style = "height: 55px;"),
                              h3("Disciplines of Bachelor's degrees"),
-                             "Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.")),
+                             textOutput("disciplines_text"))),
         argonRow(argonColumn(width = 8,
                              plotlyOutput("bar_computer")),
                  argonColumn(div(style = "height: 85px;"),
                              h3("Presence of a computer/internet in the home"),
-                             "Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.")),
+                             "Internet in the home and presence of a computer
+                             has become increasingly central to completing
+                             assignments (for K-12 family members), as well as
+                             excelling at work. Hover over the plot to explore
+                             the data.")),
         argonRow(argonColumn(width = 8,
                              plotOutput("arc_enrolled")),
-                 argonColumn(div(style = "height: 85px;"),
+                 argonColumn(div(style = "height: 100px;"),
                              h3("School enrollment status"),
-                             "Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text."))
+                             textOutput("enrollment_text")))
       ),
       
       # Card 4: Health--------------------------------------------------------
@@ -264,13 +231,9 @@ tab_2_alt_a <- argonTabItem(
         width = 12,
         argonRow(argonColumn(width = 8,
                              plotOutput("chicklet_insurance2")),
-                 argonColumn(div(style = "height: 85px;"),
+                 argonColumn(div(style = "height: 70px;"),
                              h3("Health insurance coverage"),
-                             "Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.
-                         Placeholder text. Placeholder text.")),
+                             textOutput("insurance_text"))),
         
         div(style = "height: 75px;") # Spacer div
         

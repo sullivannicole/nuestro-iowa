@@ -43,6 +43,7 @@ metro_county_list <- c("Warren", "Dallas", "Jasper", "Polk", "Guthrie", "Marshal
 
 
 
+
 #-------------------------
 # Pull from data.iowa.gov
 #-------------------------
