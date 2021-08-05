@@ -71,7 +71,7 @@ tab_4 <- argonTabItem(
               
               # Right column
               argonColumn(width = 8,
-                          plotOutput("earnings_disparities")
+                          plotlyOutput("earnings_disparities", height = 500)
               )
             ) # End row
   ), # End card
@@ -108,7 +108,7 @@ tab_4 <- argonTabItem(
               
               # Right column
               argonColumn(width = 8,
-                          plotOutput("poverty_disparities")
+                          plotlyOutput("poverty_disparities", height = 500)
               )
             ) # End row
   ), # End card
@@ -145,7 +145,7 @@ tab_4 <- argonTabItem(
               
               # Right column
               argonColumn(width = 8,
-                          plotOutput("homeowners_disparities")
+                          plotlyOutput("homeowners_disparities", height = 500)
               )
             ) # End row
   ), # End card
