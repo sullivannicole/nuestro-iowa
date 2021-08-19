@@ -105,7 +105,7 @@ nu_county_server <- function(input, output, session) {
   })
   
   
-  map_var2 <- reactive({if (input$unit2 == "as a %") "percent" else "estimate" })
+  map_var2 <- reactive({if (input$unit2 == "as a %") "percent" else "estimat" })
   map_symbol2 <- reactive ({ if (input$unit2 == "as a %") "%" else ""})
   
   # Interactive leaflet map
@@ -118,14 +118,14 @@ nu_county_server <- function(input, output, session) {
     
     # ia_counties_tidy %>%
     ia_metro_tidy %>%
-      filter(variable_group == "B03001" & variable_index == '003' & county_name == input$county_choice2) %>%
+      filter(vrbl_gr == "B03001" & vrbl_nd == '003' & cnty_nm == input$county_choice2) %>%
       rename(var = !!map_var2()) %>%
       leaflet() %>%
       addTiles(urlTemplate = argon_map, attribution = map_attr) %>%
       # addProviderTiles("CartoDB.Positron") %>%
       addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 0.9,
                   fillColor = ~pal(var),
-                  label = ~paste0(tract_desc, ": ", formatC(var, big.mark = ","), map_symbol2())) %>% # use NAME variable for county
+                  label = ~paste0(trct_ds, ": ", formatC(var, big.mark = ","), map_symbol2())) %>% # use NAME variable for county
       addLegend(pal = pal, values = ~var, opacity = 0.3)
   })
   
@@ -405,8 +405,7 @@ nu_county_server <- function(input, output, session) {
     
     
   })
-  
-  # Lollipop chart of means of transportation to work
+
   
   output$chicklet_poverty2 <- renderPlot({
     
@@ -623,7 +622,7 @@ nu_county_server <- function(input, output, session) {
   output$chicklet_insurance2 <- renderPlot({
     
     ggplot(insurance_df(), aes(label, percent)) +
-      geom_chicklet(stat = "identity", width = 0.3, fill = "#63CF89") +
+      geom_bar(stat = "identity", width = 0.3, fill = "#63CF89") +
       coord_flip() +
       labs(y = "% of county's Latinx pop.",
            x = "Age x health insurance") +
