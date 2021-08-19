@@ -12,6 +12,7 @@ library(tigris)
 library(janitor)
 library(readxl)
 library(lubridate)
+library(tidycensus)
 
 # options(tigris_use_cache = FALSE)
 

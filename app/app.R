@@ -14,7 +14,7 @@ library(scales)
 # Visualization
 library(plotly)
 # install.packages("ggchicklet", repos = "https://cinc.rud.is")
-library(ggchicklet)
+# library(ggchicklet)
 
 # Interactivity
 library(shiny)
@@ -23,6 +23,8 @@ library(argonDash)
 library(bs4Dash)
 library(shinyWidgets)
 library(shinydashboardPlus)
+
+# setwd("/Users/nicolesullivan/Documents/Professional/VandegriftHuting_consulting/nuestro-iowa/app")
 
 # Only needs to be done once to load fonts into www folder
 
@@ -41,7 +43,7 @@ library(shinydashboardPlus)
 # Set year of extracts to pull for app use
 #-------------------------------------------
 
-acs_yr <- 2019
+acs_yr <<- 2019
 
 #-------------------------------------------
 
@@ -52,13 +54,13 @@ acs_yr <- 2019
 # source("pull_data.R")
 
 # Aesthetics, data, constant UI elements
-# for (i in list.files("R/elements", pattern = "[.]R$")) {
-#   source(glue("R/elements/{i}", local = TRUE))
-# }
+for (i in list.files("R/elements", pattern = "[.]R$")) {
+  source(glue("R/elements/{i}", local = TRUE))
+}
 
-source('R/elements/aesthetics.R')
-source('R/elements/footer.R')
-source('R/elements/sidebar.R')
+# source('R/elements/aesthetics.R')
+# source('R/elements/footer.R')
+# source('R/elements/sidebar.R')
 
 # UI
 for (i in list.files("R/ui", pattern = "[.]R$")) {
