@@ -105,19 +105,30 @@ st_write(ia_county_shp, "ia_county_shp.shp")
 #------------------------
 
 # Some variables selected above were not disaggregated by race/ethnicity prior to 2017
-# Look at only variables that were tracked by race/ethnicity 10 years ago
+# So pull only all races, white alone, and Hispanic
+race_suffixes <- c('_', 'A', 'I')
+temporal_vars <- c(  
+  # Homeownership
+  "B25003",
+  
+  # Income
+  "B19013",
+  
+  # Employment
+  "B20005",
+  
+  # Poverty
+  # "B17020",
+  
+  # Educational attainment
+  "C15002"
+)
+
+temp_vars_list <- map(temporal_vars, function(x) glue("{x}{race_suffixes}")) %>% unlist()
 
 temporal_vars <- acs_vars %>%
   distinct(name) %>%
-  filter(substr(name, 1, 6) %in% c(
-    # Homeownership
-    "B25003",
-    
-    # Income
-    "B19013",
-    
-    # Employment
-    "B20005"))
+  filter(substr(name, 1, 7) %in% temp_vars_list)
 
 get_county_data <- function(year) {
   
@@ -133,9 +144,31 @@ get_county_data <- function(year) {
 
 ia_counties_temporal <- map_df(c(acs_yr-10):acs_yr, get_county_data)
 
+# Getting unhelpful error message when I try to pull poverty over time
+# looks to be due to how tidycensus pulls vars
+# so pull separately
+
+poverty_vars <- acs_vars %>%
+  filter(substr(name, 1, 7) %in% c("B17020_", "B17020A", "B17020I"))
+
+get_county_poverty <- function(year) {
+  
+  get_acs(geography = "county",
+          variables = poverty_vars$name,
+          state = "IA",
+          survey = "acs5",
+          year = year,
+          geometry = FALSE) %>%
+    mutate(year = year)
+  
+}
+
+ia_counties_pov_temporal <- map_df(c(acs_yr-6):acs_yr, get_county_poverty)
+
 # Select Latinx variables needed for dashboard
 # Rejoin data with descriptions & create percentages
-ia_counties_temporal_tidy <- ia_counties_temporal %>% 
+ia_counties_temporal_tidy <- ia_counties_temporal %>%
+  rbind(ia_counties_pov_temporal) %>%
   left_join(acs_vars, by = c("variable" = "name")) %>%
   mutate(variable2 = variable,
          GEOID = as.character(GEOID)) %>%
@@ -149,7 +182,7 @@ ia_counties_temporal_tidy <- ia_counties_temporal %>%
          county_name = str_replace_all(NAME, " County, Iowa", ""),
          label = str_replace_all(label, "Estimate!!|Total:|!!", ""))
 
-write_csv(ia_counties_temporal_tidy, glue("ia_counties_{acs_yr}_{acs_yr-10}.csv"))
+write_csv(ia_counties_temporal_tidy, glue("ia_counties_{acs_yr-10}_{acs_yr}.csv"))
 
 #-------------------------
 # State & county combined

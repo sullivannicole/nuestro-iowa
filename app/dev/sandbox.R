@@ -39,22 +39,37 @@ look_at_vars <- ia %>%
 metro_county_list <- c("Warren", "Dallas", "Jasper", "Polk", "Guthrie", "Marshall", "Madison")
 
 # New plots
-chek_enroll <- ia_counties_tidy %>%
-  filter(variable_group == "B14007I" & county_name == "Dallas" & !(variable_index %in% c("001", "002"))) %>%
-  mutate(label = str_remove(label, "Enrolled in school:"),
-         label = str_replace(label, "Enrolled in college", "College"),
-         label = ifelse(substr(label, 1, 2) == "En", "Pre-k through 12th", label)) %>%
-  group_by(label) %>%
-  summarize(prop = sum(prop),
-            percent = sum(percent)) %>%
-  ungroup() %>%
-  mutate(ymax = cumsum(prop),
-         ymin = lag(ymax),
-         ymin = ifelse(is.na(ymin), 0, ymin),
-         label = as.factor(label)) %>%
-  mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
 
-chek_enroll$percent[substr(chek_enroll$label, 1, 7) == "College"] > 0
+
+ins_df <- ia_counties_tidy %>%
+  filter(county_name == "Polk" & variable_group == "C27001I" & variable_index %in% c("003", "004", "006", "007", "009", "010")) %>%
+  separate(label, into = c("age_group", "coverage_category"), sep = ":") %>%
+  mutate(age_group = str_squish(str_replace_all(age_group, "years", "")),
+         age_group = ifelse(age_group == "65 and over", "65+", age_group),
+         coverage_category = ifelse(coverage_category == "With health insurance coverage", "coverage", "no coverage"),
+         label = paste0(age_group, ": ", coverage_category))
+
+ggplot(ins_df, aes(age_group, percent, fill = coverage_category)) +
+  geom_bar(stat = "identity", width = 0.3) +
+  scale_fill_manual(values = c(hex_green, hex_pink)) +
+  coord_flip() +
+  labs(y = "% of county's Latinx pop.",
+       x = "",
+       fill = "") +
+  theme(panel.background = element_rect(fill = "transparent")) +
+  theme_minimal() +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+  project_ggtheme
+
+income <- ia_counties_temporal_tidy %>%
+  filter(county_name == "Polk" & substr(variable, 1, 6) == "B19013") %>%
+  mutate(concept = str_replace(concept,"\\(IN 2019 INFLATION-ADJUSTED DOLLARS\\)", "")) %>%
+  separate(concept, into = c("concept", "race_ethnicity"), sep = "\\(", remove = F) %>%
+  mutate(race_ethnicity = str_trim(str_to_title(str_remove_all(race_ethnicity, "HOUSEHOLDER|\\)"))),
+         text = str_wrap(paste0(label, " in ", county_name, ": ", round(percent), "%")),
+         race_ethnicity = ifelse(is.na(race_ethnicity), "All races", race_ethnicity),
+         year = lubridate::ymd(year, truncated = 2L)) %>%
+  filter(race_ethnicity %in% c("White"))
 
 #-------------------------
 # Pull from data.iowa.gov

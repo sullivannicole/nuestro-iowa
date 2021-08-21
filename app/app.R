@@ -23,10 +23,12 @@ library(argonDash)
 library(bs4Dash)
 library(shinyWidgets)
 library(shinydashboardPlus)
+library(shinycssloaders)
+library(shinycustomloader)
 
 # setwd("/Users/nicolesullivan/Documents/Professional/VandegriftHuting_consulting/nuestro-iowa/app")
 
-# Only needs to be done once to load fonts into www folder
+# # Only needs to be done once to load fonts into www folder
 
 # setup_font(
 #   id = "karla",
@@ -53,24 +55,20 @@ acs_yr <<- 2019
 # Then change acs_yr in pull_data.R
 # source("pull_data.R")
 
-# Aesthetics, data, constant UI elements
-for (i in list.files("R/elements", pattern = "[.]R$")) {
-  source(glue("R/elements/{i}", local = TRUE))
-}
-
-# source('R/elements/aesthetics.R')
-# source('R/elements/footer.R')
-# source('R/elements/sidebar.R')
-
-# UI
-for (i in list.files("R/ui", pattern = "[.]R$")) {
-  source(glue("R/ui/{i}", local = TRUE))
-}
-
-# Server
-for (i in list.files("R/server", pattern = "[.]R$")) {
-  source(glue("R/server/{i}", local = TRUE))
-}
+# # Aesthetics, data, constant UI elements
+# for (i in list.files("R/elements", pattern = "[.]R$")) {
+#   source(glue("R/elements/{i}", local = TRUE))
+# }
+# 
+# # # UI
+# for (i in list.files("R/ui", pattern = "[.]R$")) {
+#   source(glue("R/ui/{i}", local = TRUE))
+# }
+# 
+# # # Server
+# for (i in list.files("R/server", pattern = "[.]R$")) {
+#   source(glue("R/server/{i}", local = TRUE))
+# }
 
 #--------------
 # Front-end

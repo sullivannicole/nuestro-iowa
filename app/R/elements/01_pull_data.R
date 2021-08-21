@@ -25,7 +25,7 @@ ia_counties_tidy <- read_csv(glue("ETL/data/ia_counties_{acs_yr}.csv"))
 # Over time - done separately for a small subset of variables
 # Many variables pulled for 2019 don't exist in years prior and so temporal pull error'ed out
 # So these two are done in separate pulls
-ia_counties_temporal_tidy <- read_csv(glue("ETL/data/ia_counties_{acs_yr}_{acs_yr-10}.csv"))
+ia_counties_temporal_tidy <- read_csv(glue("ETL/data/ia_counties_{acs_yr-10}_{acs_yr}.csv"))
 
 # Spatial data for aesthetic purposes
 ia_county_shp <- st_read("ETL/data/ia_county_shp.shp")
