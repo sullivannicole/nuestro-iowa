@@ -39,12 +39,12 @@ tab_3 <- argonTabItem(
     border_level = 0,
     width = 12,
     argonRow(argonColumn(width = 1),
-             argonColumn(width = 10, 
+             argonColumn(width = 10,
                          withLoader(plotlyOutput("time_homeownership"), loader = "loader1")),
              argonColumn(width = 1))
     
   ), # Close card 2
-  
+  # 
   argonCard(
     title = "Employment",
     hover_lift = FALSE,
@@ -53,23 +53,86 @@ tab_3 <- argonTabItem(
     hover_shadow = FALSE,
     border_level = 0,
     width = 12,
-
+    
     argonRow(div(style = "padding: 20px 0px 20px 50px",
                  h3("Males employed full-time in last 12 months"))),
     argonRow(argonColumn(width = 1),
-             argonColumn(width = 10, 
+             argonColumn(width = 10,
                          withLoader(plotlyOutput("time_employment_male"), loader = "loader1")),
              argonColumn(width = 1)),
     
     argonRow(div(style = "padding: 20px 0px 20px 50px",
                  h3("Females employed full-time in last 12 months"))),
     argonRow(argonColumn(width = 1),
-             argonColumn(width = 10, 
+             argonColumn(width = 10,
                          withLoader(plotlyOutput("time_employment_female"), loader = "loader1")),
+             argonColumn(width = 1)),
+    
+    
+    
+  ), # Close card 3
+  
+  argonCard(
+    title = "Poverty",
+    hover_lift = FALSE,
+    shadow = TRUE,
+    shadow_size = NULL,
+    hover_shadow = FALSE,
+    border_level = 0,
+    width = 12,
+    
+    argonRow(div(style = "padding: 20px 0px 20px 50px",
+                 h3("Living below federal poverty level"))),
+    argonRow(argonColumn(width = 1),
+             argonColumn(width = 10,
+                         withLoader(plotlyOutput("time_poverty"), loader = "loader1")),
              argonColumn(width = 1))
     
-  ) # Close card 3
+  ), # Closes card 4
+  
+  argonCard(
+    title = "Educational attainment",
+    hover_lift = FALSE,
+    shadow = TRUE,
+    shadow_size = NULL,
+    hover_shadow = FALSE,
+    border_level = 0,
+    width = 12,
+    
+    argonRow(div(style = "padding: 20px 0px 20px 50px",
+                 h3("Males 25 and over with Bachelor's degree or higher"))),
+    argonRow(argonColumn(width = 1),
+             argonColumn(width = 10,
+                         withLoader(plotlyOutput("bachelors_male_disparities"), loader = "loader1")),
+             argonColumn(width = 1)),
+    
+    argonRow(div(style = "padding: 20px 0px 20px 50px",
+                 h3("Females 25 and over with Bachelor's degree or higher"))),
+    argonRow(argonColumn(width = 1),
+             argonColumn(width = 10,
+                         withLoader(plotlyOutput("bachelors_female_disparities"), loader = "loader1")),
+             argonColumn(width = 1)),
+    
+    
+    
+  ), # Closes card 5
+  
+  argonCard(
+    title = "High school graduation rates",
+    hover_lift = FALSE,
+    shadow = TRUE,
+    shadow_size = NULL,
+    hover_shadow = FALSE,
+    border_level = 0,
+    width = 12,
+    
+    # argonRow(div(style = "padding: 20px 0px 20px 50px",
+    #              h3("Living below federal poverty level"))),
+    argonRow(argonColumn(width = 1),
+             argonColumn(width = 10,
+                         withLoader(plotlyOutput("hs_rates_disparities"), loader = "loader1")),
+             argonColumn(width = 1))
+    
+  ) # Closes card 6
   
 )
-
-

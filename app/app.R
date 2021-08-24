@@ -2,6 +2,7 @@
 library(glue)
 library(tidyverse)
 library(magrittr)
+library(lubridate)
 
 # Mapping
 library(leaflet)
@@ -49,11 +50,8 @@ acs_yr <<- 2019
 
 #-------------------------------------------
 
-# data - Uncomment when dashboard goes into production
-# If pulling a new year, change acs_yr in create_data_extracts.R and re-run script
-# New extracts will be saved in data folder
-# Then change acs_yr in pull_data.R
-# source("pull_data.R")
+# If pulling a new year, change acs_yr in ETL/run_ETL.R and re-run script
+# New extracts will be saved in data folder and available for pulling into app
 
 # # Aesthetics, data, constant UI elements
 # for (i in list.files("R/elements", pattern = "[.]R$")) {
@@ -76,7 +74,7 @@ acs_yr <<- 2019
 
 ui <- argonDashPage(
   title = "Argon Dashboard Nuestro IA",
-  author = "Al Exito Iowa",
+  author = "Latinx Iowa Project",
   description = "Argon Dash Nuestro IA",
   sidebar = argonSidebar,
   gfonts::use_font("karla", "www/css/karla.css"),
