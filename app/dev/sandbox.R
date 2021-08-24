@@ -40,6 +40,7 @@ metro_county_list <- c("Warren", "Dallas", "Jasper", "Polk", "Guthrie", "Marshal
 
 # New plots
 
+
 #-------------------------
 # Pull from data.iowa.gov
 #-------------------------
