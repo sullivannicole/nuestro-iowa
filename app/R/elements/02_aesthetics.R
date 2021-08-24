@@ -21,22 +21,23 @@ project_ggtheme <- theme(panel.background = element_blank(),
                          axis.title = element_text(family = "Karla", color = "#51535e", size = 15),
                          legend.position = "bottom",
                          legend.text = element_text(family = "Karla", color = "#51535e", size = 13),
-                         legend.key = element_rect(fill = NA))
+                         legend.key = element_rect(fill = NA, color = NA),
+                         legend.box.background = element_blank())
 
 time_ggtheme <- theme(panel.background = element_blank(),
                       axis.ticks.y = element_blank(),
                       panel.grid.minor = element_blank(),
                       panel.grid.major.y = element_blank(),
-                      axis.line.x = element_line(color = "#cacee6", size = 0.8),
-                      axis.ticks.x = element_line(color = "#cacee6", size = 0.8),
-                      panel.grid.major.x = element_line(color = "#ebeeff", size = 0.6),
+                      axis.line.x = element_line(color = "#cacee6", size = 1.2),
+                      axis.ticks.x = element_line(color = "#cacee6", size = 1.2),
+                      panel.grid.major.x = element_line(color = "#ebeeff", size = 1.2),
                       axis.text = element_text(family = "Karla", color = "#51535e", size = 14),
                       axis.title = element_text(family = "Karla", color = "#51535e", size = 15),
                       legend.position = "bottom",
                       legend.text = element_text(family = "Karla", color = "#51535e", size = 13),
                       legend.key = element_rect(fill = NA),
-                      strip.background = element_rect(fill = "#303657", color = "#303657"),
-                      strip.text = element_text(family = "Karla", color = "white", size = 14))
+                      strip.background = element_rect(fill = "#cacee6", color = "#cacee6"),
+                      strip.text = element_text(family = "Karla", color = hex_purple, size = 14, face = "bold"))
 
 arc_ggtheme <- theme(panel.background = element_rect(fill = NA),
                      axis.text = element_blank(),

@@ -35,8 +35,8 @@ tab_1_alt_a <- argonTabItem(
   # Row 1: info cards
   div(style = "margin-top: 550px !important;",
       argonRow(
-        argonCard(title = "Significant",
-                  icon = icon("users"),
+        argonCard(title = "Latinx Community Highlights",
+                  icon = icon("hands-helping"),#users
                   status = "warning",
                   width = 4,
                   shadow = TRUE,
@@ -44,25 +44,41 @@ tab_1_alt_a <- argonTabItem(
                   hover_shadow = TRUE,
                   hover_lift = TRUE,
                   center = TRUE,
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                  Phasellus metus ipsum, gravida auctor arcu id, volutpat volutpat orci. 
-                  Pellentesque dapibus dapibus risus. Vivamus elementum eros eget mauris vulputate tempus."
+                  div(HTML("• <b>1,544 Latinx businesses</b> generating <b>$159.6M</b> in annual revenue")),
+                  # br(),
+                  div(HTML("• <b>52K Latinx residents</b> in the metro, which will more than double by 2050 and drive overall metro pop. growth")),
+                  # br(),
+                  div(HTML("• <b>22K Latinx workers</b> collectively earning <b>$1B in annual income</b>, contributing significantly to the overall central IA economy")),
+                  # br(),
+                  "• Latinx community turned around over a decade of pop. decline in Marshall County"
         ),
-        argonCard(title = "Entrepeneurial",
-                  icon = icon("hands-helping"),
+        argonCard(title = "Disparities (compared with Whites)",
+                  icon = icon("users"),
                   width = 4,
                   center = TRUE,
                   shadow = TRUE,
                   border_level = 2,
                   hover_shadow = TRUE,
                   hover_lift = TRUE,
-                  "In hac habitasse platea dictumst. Pellentesque vel risus sem. 
-                  Etiam vulputate, erat nec ornare laoreet, ante enim hendrerit orci, eget congue mauris turpis in nibh. 
-                  Nullam metus felis, hendrerit eget orci eu, suscipit vehicula ipsum. "
+                  div(HTML("• Average household income is <b>33% lower</b>")),
+                  # br(),
+                  div(HTML("• Poverty rates are <b>13 percentage points higher</b>")),
+                  # br(),
+                  div(HTML("• Homeownership rates are <b>24 percentage points lower</b>")),
+                  # br(),
+                  div(HTML("• <b>21 percentage point gap</b> in health insurance coverage for those aged 19-64")),
+                  # br(),
+                  div(HTML("• <b>25 percentage point gap</b> in Bachelor's degree or higher completion")),
+                  # br(),
+                  div(HTML("• <b>33 percentage point gap</b> in high school completion")),
+                  # br(),
+                  # "• Continued gap in high school graduation rates and gap in college readiness",
+                  # br(),
+                  # "• No or minimal disparities in homeownership, household income, or high school graduation rates in Marshall County"
         ),
         
-        argonCard(title = "Growing",
-                  icon = icon("chart-line"),
+        argonCard(title = "Root causes of disparities",
+                  icon = icon("key"),
                   status = "success",
                   width = 4,
                   center = TRUE,
@@ -70,9 +86,11 @@ tab_1_alt_a <- argonTabItem(
                   border_level = 2,
                   hover_shadow = TRUE,
                   hover_lift = TRUE,
-                  "Curabitur fermentum lacus in felis porttitor, vel blandit sapien vestibulum. Morbi felis sapien, rutrum sit amet tortor vitae, consequat lobortis nibh. 
-                  Nulla in enim turpis. 
-                  Curabitur suscipit nunc lorem, at tempus nulla suscipit semper."
+                  div(HTML("• <b>Eliminating education disparities</b> will largely close the income and poverty gap")),
+                  # br(),
+                  div(HTML("• <b>Eliminating income and education disparities</b> will mostly close the homeownership gap")),
+                  # br(),
+                  div(HTML("• Latinx households face <b>additional barriers</b> to homeownership"))
         )
         
       )), # End row 1
@@ -238,7 +256,7 @@ tab_1_alt_a <- argonTabItem(
   h3("Consultants"),
   argonRow(
     argonColumn(
-      width = 4,
+      width = 3,
       argonUser(
         title = "Ruby Herrera",
         subtitle = "Educator, DMP",
@@ -246,7 +264,7 @@ tab_1_alt_a <- argonTabItem(
       )
     ),
     argonColumn(
-      width = 4,
+      width = 3,
       argonUser(
         title = "Joel Huting",
         subtitle = "Co-Founder & Quantitative Lead, Vandegrift Huting Consultants",
@@ -254,11 +272,19 @@ tab_1_alt_a <- argonTabItem(
       )
     ),
     argonColumn(
-      width = 4,
+      width = 3,
       argonUser(
         title = "Darcie Vandegrift",
         subtitle = "Co-Founder & Qualitative Lead, Vandegrift Huting Consultants",
         src = "darcie_vandegrift.png"
+      )
+    ),
+    argonColumn(
+      width = 3,
+      argonUser(
+        title = "Nicole Sullivan",
+        subtitle = "Data Scientist, Vandegrift Huting Consultants",
+        src = "nicole_sullivan.png"
       )
     )
   ),

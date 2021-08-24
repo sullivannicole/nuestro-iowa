@@ -84,25 +84,44 @@ nu_county_server <- function(input, output, session) {
     
   })
   
-  output$overview <- renderText({
+  output$fast_facts <- renderText({
     
     median_age <- median_age_df()
     median_age_hisp <- median_age_hisp_df()
     hh_income <- hh_income_df()
     hh_income_hisp <- hh_income_hisp_df()
     
-    glue("The median age of the county's population in 2019 was {median_age$estimate[median_age$variable_index == '001']} years (± {median_age$moe[median_age$variable_index == '001']}).
-           For females, the median was {median_age$estimate[median_age$variable_index == '003']} years (± {median_age$moe[median_age$variable_index == '003']}), while for males, the median was 
-           {median_age$estimate[median_age$variable_index == '002']} years (± {median_age$moe[median_age$variable_index == '002']}). For the Latinx population, the median
-           age was {median_age_hisp$estimate[median_age_hisp$variable_index == '001']} years (± {median_age_hisp$moe[median_age$variable_index == '001']}). Latino males
-           had a median age of {median_age_hisp$estimate[median_age_hisp$variable_index == '002']} years (± {median_age_hisp$moe[median_age$variable_index == '002']}), while the median age for Latinas
-           alone was {median_age_hisp$estimate[median_age_hisp$variable_index == '003']} years (± {median_age_hisp$moe[median_age$variable_index == '003']}).
-           <br></br>
-           The median household income for the county in 2019 was ${format(hh_income$estimate, big.mark = ',')} (± ${format(hh_income$moe, big.mark = ',')}) in 2019-inflation-adjusted dollars.
-           For the Latinx population, the median household income in the same year was ${format(hh_income_hisp$estimate, big.mark = ',')} (± ${format(hh_income_hisp$moe, big.mark = ',')}).")
-    
+    glue("<b>Median age</b>
+         <li>Overall: <b>{median_age$estimate[median_age$variable_index == '001']} (± {median_age$moe[median_age$variable_index == '001']})</b></li>
+         <li>Latinx: <b>{median_age_hisp$estimate[median_age_hisp$variable_index == '001']} (± {median_age_hisp$moe[median_age$variable_index == '001']})</b></li>
+         <li>Latinos: <b>{median_age_hisp$estimate[median_age_hisp$variable_index == '002']} (± {median_age_hisp$moe[median_age$variable_index == '002']})</b></li>
+         <li>Latinas: <b>{median_age_hisp$estimate[median_age_hisp$variable_index == '003']} (± {median_age_hisp$moe[median_age$variable_index == '003']})</b></li>
+         <br>
+         <b>Median income</b>
+         <li>Overall: <b>${format(hh_income$estimate, big.mark = ',')} (± ${format(hh_income$moe, big.mark = ',')})</b></li>
+         <li>Latinx: <b>${format(hh_income_hisp$estimate, big.mark = ',')} (± ${format(hh_income_hisp$moe, big.mark = ',')})</b></li>")
     
   })
+  
+  # output$overview <- renderText({
+  #   
+  #   median_age <- median_age_df()
+  #   median_age_hisp <- median_age_hisp_df()
+  #   hh_income <- hh_income_df()
+  #   hh_income_hisp <- hh_income_hisp_df()
+  #   
+  #   glue("The median age of the county's population in 2019 was {median_age$estimate[median_age$variable_index == '001']} years (± {median_age$moe[median_age$variable_index == '001']}).
+  #          For females, the median was {median_age$estimate[median_age$variable_index == '003']} years (± {median_age$moe[median_age$variable_index == '003']}), while for males, the median was 
+  #          {median_age$estimate[median_age$variable_index == '002']} years (± {median_age$moe[median_age$variable_index == '002']}). For the Latinx population, the median
+  #          age was {median_age_hisp$estimate[median_age_hisp$variable_index == '001']} years (± {median_age_hisp$moe[median_age$variable_index == '001']}). Latino males
+  #          had a median age of {median_age_hisp$estimate[median_age_hisp$variable_index == '002']} years (± {median_age_hisp$moe[median_age$variable_index == '002']}), while the median age for Latinas
+  #          alone was {median_age_hisp$estimate[median_age_hisp$variable_index == '003']} years (± {median_age_hisp$moe[median_age$variable_index == '003']}).
+  #          <br></br>
+  #          The median household income for the county in 2019 was ${format(hh_income$estimate, big.mark = ',')} (± ${format(hh_income$moe, big.mark = ',')}) in 2019-inflation-adjusted dollars.
+  #          For the Latinx population, the median household income in the same year was ${format(hh_income_hisp$estimate, big.mark = ',')} (± ${format(hh_income_hisp$moe, big.mark = ',')}).")
+  #   
+  #   
+  # })
   
   
   map_var2 <- reactive({if (input$unit2 == "as a %") "percent" else "estimat" })
@@ -123,14 +142,17 @@ nu_county_server <- function(input, output, session) {
       leaflet() %>%
       addTiles(urlTemplate = argon_map, attribution = map_attr) %>%
       # addProviderTiles("CartoDB.Positron") %>%
-      addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 0.9,
+      addPolygons(stroke = FALSE,  
+                  fillOpacity = 0.15, 
+                  smoothFactor = 0.3,
                   fillColor = ~pal(var),
-                  label = ~paste0(trct_ds, ": ", formatC(var, big.mark = ","), map_symbol2())) %>% # use NAME variable for county
-      addLegend(pal = pal, values = ~var, opacity = 0.3)
+                  label = ~paste0("Latinx pop.: ", formatC(var, big.mark = ","), map_symbol2())) %>% # use NAME variable for county
+      addLegend(pal = pal, values = ~var, opacity = 0.3, title = "")
   })
   
   # Card 1: Demographics--------------------------------------------------------
   
+  # Birthplace arc
   origin_df <- reactive({
     
     ia_counties_tidy %>%
@@ -166,12 +188,12 @@ nu_county_server <- function(input, output, session) {
     born_other_state <- if(origin_df()$percent[substr(origin_df()$label, 9, 13) == "other"] > 0)  glue("Another {round(origin_df()$percent[substr(origin_df()$label, 9, 13) == 'other'], 1)}% of the county's Latinx Iowans were born in another state in the US. ") else NULL
     native_born <- if(origin_df()$percent[substr(origin_df()$label, 1, 6) == "Native"] > 0) glue("Of the rest of the Latinx in {input$county_choice2}, {round(origin_df()$percent[substr(origin_df()$label, 1, 6) == 'Native'], 1)}% are native, born outside the US. ") else NULL
     foreign_born <- if(origin_df()$percent[substr(origin_df()$label, 1, 7) == "Foreign"] > 0) glue("An estimated {round(origin_df()$percent[substr(origin_df()$label, 1, 7) == 'Foreign'], 1)}% of the county's Latinx were foreign born. ") else NULL
-
-   paste0(born_ia, born_other_state, native_born, foreign_born)
+    
+    paste0(born_ia, born_other_state, native_born, foreign_born)
     
   })
   
-  
+  # Marital status
   status_df <- reactive({
     
     ia_counties_tidy %>%
@@ -180,22 +202,29 @@ nu_county_server <- function(input, output, session) {
       mutate(label = str_replace_all(label, ":", ", "),
              label = str_replace_all(label, "married \\(", "married \n\\("),
              gender = ifelse(substr(label, 1, 4) == "Male", "Male", "Female"),
-             label = str_remove_all(label, "Male, |Female, "))
+             label = str_remove_all(label, "Male, |Female, "),
+             text = paste0(gender, ", ", label, ": ", round(percent, 1), "%"))
   })
   
-  output$bar_status <- renderPlot({
+  output$bar_status <- renderPlotly({
     
-    ggplot(status_df(), aes(percent, label, fill = gender)) +
+    status_plot <- ggplot(status_df(), aes(percent, label, fill = gender, text = text)) +
       geom_bar(stat = "identity", width = 0.4, position = position_dodge()) +
       geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent+moe_pc), 
                     width = 0.05, color = "#4f515c", position = position_dodge(0.4)) +
       scale_fill_manual(values = c(hex_green, hex_purple)) +
       labs(y = "", 
-           x = glue("% of Latinx pop. in {unique(status_df()$county_name)}"),
+           x = "", #glue("% of Latinx pop. in {unique(status_df()$county_name)}"),
            fill = "") +
       theme_minimal() +
       scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
       project_ggtheme
+    
+    ggplotly(status_plot, tooltip = "text") %>%
+      layout(font = list(family = "Karla")) %>%
+      style(hoverlabel = list(bgcolor = "#172B4D",
+                              bordercolor = "#172B4D",
+                              font = list(family = "Karla", color = "white"))) %>% config(displayModeBar = F)
     
   })
   
@@ -213,6 +242,7 @@ nu_county_server <- function(input, output, session) {
     
   })
   
+  # Language spoken at home
 
   output$lollipop_language <- renderPlotly({
     
@@ -224,7 +254,7 @@ nu_county_server <- function(input, output, session) {
       geom_segment(aes(x=label, xend=label, y=0, yend=percent), color=hex_purple, size = 0.8) +
       geom_point(aes(label, percent), color=hex_purple, size=3.5) +
       labs(y = "% of Latinx pop.",
-           x = "Language spoken at home \nby English proficiency\n") +
+           x = "") +
       coord_flip() +
       theme_minimal() +
       theme(panel.grid = element_blank(),
@@ -234,11 +264,12 @@ nu_county_server <- function(input, output, session) {
       layout(font = list(family = "Karla")) %>%
       style(hoverlabel = list(bgcolor = "#172B4D",
                               bordercolor = "#172B4D",
-                              font = list(family = "Karla", color = "white")))
+                              font = list(family = "Karla", color = "white"))) %>% config(displayModeBar = F)
     
   })
   
-
+                            
+  # Ancestral origin arc
   heritage_df <- reactive({
     
     ia_counties_tidy %>%
@@ -260,7 +291,7 @@ nu_county_server <- function(input, output, session) {
   output$arcplot_heritage2 <- renderPlot({
     
     
-      ggplot(heritage_df()) +
+    ggplot(heritage_df()) +
       ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
       coord_fixed() +
       scale_fill_manual(values = c("#5E72E4",  "#172B4D","#EC603E", "#EA445B", "#63CF89", "#5DCEF0")) +
@@ -320,13 +351,14 @@ nu_county_server <- function(input, output, session) {
              label = str_replace_all(label, ":", ", "),
              gender = ifelse(substr(label, 1, 4) == "Male", "Male", "Female"),
              label = str_remove_all(label, "Male, |Female, "),
-             label = str_replace_all(label, ",", ", \n"))
-
+             label = str_replace_all(label, ",", ", \n"),
+             text = paste0(gender, ", ", label, ": ", round(percent, 1)))
+    
   })
   
-  output$bar_gender_work <- renderPlot({
+  output$bar_gender_work <- renderPlotly({
     
-    ggplot(gender_work_df(), aes(percent, label, fill = gender)) +
+    gender_plot <- ggplot(gender_work_df(), aes(percent, label, fill = gender, text = text)) +
       geom_bar(stat = "identity", width = 0.4, position = position_dodge()) +
       geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent + moe_pc), 
                     width = 0.1, color = "#4f515c", position = position_dodge(0.4)) +
@@ -337,6 +369,13 @@ nu_county_server <- function(input, output, session) {
       theme_minimal() +
       scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
       project_ggtheme
+    
+    ggplotly(gender_plot, tooltip = "text") %>%
+      layout(font = list(family = "Karla")) %>%
+      style(hoverlabel = list(bgcolor = "#172B4D",
+                              bordercolor = "#172B4D",
+                              font = list(family = "Karla", color = "white"))) %>% 
+      config(displayModeBar = F)
     
   })
   
@@ -356,9 +395,9 @@ nu_county_server <- function(input, output, session) {
     
   })
   
+  # Homeownership
   tenure_df <- reactive({
     
-    # Homeownership
     ia_counties_tidy %>%
       filter(variable_group == "B25003I" & county_name == input$county_choice2 & variable_index != "001") %>%
       mutate(ymax = cumsum(prop),
@@ -394,50 +433,7 @@ nu_county_server <- function(input, output, session) {
     
   })
   
-  poverty_df <- reactive({
-    
-    ia_counties_tidy %>% 
-      filter(county_name == input$county_choice2 & variable_group == "B17020I") %>%
-      mutate(poverty_group = case_when(variable_index %in% c(glue("00{3:6}")) ~ "Below poverty, \naged 59 & under",
-                                       variable_index %in% c(glue("00{7:9}")) ~ "Below poverty, aged 60+",
-                                       variable_index == "010" ~ "At or above poverty",
-                                       TRUE ~ "Other")) %>%
-      group_by(poverty_group) %>%
-      summarize(percent = sum(percent)) %>%
-      ungroup() %>%
-      filter(poverty_group != "Other" & percent > 0)
-    
-    
-  })
-
-  
-  output$chicklet_poverty2 <- renderPlot({
-    
-    poverty_df() %>%
-      ggplot(aes(poverty_group, percent)) +
-      geom_bar(stat = "identity", width = 0.1, fill = "#5E72E4", color = "#5E72E4") +
-      coord_flip() +
-      labs(x = "",
-           y = "% of Latinx pop. in county") +
-      theme_minimal() +
-      scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
-      project_ggtheme
-    
-  })
-  
-
-  output$poverty_text <- renderText({
-    
-    
-    above <- if("At or above poverty" %in% poverty_df()$poverty_group)  glue("{round(poverty_df()$percent[substr(poverty_df()$poverty_group, 1, 2) == 'At'], 1)}% of the county's Latinx live at or above the federal poverty level. ") else NULL
-    below_59_under <- if("Below poverty, \naged 59 & under" %in% poverty_df()$poverty_group)  glue("In contrast, {round(poverty_df()$percent[substr(poverty_df()$poverty_group, 22, 23) == '59'], 1)}% live below federal poverty level and are under the age of 60. ") else NULL
-    below_60_over <- if("Below poverty, aged 60+" %in% poverty_df()$poverty_group) glue("Those over 60 and living below poverty form the remaining {round(poverty_df()$percent[substr(poverty_df()$poverty_group, 21, 22) == '60'], 1)}%. ") else NULL
-
-    paste0(above, below_59_under, below_60_over)
-    
-  })
-  
-    
+  # Means of transportation
   output$lollipop_transportation2 <- renderPlotly({
     
     # Means of transportation
@@ -456,7 +452,61 @@ nu_county_server <- function(input, output, session) {
       layout(font = list(family = "Karla")) %>%
       style(hoverlabel = list(bgcolor = "#172B4D",
                               bordercolor = "#172B4D",
-                              font = list(family = "Karla", color = "white")))
+                              font = list(family = "Karla", color = "white"))) %>% 
+      config(displayModeBar = F)
+    
+  })
+  
+  
+  # Poverty
+  poverty_df <- reactive({
+    
+    ia_counties_tidy %>% 
+      filter(county_name == input$county_choice2 & variable_group == "B17020I") %>%
+      mutate(poverty_group = case_when(variable_index %in% c(glue("00{3:6}")) ~ "Below poverty, \naged 59 & under",
+                                       variable_index %in% c(glue("00{7:9}")) ~ "Below poverty, aged 60+",
+                                       variable_index == "010" ~ "At or above poverty",
+                                       TRUE ~ "Other")) %>%
+      group_by(poverty_group) %>%
+      summarize(percent = sum(percent)) %>%
+      ungroup() %>%
+      filter(poverty_group != "Other" & percent > 0) %>%
+      mutate(text = paste0(poverty_group, ": ", round(percent, 1)))
+    
+    
+  })
+  
+  
+  output$chicklet_poverty2 <- renderPlotly({
+    
+    poverty_plot <- poverty_df() %>%
+      ggplot(aes(poverty_group, percent, text = text)) +
+      geom_bar(stat = "identity", width = 0.1, fill = "#5E72E4", color = "#5E72E4") +
+      coord_flip() +
+      labs(x = "",
+           y = "% of Latinx pop. in county") +
+      theme_minimal() +
+      scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+      project_ggtheme
+    
+    ggplotly(poverty_plot, tooltip = "text") %>%
+      layout(font = list(family = "Karla")) %>%
+      style(hoverlabel = list(bgcolor = "#172B4D",
+                              bordercolor = "#172B4D",
+                              font = list(family = "Karla", color = "white"))) %>% 
+      config(displayModeBar = F)
+    
+  })
+  
+
+  output$poverty_text <- renderText({
+    
+    
+    above <- if("At or above poverty" %in% poverty_df()$poverty_group)  glue("{round(poverty_df()$percent[substr(poverty_df()$poverty_group, 1, 2) == 'At'], 1)}% of the county's Latinx live at or above the federal poverty level. ") else NULL
+    below_59_under <- if("Below poverty, \naged 59 & under" %in% poverty_df()$poverty_group)  glue("In contrast, {round(poverty_df()$percent[substr(poverty_df()$poverty_group, 22, 23) == '59'], 1)}% live below federal poverty level and are under the age of 60. ") else NULL
+    below_60_over <- if("Below poverty, aged 60+" %in% poverty_df()$poverty_group) glue("Those over 60 and living below poverty form the remaining {round(poverty_df()$percent[substr(poverty_df()$poverty_group, 21, 22) == '60'], 1)}%. ") else NULL
+  
+    paste0(above, below_59_under, below_60_over)
     
   })
  
@@ -476,7 +526,7 @@ nu_county_server <- function(input, output, session) {
                  position = position_dodge(width = 0.3)) +
       scale_color_manual(values = c(hex_pink, hex_blue_dk)) +
       labs(y = "% of Latinx pop.",
-           x = "Educational attainment\n",
+           x = "",
            color = "") +
       coord_flip() +
       theme_minimal() +
@@ -487,14 +537,16 @@ nu_county_server <- function(input, output, session) {
       layout(font = list(family = "Karla")) %>%
       style(hoverlabel = list(bgcolor = "#172B4D",
                               bordercolor = "#172B4D",
-                              font = list(family = "Karla", color = "white")))
+                              font = list(family = "Karla", color = "white"))) %>% 
+      config(displayModeBar = F)
     
   })
   
-
+  # Disciplines in school
+                            
   disciplines_df <- reactive({
     
-    # Disciplines in school
+    
     ia_counties_tidy %>%
       filter(variable_group == "C15010I" & county_name == input$county_choice2 & !(variable_index %in% c("001")))  %>%
       mutate(ymax = cumsum(prop),
@@ -532,10 +584,12 @@ nu_county_server <- function(input, output, session) {
     paste0(stem, business, education, arts)
     
   })
+  
+  # Presence of a computer/type of internet
 
   output$bar_computer <- renderPlotly({
     
-    # Presence of a computer/type of internet
+    
     internet <- ia_counties_tidy %>%
       filter(variable_group == "B28009I" & county_name == input$county_choice2 & !(variable_index %in% c("001", "002"))) %>%
       mutate(label = str_remove_all(label, "Has a | subscription alone| subscription|With a |With "),
@@ -559,14 +613,15 @@ nu_county_server <- function(input, output, session) {
       layout(font = list(family = "Karla")) %>%
       style(hoverlabel = list(bgcolor = "#172B4D",
                               bordercolor = "#172B4D",
-                              font = list(family = "Karla", color = "white")))
+                              font = list(family = "Karla", color = "white"))) %>% 
+      config(displayModeBar = F)
     
   })
   
+  # School enrollment
 
   enrollment_df <- reactive({
     
-    # Enrolled in school
     
     ia_counties_tidy %>%
       filter(variable_group == "B14007I" & county_name == input$county_choice2 & !(variable_index %in% c("001", "002"))) %>%
@@ -606,7 +661,7 @@ nu_county_server <- function(input, output, session) {
     grad <- if(enrollment_df()$percent[substr(enrollment_df()$label, 1,4) == "Grad"] > 0)  glue("Meanwhile, {round(enrollment_df()$percent[substr(enrollment_df()$label, 1, 4) == 'Grad'], 1)}% are in graduate or professional school. ") else NULL
     not_enrolled <- if(enrollment_df()$percent[substr(enrollment_df()$label, 1, 3) == "Not"] > 0) glue("An estimated {round(enrollment_df()$percent[substr(enrollment_df()$label, 1, 3) == 'Not'], 1)}% are not enrolled in school. ") else NULL
     prek_12 <- if(enrollment_df()$percent[substr(enrollment_df()$label, 1, 4) == "Pre-"] > 0) glue("{round(enrollment_df()$percent[substr(enrollment_df()$label, 1, 4) == 'Pre-'], 1)}% are in preschool through grade 12. ") else NULL
-
+    
     paste0(college, grad, not_enrolled, prek_12)
     
   })
@@ -619,23 +674,33 @@ nu_county_server <- function(input, output, session) {
       filter(county_name == input$county_choice2 & variable_group == "C27001I" & variable_index %in% c("003", "004", "006", "007", "009", "010")) %>%
       separate(label, into = c("age_group", "coverage_category"), sep = ":") %>%
       mutate(age_group = str_squish(str_replace_all(age_group, "years", "")),
-             age_group = ifelse(age_group == "65 and over", "65+", age_group),
+             age_group = factor(ifelse(age_group == "65 and over", "65+", age_group), levels = c("65+", "19 to 64", "Under 19")),
              coverage_category = ifelse(coverage_category == "With health insurance coverage", "coverage", "no coverage"),
-             label = paste0(age_group, ": ", coverage_category))
+             label = paste0(age_group, ": ", coverage_category),
+             text = paste0("Ages ", age_group, " , ", coverage_category, ": ", round(percent, 1), "%"))
     
   })
   
-  output$chicklet_insurance2 <- renderPlot({
+  output$chicklet_insurance2 <- renderPlotly({
     
-    ggplot(insurance_df(), aes(label, percent)) +
-      geom_bar(stat = "identity", width = 0.3, fill = "#63CF89") +
+    ins_plot <- ggplot(insurance_df(), aes(age_group, percent, fill = coverage_category, text = text)) +
+      geom_bar(stat = "identity", width = 0.3) +
+      scale_fill_manual(values = c(hex_green, hex_pink)) +
       coord_flip() +
       labs(y = "% of county's Latinx pop.",
-           x = "Age x health insurance") +
+           x = "",
+           fill = "") +
       theme(panel.background = element_rect(fill = "transparent")) +
       theme_minimal() +
       scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
       project_ggtheme
+    
+    ggplotly(ins_plot, tooltip = "text") %>%
+      layout(font = list(family = "Karla")) %>%
+      style(hoverlabel = list(bgcolor = "#172B4D",
+                              bordercolor = "#172B4D",
+                              font = list(family = "Karla", color = "white"))) %>% 
+      config(displayModeBar = F)
     
   })
   

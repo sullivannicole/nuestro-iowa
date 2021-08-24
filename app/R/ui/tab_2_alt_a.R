@@ -16,10 +16,10 @@ tab_2_alt_a <- argonTabItem(
                            argonRow(pickerInput("county_choice2",
                                                 # width = "100%", # Make it span the entire column, resizing automatically
                                                 label = "",
-                                                choices = c( "Dallas","Guthrie", "Jasper", "Madison","Marshall", "Polk", "Warren"),
+                                                choices = c( "Dallas", "Jasper", "Marshall", "Polk", "Warren"),
                                                 # When ready to go to whole state, delete line above and un-comment line below:
                                                 # choices = county_names$county_name,
-                                                selected = "Dallas",
+                                                selected = "Polk",
                                                 multiple = FALSE,
                                                 options = list(create = FALSE,
                                                                style = "btn-default",
@@ -45,7 +45,7 @@ tab_2_alt_a <- argonTabItem(
                            br()
                ),
                argonColumn(width = 7,
-                           plotOutput("highlighted_map", height = "100%")))
+                           withLoader(plotOutput("highlighted_map", height = "100%"), loader = "loader1")))
   ),
   
   # Div wrap around cards under header to push down 550px
@@ -56,15 +56,19 @@ tab_2_alt_a <- argonTabItem(
       
       argonRow(argonColumn(width = 8,
                            argonH1("Overview", display = 3),
-                           htmlOutput("overview")),
-               # tags$ul(
-               #   tags$li(textOutput("median_age")),
-               #   tags$li(textOutput("median_male_age")),
-               #   tags$li(textOutput("median_female_age")))),
+                           # htmlOutput("overview")),
+                           "Placeholder text.
+                            Placeholder text.
+                            Placeholder text.
+                            Placeholder text."),
                
                argonCard(width = 4,
                          title = "Fast Facts",
-                         "Placeholder text. Placeholder text.")
+                         div(style = "display: inline-block; 
+                                      color: #172B4D; 
+                                      font-size: 15px; 
+                                      /*font-weight: bold;*/",
+                             withLoader(htmlOutput("fast_facts"), loader = "loader1")))
                
       ) # End row
       
@@ -79,7 +83,9 @@ tab_2_alt_a <- argonTabItem(
                                            c("percent of the tract pop." = "as a %",
                                              "raw number" = "as a raw num"),
                                            selected = "as a raw num"))),
-           div(class = "map-container", leafletOutput("map2"))),
+           div(class = "map-container", 
+               div(style = "margin-left: 50px;", h1("Latinx population in county")),
+               withLoader(leafletOutput("map2"), loader = "loader1"))),
   br(),
   br(),
   br(),
@@ -100,27 +106,27 @@ tab_2_alt_a <- argonTabItem(
         
         # Arcplot showing birthplace/origin
         argonRow(argonColumn(width = 8,
-                             plotOutput("arcplot_origin2")),
+                             withLoader(plotOutput("arcplot_origin2"), loader = "loader1")),
                  argonColumn(div(style = "height: 85px;"), # spacer div
                              h3("Birthplace"),
-                             textOutput("arcplot_origin_text2"))
+                             withLoader(textOutput("arcplot_origin_text2"), loader = "loader1"))
         ),
         
         # Relationship status bar
         argonRow(argonColumn(width = 8,
-                             plotOutput("bar_status")),
+                             withLoader(plotlyOutput("bar_status"), loader = "loader1")),
                  argonColumn(
                    div(style = "height: 85px;"), # spacer div
                    h3("Marital status"),
-                   textOutput("bar_status_text"))),
+                   withLoader(textOutput("bar_status_text"), loader = "loader1"))),
         
         # Language spoken at home lollipop
         argonRow(argonColumn(width = 8,
-                             plotlyOutput("lollipop_language")),
+                             withLoader(plotlyOutput("lollipop_language"), loader = "loader1")),
                  argonColumn(
                    div(style = "height: 85px;"), # spacer div
                    h3("Language spoken at home"),
-                        "English proficiency levels vary amongst
+                   "English proficiency levels vary amongst
                         the county's Latinx community. While
                         some households speak predominantly English
                         at home, other households communicate wholesale
@@ -129,10 +135,10 @@ tab_2_alt_a <- argonTabItem(
         
         # Arcplot of heritage of county's Latinx
         argonRow(argonColumn(width = 8,
-                             plotOutput("arcplot_heritage2")),
+                             withLoader(plotOutput("arcplot_heritage2"), loader = "loader1")),
                  argonColumn(br(),
                              h3("Ancestral origin"),
-                             textOutput("heritage_text"))),
+                             withLoader(textOutput("heritage_text"), loader = "loader1")))
         
         # Row 4: arcplot showing % of county that's Latinx - not necessary anymore since it's in header
         #   argonRow(argonColumn(width = 8,
@@ -158,17 +164,17 @@ tab_2_alt_a <- argonTabItem(
         border_level = 0,
         width = 12,
         argonRow(argonColumn(width = 8,
-                             plotOutput("bar_gender_work")),
+                             withLoader(plotlyOutput("bar_gender_work"), loader = "loader1")),
                  argonColumn(div(style = "height: 85px;"),
                              h3("Employment status by sex"),
-                             textOutput("gender_work_text"))),
+                             withLoader(textOutput("gender_work_text"), loader = "loader1"))),
         argonRow(argonColumn(width = 8,
-                             plotOutput("arc_homeownership")),
+                             withLoader(plotOutput("arc_homeownership"), loader = "loader1")),
                  argonColumn(div(style = "height: 85px;"),
                              h3("Homeownership"),
-                             textOutput("homeownership_text"))),
+                             withLoader(textOutput("homeownership_text"), loader = "loader1"))),
         argonRow(argonColumn(width = 8,
-                             plotlyOutput("lollipop_transportation2")),
+                             withLoader(plotlyOutput("lollipop_transportation2"), loader = "loader1")),
                  argonColumn(div(style = "height: 50px;"),
                              h3("Means of transportation to work"),
                              "Having proper means of transportation to work is
@@ -176,10 +182,10 @@ tab_2_alt_a <- argonTabItem(
                              graph at level to explore the predominant means
                              of transportation to work for the Latinx pop.")),
         argonRow(argonColumn(width = 8,
-                             plotOutput("chicklet_poverty2")),
+                             withLoader(plotlyOutput("chicklet_poverty2"), loader = "loader1")),
                  argonColumn(div(style = "height: 85px;"),
                              h3("Poverty status by age group"),
-                             textOutput("poverty_text")))
+                             withLoader(textOutput("poverty_text"), loader = "loader1")))
         
       ),
       
@@ -193,19 +199,19 @@ tab_2_alt_a <- argonTabItem(
         border_level = 0,
         width = 12,
         argonRow(argonColumn(width = 8,
-                             plotlyOutput("lollipop_education")),
+                             withLoader(plotlyOutput("lollipop_education"), loader = "loader1")),
                  argonColumn(div(style = "height: 120px;"),
                              h3("Educational Attainment"),
                              "Educational attainment differ amongst Latinas
                              and Latino males in the county. Hover over
                              the graph to learn more.")),
         argonRow(argonColumn(width = 8,
-                             plotOutput("arc_disciplines")),
+                             withLoader(plotOutput("arc_disciplines"), loader = "loader1")),
                  argonColumn(div(style = "height: 55px;"),
                              h3("Disciplines of Bachelor's degrees"),
-                             textOutput("disciplines_text"))),
+                             withLoader(textOutput("disciplines_text"), loader = "loader1"))),
         argonRow(argonColumn(width = 8,
-                             plotlyOutput("bar_computer")),
+                             withLoader(plotlyOutput("bar_computer"), loader = "loader1")),
                  argonColumn(div(style = "height: 85px;"),
                              h3("Presence of a computer/internet in the home"),
                              "Internet in the home and presence of a computer
@@ -214,10 +220,10 @@ tab_2_alt_a <- argonTabItem(
                              excelling at work. Hover over the plot to explore
                              the data.")),
         argonRow(argonColumn(width = 8,
-                             plotOutput("arc_enrolled")),
+                             withLoader(plotOutput("arc_enrolled"), loader = "loader1")),
                  argonColumn(div(style = "height: 100px;"),
                              h3("School enrollment status"),
-                             textOutput("enrollment_text")))
+                             withLoader(textOutput("enrollment_text"), loader = "loader1")))
       ),
       
       # Card 4: Health--------------------------------------------------------
@@ -230,10 +236,10 @@ tab_2_alt_a <- argonTabItem(
         border_level = 0,
         width = 12,
         argonRow(argonColumn(width = 8,
-                             plotOutput("chicklet_insurance2")),
+                             withLoader(plotlyOutput("chicklet_insurance2"), loader = "loader1")),
                  argonColumn(div(style = "height: 70px;"),
                              h3("Health insurance coverage"),
-                             textOutput("insurance_text"))),
+                             withLoader(textOutput("insurance_text"), loader = "loader1"))),
         
         div(style = "height: 75px;") # Spacer div
         
@@ -264,7 +270,7 @@ tab_2_alt_a <- argonTabItem(
                                                                column(width = 4,
                                                                       div(style = "height: 30px;"), # Spacer div
                                                                       downloadButton("download_data", "Download data")))))
-          ) # End download data div
+      ) # End download data div
   ) # End of div wrap of everything under map
   
 )

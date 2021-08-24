@@ -31,7 +31,7 @@ argonSidebar <- argonDashSidebar(
     ),
     argonSidebarItem(
       tabName = "tab_3",
-      "Nuestro community"
+      "Disparities"
     ),
     argonSidebarItem(
       tabName = "tab_4",
@@ -39,5 +39,5 @@ argonSidebar <- argonDashSidebar(
     )
   ),
   argonSidebarDivider(),
-  argonSidebarHeader(title = "Using 2019 Census Data") %>% argonTextColor(color = "white")
+  argonSidebarHeader(title = "Using American Community Survey Data") %>% argonTextColor(color = "white")
 )
