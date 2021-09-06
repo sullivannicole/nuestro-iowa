@@ -45,3 +45,21 @@ ia_metro_tidy <- st_read(glue("ETL/data/ia_metro_tracts_{acs_yr}.shp"))
 #-----------------
 
 disparities <- read_csv(glue("ETL/data/ia_disparities_{acs_yr}.csv"))
+
+#-------------------------------
+# Nuestro Future data
+#-------------------------------
+
+current_edu <- data.frame(level = c("lt_hs", "hs", "assoc", "bach"),
+                          n_latinx = c(10064, 13738, 1292, 3361))
+
+current_hhs <- data.frame(level = c("lt_hs", "hs", "assoc", "bach"),
+                          n_latinx = c(4327, 5961, 531, 1875),
+                          n_homeowners = c(1914, 2724, 335, 1147),
+                          n_undoc = c(2248, 1148, 29, 85),
+                          prob_of_home_lt_hs = 0.4255,
+                          prob_of_home_hs = 0.5119, 
+                          prob_of_home_assoc = 0.602, 
+                          prob_of_home_bach = 0.6447)
+
+race_ethnicity_vctr <- c("Latinx", "White")
