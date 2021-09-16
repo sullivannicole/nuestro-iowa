@@ -1,3 +1,34 @@
+# setwd("/Users/nicolesullivan/Documents/Professional/VandegriftHuting_consulting/nuestro-iowa/app")
+
+# # Only needs to be done once to load fonts into www folder
+
+# setup_font(
+#   id = "karla",
+#   output_dir = "www/"
+# )
+
+# If pulling a new year, change acs_yr in ETL/run_ETL.R and run run_ETL.R
+# New extracts will be saved in data folder and available for pulling into app
+
+# Set-up
+# 1. Place `eliminating_disparities.xlsx` for the year of choice in ETL/data
+# 2. Set year and Census key in ETL/run_ETL.R (done once per acs_yr)
+# 3. Run ETL/run_ETL.R (done once per acs_yr)
+# 4. Run app
+
+#-------------------------------------------
+# Set year of extracts to pull for app use
+#-------------------------------------------
+
+acs_yr <<- 2019
+
+#---------BEGIN APP----------------------------------
+
+
+#--------------
+# Imports
+#--------------
+
 # Wrangling
 library(glue)
 library(tidyverse)
@@ -15,7 +46,7 @@ library(scales)
 # Visualization
 library(plotly)
 # install.packages("ggchicklet", repos = "https://cinc.rud.is")
-# library(ggchicklet)
+# library(ggchicklet) # Can't be used on server bc not on CRAN
 
 # Interactivity
 library(shiny)
@@ -26,32 +57,6 @@ library(shinyWidgets)
 library(shinydashboardPlus)
 library(shinycssloaders)
 library(shinycustomloader)
-
-# setwd("/Users/nicolesullivan/Documents/Professional/VandegriftHuting_consulting/nuestro-iowa/app")
-
-# # Only needs to be done once to load fonts into www folder
-
-# setup_font(
-#   id = "karla",
-#   output_dir = "www/"
-# )
-
-# Set-up
-# 1. Place `eliminating_disparities.xlsx` for the year of choice in ETL/data
-# 2. Set year and Census key in ETL/run_ETL.R (done once per acs_yr)
-# 3. Run ETL/run_ETL.R (done once per acs_yr)
-# 4. Run app
-
-#-------------------------------------------
-# Set year of extracts to pull for app use
-#-------------------------------------------
-
-acs_yr <<- 2019
-
-#-------------------------------------------
-
-# If pulling a new year, change acs_yr in ETL/run_ETL.R and re-run script
-# New extracts will be saved in data folder and available for pulling into app
 
 # # Aesthetics, data, constant UI elements
 # for (i in list.files("R/elements", pattern = "[.]R$")) {
