@@ -46,18 +46,18 @@ nu_future_server <- function(input, output, session) {
     
     p <- data.frame(race_ethnicity = race_ethnicity_vctr,
                     income = c(per_capita_income, 39812)) %>%
-      mutate(text = paste0("$", per_capita_income)) %>%
+      mutate(text = paste0("$", formatC(round(income, 1), format="d", big.mark=","))) %>%
       ggplot(aes(race_ethnicity, income/1000, text = text)) +
       geom_bar(stat = "identity", width = 0.2, fill = hex_purple) +
       labs(#title = "Per Capita Income (in $1K)",
-           x = "",
-           y = "") +
+        x = "",
+        y = "") +
       scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
       project_ggtheme_y
     
     ggplotly(p, tooltip = "text") %>%
       layout(font = list(family = "Karla"),
-             height = 300
+             height = 200
       ) %>%
       style(hoverlabel = list(bordercolor = "#172B4D",
                               font = list(family = "Karla", color = "white"))) %>% 
@@ -123,6 +123,55 @@ nu_future_server <- function(input, output, session) {
                               font = list(family = "Karla", color = "white"))) %>% 
       config(displayModeBar = F)
     
+  })
+  
+  output$plot_homeownership <- renderPlotly({
+
+    homeowner_df <- current_hhs %>%
+      mutate(edu_after_invest = case_when(level == "lt_hs" ~ n_latinx - input$hs_grads,
+                                          level == "hs" ~ n_latinx + input$hs_grads - input$hs_to_assoc - input$hs_to_bach,
+                                          level == "assoc" ~ n_latinx + input$hs_to_assoc - input$assoc_to_bach,
+                                          level == "bach" ~ n_latinx + input$assoc_to_bach + input$hs_to_bach),
+             change_in_edu = n_latinx - edu_after_invest,
+             prob_of_home_bach_lt_hs =  prob_of_home_bach - prob_of_home_lt_hs,
+             change_in_home_given_edu = case_when(level == "lt_hs" ~ 0,
+                                                  level == "hs" ~ (prob_of_home_hs - prob_of_home_lt_hs) * input$hs_grads,
+                                                  level == "assoc" ~ (prob_of_home_assoc - prob_of_home_lt_hs) * input$hs_to_assoc,
+                                                  level == "bach" ~ (prob_of_home_bach_lt_hs * input$assoc_to_bach) + (prob_of_home_bach_lt_hs * input$hs_to_bach) ),
+             current_homeowners = sum(n_homeowners),
+             current_renters = sum(n_latinx - n_homeowners),
+             addtl_homeowners = sum(change_in_home_given_edu),
+             homeowners_with_investments = current_homeowners + addtl_homeowners,
+             renters_with_investments = sum(n_latinx) - homeowners_with_investments,
+             homeowners_base = homeowners_with_investments/(homeowners_with_investments + renters_with_investments),
+             homeownership_rate = ifelse(input$undoc_to_citizens, (homeowners_base + 0.087) * 100, homeowners_base * 100)) # 0.087 = undoc boost
+
+
+      homeowner_rate <- unique(homeowner_df$homeownership_rate)
+
+      p <- data.frame(race_ethnicity = race_ethnicity_vctr,
+                                 tenure = c(rep("Homeowners", 2), rep("Renters", 2)),
+                                 pc = c(homeowner_rate, 73.7, 100 - homeowner_rate, 26.3)) %>%
+        mutate(text = paste0(tenure, ": ", round(pc, 1), "%")) %>%
+        ggplot(aes(race_ethnicity, pc, fill = tenure, text = text)) +
+        geom_bar(stat = "identity", width = 0.2) +
+        scale_fill_manual(values = c(hex_blue_lt, hex_blue_dk)) +
+        scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+        labs(#title = "Homeownership rates",
+             x = "",
+             y = "",
+             fill = "") +
+        project_ggtheme_y +
+        theme(legend.position = "none")
+
+      ggplotly(p, tooltip = "text") %>%
+        layout(font = list(family = "Karla"),
+               height = 200
+        ) %>%
+        style(hoverlabel = list(bordercolor = "#172B4D",
+                                font = list(family = "Karla", color = "white"))) %>% 
+        config(displayModeBar = F)
+      
   })
   
   
