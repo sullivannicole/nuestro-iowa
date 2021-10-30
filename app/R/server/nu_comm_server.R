@@ -17,13 +17,16 @@ nu_comm_server <- function(input, output, session) {
       ggplot(aes(year, estimate/1000, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
       # geom_point(size = 1.4, shape = 21, stroke = 1.4, fill = "white") +
-      scale_color_manual(values = c(hex_grey, hex_pink, hex_purple, hex_green, hex_blue_lt, hex_orange, hex_blue_dk, "black", "green", "orange")) +
+      scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
+                         breaks = c("All races", "Latinx", "White Alone")) +
       labs(color = "",
-           y = str_wrap("Median household income (in thousands)", width = 25)) +
+           x = "",
+           y = "Median household income (in thousands)") +
       theme(legend.position = "bottom") +
       facet_wrap(~county_name, ncol = 2) +
       guides(color = guide_legend(ncol = 3,
                                   bycol = TRUE)) +
+      expand_limits(y = 0) +
       time_ggtheme
     
     ggplotly(income_plot, tooltip = "text") %>%
@@ -51,11 +54,14 @@ nu_comm_server <- function(input, output, session) {
       ggplot(aes(year, percent, color= race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
       # geom_point(size = 1.4, shape = 21, stroke = 1.4, fill = "white") +
-      scale_color_manual(values = c(hex_grey, hex_pink, hex_purple, hex_green, hex_blue_lt, hex_orange, hex_blue_dk)) +
+      scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
+                         breaks = c("All races", "Latinx", "White Alone")) +
       labs(color = "",
-           y = "") + #str_wrap("% of households in race/ethnicity that are home-owning", width = 35)) +
+           y = "",
+           x = "") + #str_wrap("% of households in race/ethnicity that are home-owning", width = 35)) +
       theme(legend.position = "bottom") +
       facet_wrap(~county_name, ncol = 2) +
+      expand_limits(y = 0) +
       guides(color = guide_legend(ncol = 3,
                                   bycol = TRUE)) +
       time_ggtheme
@@ -79,7 +85,7 @@ nu_comm_server <- function(input, output, session) {
              gender = word(label, start = 1, end = 1),
              denom = ifelse((gender == "Male" & variable_index == "002") | (gender == "Female" & variable_index == "049"), estimate, NA)) %>%
       group_by(variable_group, gender, county_name, year) %>%
-      fill(denom, .direction = "down") %>%
+      tidyr::fill(denom, .direction = "down") %>%
       ungroup() %>%
       mutate(prop = estimate/denom,
              percent = prop*100) %>%
@@ -102,14 +108,17 @@ nu_comm_server <- function(input, output, session) {
       ggplot(aes(year, percent, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
       # geom_point(size = 1.4, shape = 21, stroke = 1.4, fill = "white") +
-      scale_color_manual(values = c(hex_grey, hex_pink, hex_purple, hex_green, hex_blue_lt, hex_orange, hex_blue_dk)) +
+      scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
+                         breaks = c("All races", "Latinx", "White Alone")) +
       labs(color = "",
            # y = str_wrap("% of women that were employed full-time in the last 12 months", width = 35)) +
-           y = "") +
+           y = "",
+           x = "") +
       theme(legend.position = "bottom") +
       facet_wrap(~county_name, ncol = 2) +
       guides(color = guide_legend(ncol = 3,
                                   bycol = TRUE)) +
+      expand_limits(y = 0) +
       time_ggtheme
     
     ggplotly(employ_f_plot, tooltip = "text") %>%
@@ -128,13 +137,16 @@ nu_comm_server <- function(input, output, session) {
       filter(gender == "Male") %>%
       ggplot(aes(year, percent, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
-      scale_color_manual(values = c(hex_grey, hex_pink, hex_purple, hex_green, hex_blue_lt, hex_orange, hex_blue_dk)) +
+      scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
+                         breaks = c("All races", "Latinx", "White Alone")) +
       labs(color = "",
-           y = "") +
+           y = "",
+           x = "") +
       theme(legend.position = "bottom") +
       facet_wrap(~county_name, ncol = 2) +
       guides(color = guide_legend(ncol = 3,
                                   bycol = TRUE)) +
+      expand_limits(y = 0) +
       time_ggtheme
     
     ggplotly(employ_m_plot, tooltip = "text") %>%
@@ -162,13 +174,16 @@ nu_comm_server <- function(input, output, session) {
     poverty_disp_plot <- poverty_disp %>%
       ggplot(aes(year, percent, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
-      scale_color_manual(values = c(hex_grey, hex_pink, hex_purple)) +
+      scale_color_manual(values = c(hex_green, hex_purple),
+                         breaks = c("Latinx", "White Alone")) +
       labs(color = "",
-           y = "") +
+           y = "",
+           x = "") +
       theme(legend.position = "bottom") +
       facet_wrap(~county_name, ncol = 2) +
       guides(color = guide_legend(ncol = 3,
                                   bycol = TRUE)) +
+      expand_limits(y = 0) +
       time_ggtheme
     
     ggplotly(poverty_disp_plot, tooltip = "text") %>%
@@ -202,13 +217,16 @@ nu_comm_server <- function(input, output, session) {
       filter(variable_index == "006") %>%
       ggplot(aes(year, percent, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
-      scale_color_manual(values = c(hex_grey, hex_pink, hex_purple)) +
+      scale_color_manual(values = c(hex_green, hex_purple),
+                         breaks = c("Latinx", "White Alone")) +
       labs(color = "",
-           y = "") +
+           y = "",
+           x = "") +
       theme(legend.position = "bottom") +
       facet_wrap(~county_name, ncol = 2) +
       guides(color = guide_legend(ncol = 3,
                                   bycol = TRUE)) +
+      expand_limits(y = 0) +
       time_ggtheme
     
     ggplotly(bachelors_m_plot, tooltip = "text") %>%
@@ -228,13 +246,16 @@ nu_comm_server <- function(input, output, session) {
       filter(variable_index == "011") %>%
       ggplot(aes(year, percent, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
-      scale_color_manual(values = c(hex_grey, hex_pink, hex_purple)) +
+      scale_color_manual(values = c(hex_green, hex_purple),
+                         breaks = c("Latinx", "White Alone")) +
       labs(color = "",
-           y = "") +
+           y = "",
+           x = "") +
       theme(legend.position = "bottom") +
       facet_wrap(~county_name, ncol = 2) +
       guides(color = guide_legend(ncol = 3,
                                   bycol = TRUE)) +
+      expand_limits(y = 0) +
       time_ggtheme
     
     ggplotly(bachelors_f_plot, tooltip = "text") %>%
@@ -256,11 +277,14 @@ nu_comm_server <- function(input, output, session) {
              text = paste(year, ", ", text)) %>%
       ggplot(aes(year, average_rate, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
-      scale_color_manual(values = c(hex_grey, hex_pink, hex_purple)) +
+      scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
+                         breaks = c("All races", "Latinx", "White")) +
       labs(color = "",
-           y = "") +
+           y = "",
+           x = "") +
       theme(legend.position = "bottom") +
       facet_wrap(~NAME, ncol = 2) +
+      expand_limits(y = 0) +
       time_ggtheme
     
     ggplotly(grad_rates_plot, tooltip = "text") %>%
@@ -268,7 +292,7 @@ nu_comm_server <- function(input, output, session) {
              legend = list(orientation = "h", x = 0.4, y = -0.25),
              hovermode = "x") %>%
       style(hoverlabel = list(#bgcolor = hex_blue_dk,
-                              font = list(family = "Karla", color = "white"))) %>%
+        font = list(family = "Karla", color = "white"))) %>%
       config(displayModeBar = F)
     
     

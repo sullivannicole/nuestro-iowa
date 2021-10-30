@@ -22,7 +22,7 @@ tab_1_alt_a <- argonTabItem(
                                                br(),
                                                div("Latinx Iowans represent a youthful, highly entrepeneurial, collective-minded subset of the Iowa population - 
                   an invaluable part of the school system, workforce, and community. Latinx Iowans are also a fast-growing subpopulation, 
-                  and their contributions to Central Iowa make them a force to be reckoned with. Scroll on to learn more.") %>% argonTextColor(color = "white")),
+                  and our contributions to Central Iowa make us a force to be reckoned with. Scroll on to learn more.") %>% argonTextColor(color = "white")),
                                    # actionButton(inputId = 'jumpToP2', label = 'Jump to Second Tab',
                                    #              onclick ="window.open('http://google.com', '_blank')")),
                                    argonColumn(width = 4, argonImage(src = "latam.svg", floating = TRUE) %>% argonBlur() %>% argonPersp(side = "right") ))),
@@ -44,13 +44,13 @@ tab_1_alt_a <- argonTabItem(
                   hover_shadow = TRUE,
                   hover_lift = TRUE,
                   center = TRUE,
-                  div(HTML("• <b>1,544 Latinx businesses</b> generating <b>$159.6M</b> in annual revenue")),
+                  div(HTML("<li><b>1,544 Latinx businesses</b> generating <b>$159.6M</b> in annual revenue</li>")),
                   # br(),
-                  div(HTML("• <b>52K Latinx residents</b> in the metro, which will more than double by 2050 and drive overall metro pop. growth")),
+                  div(HTML("<li><b>52K Latinx residents</b> in the metro, which will more than double by 2050 and drive overall metro pop. growth</li>")),
                   # br(),
-                  div(HTML("• <b>22K Latinx workers</b> collectively earning <b>$1B in annual income</b>, contributing significantly to the overall central IA economy")),
+                  div(HTML("<li><b>22K Latinx workers</b> collectively earning <b>$1B in annual income</b>, contributing significantly to the overall central IA economy</li>")),
                   # br(),
-                  "• Latinx community turned around over a decade of pop. decline in Marshall County"
+                  HTML("<li>Latinx community turned around over a decade of pop. decline in Marshall County</li>")
         ),
         argonCard(title = "Disparities (compared with Whites)",
                   icon = icon("users"),
@@ -60,17 +60,17 @@ tab_1_alt_a <- argonTabItem(
                   border_level = 2,
                   hover_shadow = TRUE,
                   hover_lift = TRUE,
-                  div(HTML("• Average household income is <b>33% lower</b>")),
+                  div(HTML("<li>Average household income is <b>33% lower</b></li>")),
                   # br(),
-                  div(HTML("• Poverty rates are <b>13 percentage points higher</b>")),
+                  div(HTML("<li>Poverty rates are <b>13 percentage points higher</b></li>")),
                   # br(),
-                  div(HTML("• Homeownership rates are <b>24 percentage points lower</b>")),
+                  div(HTML("<li>Homeownership rates are <b>24 percentage points lower</b></li>")),
                   # br(),
-                  div(HTML("• <b>21 percentage point gap</b> in health insurance coverage for those aged 19-64")),
+                  div(HTML("<li><b>21 percentage point gap</b> in health insurance coverage for those aged 19-64</li>")),
                   # br(),
-                  div(HTML("• <b>25 percentage point gap</b> in Bachelor's degree or higher completion")),
+                  div(HTML("<li><b>25 percentage point gap</b> in Bachelor's degree or higher completion</li>")),
                   # br(),
-                  div(HTML("• <b>33 percentage point gap</b> in high school completion")),
+                  div(HTML("<li><b>33 percentage point gap</b> in high school completion</li>")),
                   # br(),
                   # "• Continued gap in high school graduation rates and gap in college readiness",
                   # br(),
@@ -86,11 +86,11 @@ tab_1_alt_a <- argonTabItem(
                   border_level = 2,
                   hover_shadow = TRUE,
                   hover_lift = TRUE,
-                  div(HTML("• <b>Eliminating education disparities</b> will largely close the income and poverty gap")),
+                  div(HTML("<li><b>Eliminating education disparities</b> will largely close the income and poverty gap</li>")),
                   # br(),
-                  div(HTML("• <b>Eliminating income and education disparities</b> will mostly close the homeownership gap")),
+                  div(HTML("<li><b>Eliminating income and education disparities</b> will mostly close the homeownership gap</li>")),
                   # br(),
-                  div(HTML("• Latinx households face <b>additional barriers</b> to homeownership"))
+                  div(HTML("<li>Latinx households face <b>additional barriers</b> to homeownership</li>"))
         )
         
       )), # End row 1
@@ -101,13 +101,12 @@ tab_1_alt_a <- argonTabItem(
   # Row 2: About (short)
   
   div(class = "tab-1-about-container",
-      argonH1("About", display = 3) %>% argonTextColor("white"),
-      div(style = "font-size: 35px; color: #172B4D;", "Nuestro Iowa was created with the mission of...
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                                    Phasellus metus ipsum, gravida auctor arcu id, volutpat volutpat orci. ")),
+      argonH1("Nuestro Visión", display = 3) %>% argonTextColor("white"),
+      div(style = "font-size: 35px; color: #172B4D;", HTML("A welcoming state where everyone thrives.<br>
+                                                            Un estado acogedor donde todes prosperen."))),
   
   # Row 3: Our Team
-  div(style = "margin-top: 600px;",
+  div(style = "margin-top: 500px;",
       argonH1("Nuestro Team", display = 4),
       h3("Latinx Leaders"),
       argonRow(
@@ -144,113 +143,113 @@ tab_1_alt_a <- argonTabItem(
           )
         )
       ),
-  # Latinx Leaders Row 2
-  argonRow(
-    argonColumn(
-      width = 3,
-      argonUser(
-        title = "Nathan Blake",
-        subtitle = "Chief Deputy Iowa Attorney General, Iowa Dept. of Justice",
-        src = "nathan_blake.png"
-      )
-    ),
-    argonColumn(
-      width = 3,
-      argonUser(
-        title = "Kenia Calderón Cerón",
-        subtitle = "Vice President, GreenState Credit Union",
-        src = "kenia_calderon_ceron.png"
-      )
-    ),
-    argonColumn(
-      width = 3,
-      argonUser(
-        title = "Miguel Contreras",
-        subtitle = "Art Director, Flock DSM",
-        src = "miguel_contreras.png"
-      )
-    ),
-    argonColumn(
-      width = 3,
-      argonUser(
-        title = "Ana Coppola",
-        subtitle = "Health Subject Matter Expert",
-        src = "profile.png"
-      )
-    )
-  ),
-  
-  # Latinx Leaders Row 3
-  argonRow(
-    argonColumn(
-      width = 3,
-      argonUser(
-        title = "Suzanna de Baca",
-        subtitle = "President and Group Publisher, Business Publications Corporation",
-        src = "suzanna_de_baca.png"
-      )
-    ),
-    argonColumn(
-      width = 3,
-      argonUser(
-        title = "Frank Young Dunn",
-        subtitle = "City Planning Subject Matter Expert",
-        src = "profile.png"
-      )
-    ),
-    argonColumn(
-      width = 3,
-      argonUser(
-        title = "Alejandro Hernandez",
-        subtitle = "Dean, College of Business and Public Administration, Drake University",
-        src = "alejandro_hernandez.png"
-      )
-    ),
-    argonColumn(
-      width = 3,
-      argonUser(
-        title = "Junior Ibarra",
-        subtitle = "Entrepeneur/Housing Subject Matter Expert",
-        src = "profile.png"
-      )
-    )
-  ),
-  
-  # Row 4 Latinx Leaders
-  argonRow(
-    argonColumn(
-      width = 3,
-      argonUser(
-        title = "Alex Jimenez",
-        subtitle = "Event & Client Specialist, Wildflower Boutique",
-        src = "alex_jimenez.png"
-      )
-    ),
-    argonColumn(
-      width = 3,
-      argonUser(
-        title = "Erica Johnson",
-        subtitle = "Founding Executive Director, Iowa Migrant Movement for Justice",
-        src = "erica_johnson.png"
-      )
-    ),
-    argonColumn(
-      width = 3,
-      argonUser(
-        title = "Dawn Martinez Oropeza",
-        subtitle = "Executive Director, Al Éxito",
-        src = "dawn_martinez_oropeza.png"
-      )
-    ),
-    argonColumn(
-      width = 3,
-      argonUser(
-        title = "Noemi Mendez",
-        subtitle = "Exectuive Director, Latina Leadership Initiative of Greater Des Moines",
-        src = "noemi_mendez.png"
-      )
-    )
-  )),
+      # Latinx Leaders Row 2
+      argonRow(
+        argonColumn(
+          width = 3,
+          argonUser(
+            title = "Nathan Blake",
+            subtitle = "Chief Deputy Iowa Attorney General, Iowa Dept. of Justice",
+            src = "nathan_blake.png"
+          )
+        ),
+        argonColumn(
+          width = 3,
+          argonUser(
+            title = "Kenia Calderón Cerón",
+            subtitle = "Vice President, GreenState Credit Union",
+            src = "kenia_calderon_ceron.png"
+          )
+        ),
+        argonColumn(
+          width = 3,
+          argonUser(
+            title = "Miguel Contreras",
+            subtitle = "Art Director, Flock DSM",
+            src = "miguel_contreras.png"
+          )
+        ),
+        argonColumn(
+          width = 3,
+          argonUser(
+            title = "Ana Coppola",
+            subtitle = "Health Subject Matter Expert",
+            src = "profile.png"
+          )
+        )
+      ),
+      
+      # Latinx Leaders Row 3
+      argonRow(
+        argonColumn(
+          width = 3,
+          argonUser(
+            title = "Suzanna de Baca",
+            subtitle = "President and Group Publisher, Business Publications Corporation",
+            src = "suzanna_de_baca.png"
+          )
+        ),
+        argonColumn(
+          width = 3,
+          argonUser(
+            title = "Frank Young Dunn",
+            subtitle = "City Planning Subject Matter Expert",
+            src = "profile.png"
+          )
+        ),
+        argonColumn(
+          width = 3,
+          argonUser(
+            title = "Alejandro Hernandez",
+            subtitle = "Dean, College of Business and Public Administration, Drake University",
+            src = "alejandro_hernandez.png"
+          )
+        ),
+        argonColumn(
+          width = 3,
+          argonUser(
+            title = "Junior Ibarra",
+            subtitle = "Entrepeneur/Housing Subject Matter Expert",
+            src = "profile.png"
+          )
+        )
+      ),
+      
+      # Row 4 Latinx Leaders
+      argonRow(
+        argonColumn(
+          width = 3,
+          argonUser(
+            title = "Alex Jimenez",
+            subtitle = "Event & Client Specialist, Wildflower Boutique",
+            src = "alex_jimenez.png"
+          )
+        ),
+        argonColumn(
+          width = 3,
+          argonUser(
+            title = "Erica Johnson",
+            subtitle = "Founding Executive Director, Iowa Migrant Movement for Justice",
+            src = "erica_johnson.png"
+          )
+        ),
+        argonColumn(
+          width = 3,
+          argonUser(
+            title = "Dawn Martinez Oropeza",
+            subtitle = "Executive Director, Al Éxito",
+            src = "dawn_martinez_oropeza.png"
+          )
+        ),
+        argonColumn(
+          width = 3,
+          argonUser(
+            title = "Noemi Mendez",
+            subtitle = "Exectuive Director, Latina Leadership Initiative of Greater Des Moines",
+            src = "noemi_mendez.png"
+          )
+        )
+      )),
   
   # Consultant Row
   h3("Consultants"),
@@ -290,46 +289,46 @@ tab_1_alt_a <- argonTabItem(
   ),
   
   # Sponsor partners Row
-  h3("Sponsor Partners"),
-  argonRow(
-    argonColumn(
-      width = 6,
-      argonUser(
-        title = "Angela Dethlefs-Trettin",
-        subtitle = "Partner",
-        src = "profile.png"
-      )
-    ),
-    argonColumn(
-      width = 6,
-      argonUser(
-        title = "Suzanne Mineck",
-        subtitle = "President and CEO, Mid-Iowa Health Foundation",
-        src = "suzanne_mineck.png"
-      )
-    )
-  ),
-  
+  # h3("Sponsor Partners"),
+  # argonRow(
+  #   argonColumn(
+  #     width = 6,
+  #     argonUser(
+  #       title = "Angela Dethlefs-Trettin",
+  #       subtitle = "Partner",
+  #       src = "profile.png"
+  #     )
+  #   ),
+  #   argonColumn(
+  #     width = 6,
+  #     argonUser(
+  #       title = "Suzanne Mineck",
+  #       subtitle = "President and CEO, Mid-Iowa Health Foundation",
+  #       src = "suzanne_mineck.png"
+  #     )
+  #   )
+  # ),
+  # 
   
   # Spacer div,
   div(style = "height: 125px;"),
   
   # Row 4: Our Sponsors
   div(class = "tab-1-sponsors-container",
-    argonH1("Nuestro Sponsors", display = 4) %>% argonTextColor("white"),
-    argonRow(argonColumn(width = 4,
-                         class = "tab-1-sponsors-column",
-                         a(img(src = "placeholder-logo-1.png"), href="https://www.google.com"),
-                         "Sponsor 1"),
-             argonColumn(width = 4,
-                         class = "tab-1-sponsors-column",
-                         a(img(src = "placeholder-logo-1.png"), href="https://www.google.com"),
-                         "Sponsor 2"),
-             argonColumn(width = 4,
-                         class = "tab-1-sponsors-column",
-                         a(img(src = "placeholder-logo-1.png"), href="https://www.google.com"),
-                         "Sponsor 3"
-                         ))),
+      argonH1("Nuestro Sponsors", display = 4) %>% argonTextColor("white"),
+      argonRow(argonColumn(width = 4,
+                           class = "tab-1-sponsors-column",
+                           a(img(src = "placeholder-logo-1.png"), href="https://www.google.com"),
+                           "Sponsor 1"),
+               argonColumn(width = 4,
+                           class = "tab-1-sponsors-column",
+                           a(img(src = "placeholder-logo-1.png"), href="https://www.google.com"),
+                           "Sponsor 2"),
+               argonColumn(width = 4,
+                           class = "tab-1-sponsors-column",
+                           a(img(src = "placeholder-logo-1.png"), href="https://www.google.com"),
+                           "Sponsor 3"
+               ))),
   
   div(style = "height: 450px !important;")
   
