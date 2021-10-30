@@ -171,7 +171,6 @@ nu_county_server <- function(input, output, session) {
   output$arcplot_origin2 <- renderPlot({
     
     origin_df() %>%
-      pc_latin_origin %>%
       ggplot() +
       ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
       coord_fixed() +
@@ -365,7 +364,7 @@ nu_county_server <- function(input, output, session) {
       geom_bar(stat = "identity", width = 0.4, position = position_dodge()) +
       geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent + moe_pc), 
                     width = 0.1, color = "#4f515c", position = position_dodge(0.4)) +
-      scale_fill_manual(values = c(hex_pink, hex_purple)) +
+      scale_fill_manual(values = c(hex_green, hex_purple)) +
       labs(y = "", 
            x = glue("% of Latinx pop. in {unique(gender_work_df()$county_name)}")) +
       labs(fill = "") +
@@ -509,7 +508,7 @@ nu_county_server <- function(input, output, session) {
     below_59_under <- if("Below poverty, \naged 59 & under" %in% poverty_df()$poverty_group)  glue("In contrast, {round(poverty_df()$percent[substr(poverty_df()$poverty_group, 22, 23) == '59'], 1)}% live below federal poverty level and are under the age of 60. ") else NULL
     below_60_over <- if("Below poverty, aged 60+" %in% poverty_df()$poverty_group) glue("Those over 60 and living below poverty form the remaining {round(poverty_df()$percent[substr(poverty_df()$poverty_group, 21, 22) == '60'], 1)}%. ") else NULL
     
-    paste0(above, below_59_under, below_60_over)
+    paste0("Living at or below poverty level refers to the a household's income in comparison to the income the federal government considers 'poverty level'. ", above, below_59_under, below_60_over)
     
   })
   
@@ -527,7 +526,7 @@ nu_county_server <- function(input, output, session) {
                      position = position_dodge(width = 0.3))+
       geom_point(aes(x = label, y = percent, color = gender),
                  position = position_dodge(width = 0.3)) +
-      scale_color_manual(values = c(hex_pink, hex_blue_dk)) +
+      scale_color_manual(values = c(hex_green, hex_purple)) +
       labs(y = "% of Latinx pop.",
            x = "",
            color = "") +

@@ -11,7 +11,7 @@ argonSidebar <- argonDashSidebar(
   br(),
   br(),
   argonImage(src = "nuestro_iowa_white.svg"),
-  argonSidebarHeader(title = "Main Menu") %>% argonTextColor(color = "white"),
+  argonSidebarHeader(title = "Our Iowa") %>% argonTextColor(color = "white"),
   argonSidebarMenu(
     argonSidebarItem(
       tabName = "tab_1_alt_a",
