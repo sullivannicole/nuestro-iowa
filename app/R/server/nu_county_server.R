@@ -135,7 +135,10 @@ nu_county_server <- function(input, output, session) {
     
     pal <- colorNumeric(c("#29066B", "#7D3AC1", "#AF4BCE", "#DB4CB2", "#EA7369", "#F0A58F", "#FCEAE6"), NULL)
     
-    # ia_counties_tidy %>%
+    varname <- switch(map_var2(),
+                      "percent" = "% of pop.",
+                      "estimat" = "People")
+    
     ia_metro_tidy %>%
       filter(vrbl_gr == "B03001" & vrbl_nd == '003' & cnty_nm == input$county_choice2) %>%
       rename(var = !!map_var2()) %>%
@@ -147,7 +150,7 @@ nu_county_server <- function(input, output, session) {
                   smoothFactor = 0.3,
                   fillColor = ~pal(var),
                   label = ~paste0("Latinx pop.: ", formatC(var, big.mark = ","), map_symbol2())) %>% # use NAME variable for county
-      addLegend(pal = pal, values = ~var, opacity = 0.3, title = "")
+      addLegend(pal = pal, values = ~var, opacity = 0.3, layerId = "colorLegend", title = varname)
   })
   
   # Card 1: Demographics--------------------------------------------------------
@@ -162,13 +165,13 @@ nu_county_server <- function(input, output, session) {
              ymin = ifelse(is.na(ymin), 0, ymin),
              label = str_replace_all(label, "Estimate!!Total:!!", "")) %>%
       mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
-
+    
   })
   
   output$arcplot_origin2 <- renderPlot({
     
     origin_df() %>%
-    pc_latin_origin %>%
+      pc_latin_origin %>%
       ggplot() +
       ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
       coord_fixed() +
@@ -243,7 +246,7 @@ nu_county_server <- function(input, output, session) {
   })
   
   # Language spoken at home
-
+  
   output$lollipop_language <- renderPlotly({
     
     # Language at home
@@ -268,14 +271,14 @@ nu_county_server <- function(input, output, session) {
     
   })
   
-                            
+  
   # Ancestral origin arc
   heritage_df <- reactive({
     
     ia_counties_tidy %>%
       filter(county_name == input$county_choice2 & variable_group == "B03001" & variable_index %in% c("003", "004", "005", "006", "008", "016", "027")) %>%
       mutate(denom = ifelse(variable_index == "003", estimate, NA)) %>%
-      fill(denom, .direction = "updown") %>%
+      tidyr::fill(denom, .direction = "updown") %>%
       mutate(prop = estimate/denom,
              percent = prop*100) %>%
       filter(percent != 100 & percent != 0) %>%
@@ -302,7 +305,7 @@ nu_county_server <- function(input, output, session) {
       guides(fill=guide_legend(nrow=2,byrow=TRUE))
     
   })
- 
+  
   output$heritage_text <- renderText({
     
     mexican <- if(heritage_df()$percent[heritage_df()$label == "Mexican"] > 0)  glue("{round(heritage_df()$percent[heritage_df()$label == 'Mexican'], 1)}%  identify as Mexican. ") else NULL
@@ -379,7 +382,7 @@ nu_county_server <- function(input, output, session) {
     
   })
   
-    
+  
   output$gender_work_text <- renderText({
     
     # Max female status
@@ -422,7 +425,7 @@ nu_county_server <- function(input, output, session) {
     
   })
   
-
+  
   output$homeownership_text <- renderText({
     
     owners <- round(tenure_df()$percent[substr(tenure_df()$label, 1, 5) == 'Owner'], 1)
@@ -498,18 +501,18 @@ nu_county_server <- function(input, output, session) {
     
   })
   
-
+  
   output$poverty_text <- renderText({
     
     
     above <- if("At or above poverty" %in% poverty_df()$poverty_group)  glue("{round(poverty_df()$percent[substr(poverty_df()$poverty_group, 1, 2) == 'At'], 1)}% of the county's Latinx live at or above the federal poverty level. ") else NULL
     below_59_under <- if("Below poverty, \naged 59 & under" %in% poverty_df()$poverty_group)  glue("In contrast, {round(poverty_df()$percent[substr(poverty_df()$poverty_group, 22, 23) == '59'], 1)}% live below federal poverty level and are under the age of 60. ") else NULL
     below_60_over <- if("Below poverty, aged 60+" %in% poverty_df()$poverty_group) glue("Those over 60 and living below poverty form the remaining {round(poverty_df()$percent[substr(poverty_df()$poverty_group, 21, 22) == '60'], 1)}%. ") else NULL
-  
+    
     paste0(above, below_59_under, below_60_over)
     
   })
- 
+  
   
   # Card 3: Education--------------------------------------------------------
   # Educational attainment
@@ -543,7 +546,7 @@ nu_county_server <- function(input, output, session) {
   })
   
   # Disciplines in school
-                            
+  
   disciplines_df <- reactive({
     
     
@@ -586,7 +589,7 @@ nu_county_server <- function(input, output, session) {
   })
   
   # Presence of a computer/type of internet
-
+  
   output$bar_computer <- renderPlotly({
     
     
@@ -619,7 +622,7 @@ nu_county_server <- function(input, output, session) {
   })
   
   # School enrollment
-
+  
   enrollment_df <- reactive({
     
     
@@ -637,7 +640,7 @@ nu_county_server <- function(input, output, session) {
              ymin = ifelse(is.na(ymin), 0, ymin),
              label = as.factor(label)) %>%
       mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
-
+    
   })
   
   output$arc_enrolled <- renderPlot({
@@ -717,7 +720,7 @@ nu_county_server <- function(input, output, session) {
     
   })
   
-    
+  
   dataset_download <- reactive({
     
     ia_counties_tidy %>%
@@ -730,7 +733,7 @@ nu_county_server <- function(input, output, session) {
       select(-c(denom, prop, percent, denom_moe, moe_pc, county_name))
   })
   
-
+  
   #---------------Data download accordion
   
   output$download_data <- downloadHandler(
@@ -741,6 +744,6 @@ nu_county_server <- function(input, output, session) {
       write_csv(dataset_download(), file)
     }
   )
-
+  
   #---------------------End Tab 2 Alt A-----------------------
 }
