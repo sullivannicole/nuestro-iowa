@@ -1,5 +1,6 @@
 library(tidyverse)
 library(glue)
+library(sf)
 
 # Run ETL/run_ETL.R once to create data extracts for a certain year
 # (2019 already is run and in the ETL/data folder)
@@ -33,6 +34,14 @@ ia_county_shp <- st_read("ETL/data/ia_county_shp.shp")
 # HS grad rates by county
 # Comes from a different data source (IA Dept. of Education)
 hs_grad_rates <- read_csv("ETL/data/ia_county_hs_rates_2010_2020.csv")
+
+#-------------
+# Zip code data
+#-------------
+
+ia_metro_zips <- read_csv(glue("ETL/data/ia_metro_zips_{acs_yr}.csv"))
+
+ia_metro_zips_shp <- sf::st_read(glue("ETL/data/ia_metro_zips_{acs_yr}.shp"))
 
 #-------------
 # Tract data

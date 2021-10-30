@@ -15,6 +15,7 @@ library(keyring)
 library(glue)
 library(DescTools)
 library(lubridate)
+library(tidyverse)
 
 # Spatial tools
 library(sf)
@@ -226,7 +227,7 @@ county_fips <- county_df %>%
   arrange(NAME) %>%
   mutate(county = row_number())
 
-# 2010-2020 graad rates
+# 2010-2020 grad rates
 docs <-
   c("distGRFRL%20and%20race_ethnicity.xls",
     "Iowa%20Public%20School%20Class%20of%202011%20-%204yr%20Cohort%20Graduation%20Data%20by%20LEA%20and%20Subgroup.xls",
@@ -313,6 +314,20 @@ write_csv(hs_grad_rates, "ia_county_hs_rates_2010_2020.csv")
 # state_county <- rbind(state_compare, county_compare)
 
 # -----------------
+# Zip code data
+#------------------
+
+library(zipcodeR)
+
+metro_zips <- search_county(c( "Dallas", "Jasper", "Marshall", "Polk", "Warren"), state_abb = "IA")
+
+write_csv(metro_zips %>% select(zipcode, county), glue("data/ia_metro_zips_{acs_yr}.csv"))
+
+metro_zips_shp <- tigris::zctas(cb = FALSE, starts_with = unique(substr(metro_zips$zipcode, 1, 3)))
+
+sf::st_write(metro_zips_shp, glue("data/ia_metro_zips_{acs_yr}.shp"))
+
+# -----------------
 # Tract-level data
 #------------------
 
@@ -322,7 +337,7 @@ ia_metro_tracts <- tigris::tracts(state = "Iowa",
 ia_metro_tracts_df <- ia_metro_tracts %>% tibble() %>% distinct(GEOID)
 
 
-ia_metro_tract_data <- map_df(c(acs_yr-10):acs_yr, function(yr) {
+ia_metro_tract_data <- purrr::map_df(c(acs_yr-10):acs_yr, function(yr) {
   
   get_acs(geography = "tract", 
           variables = c(glue("B03001_00{1:3}"), "B01001I_001", "B01001_001"), 
@@ -356,6 +371,7 @@ st_write(ia_metro_tidy, glue("data/ia_metro_tracts_{acs_yr}.shp"))
 #                                          "Retail trade", "Professional, scientific, technical", "Food services", "Transport & warehousing",
 #                                          "Arts & entertainment", "Real estate"),
 #                             Businesses = c(366, 216, 209, 153, 134, 124, 91, 73, 46, 40))
+
 
 #-------------------------------
 # Eliminating disparities data

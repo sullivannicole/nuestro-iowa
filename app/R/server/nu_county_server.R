@@ -139,6 +139,18 @@ nu_county_server <- function(input, output, session) {
                       "percent" = "% of pop.",
                       "estimat" = "People")
     
+    # selected_county_zips <- ia_metro_zips %>% 
+    #   filter(county == paste0(input$county_choice2, " County"))
+    # 
+    # selected_county_zips_shp <- ia_metro_zips_shp %>%
+    #   filter(GEOID10 %in% selected_county_zips$zipcode)
+    
+    
+    # Get ZCTAS that have centroids in the county
+    # centroids <- gCentroid(df1, byid = TRUE)
+    # 
+    # mem_zcta2 <- df1[as.vector(gContains(memphis_ua, centroids, byid = TRUE)), ]
+    
     ia_metro_tidy %>%
       filter(vrbl_gr == "B03001" & vrbl_nd == '003' & cnty_nm == input$county_choice2) %>%
       rename(var = !!map_var2()) %>%
@@ -150,6 +162,13 @@ nu_county_server <- function(input, output, session) {
                   smoothFactor = 0.3,
                   fillColor = ~pal(var),
                   label = ~paste0("Latinx pop.: ", formatC(var, big.mark = ","), map_symbol2())) %>% # use NAME variable for county
+      addPolygons(data = ia_metro_zips_shp, fill = F, weight = 2, color = hex_blue_lt, group = "Zip codes") %>%
+      # Layers control
+      addLayersControl(
+        overlayGroups = c("Zip codes"),
+        options = layersControlOptions(collapsed = FALSE)
+      ) %>%
+      hideGroup("Zip codes") %>%
       addLegend(pal = pal, values = ~var, opacity = 0.3, layerId = "colorLegend", title = varname)
   })
   
