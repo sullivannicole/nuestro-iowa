@@ -139,11 +139,11 @@ nu_county_server <- function(input, output, session) {
                       "percent" = "% of pop.",
                       "estimat" = "People")
     
-    # selected_county_zips <- ia_metro_zips %>% 
-    #   filter(county == paste0(input$county_choice2, " County"))
-    # 
-    # selected_county_zips_shp <- ia_metro_zips_shp %>%
-    #   filter(GEOID10 %in% selected_county_zips$zipcode)
+    selected_county_zips <- ia_metro_zips %>%
+      filter(county == paste0(input$county_choice2, " County"))
+
+    selected_county_zips_shp <- ia_metro_zips_shp %>%
+      filter(GEOID10 %in% selected_county_zips$zipcode)
     
     
     # Get ZCTAS that have centroids in the county
@@ -162,7 +162,7 @@ nu_county_server <- function(input, output, session) {
                   smoothFactor = 0.3,
                   fillColor = ~pal(var),
                   label = ~paste0("Latinx pop.: ", formatC(var, big.mark = ","), map_symbol2())) %>% # use NAME variable for county
-      addPolygons(data = ia_metro_zips_shp, fill = F, weight = 2, color = hex_blue_lt, group = "Zip codes") %>%
+      addPolygons(data = selected_county_zips_shp, fill = F, weight = 2, color = hex_blue_lt, group = "Zip codes") %>%
       # Layers control
       addLayersControl(
         overlayGroups = c("Zip codes"),

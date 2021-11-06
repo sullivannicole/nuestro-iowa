@@ -319,9 +319,10 @@ write_csv(hs_grad_rates, "ia_county_hs_rates_2010_2020.csv")
 
 library(zipcodeR)
 
-metro_zips <- search_county(c( "Dallas", "Jasper", "Marshall", "Polk", "Warren"), state_abb = "IA")
+metro_zips <- metro_zips <- purrr::map_df(c( "Dallas", "Jasper", "Marshall", "Polk", "Warren"), 
+                                          function(i) zipcodeR::search_county(i, "IA"))
 
-write_csv(metro_zips %>% select(zipcode, county), glue("data/ia_metro_zips_{acs_yr}.csv"))
+write_csv(metro_zips %>% select(zipcode, county), glue("ETL/data/ia_metro_zips_{acs_yr}.csv"))
 
 metro_zips_shp <- tigris::zctas(cb = FALSE, starts_with = unique(substr(metro_zips$zipcode, 1, 3)))
 
