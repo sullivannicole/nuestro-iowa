@@ -30,6 +30,19 @@ nu_future_server <- function(input, output, session) {
     
   })
   
+  per_capita_income_df <- reactive({
+    
+    total_dollars_earned <- 996866128 + total_increase()
+    per_capita_income <- total_dollars_earned/51618
+    
+    data.frame(race_ethnicity = c(race_ethnicity_vctr, "Latinx"),
+               category = c("Your choice", rep("Current state", 2)),
+               income = c(per_capita_income, 39812, 19312)) %>%
+      mutate(text = paste0(category, "\n", race_ethnicity, ": $", formatC(round(income, 1), format="d", big.mark=",")))
+    
+    
+  })
+  
   # Per capita
   # total_investment_value <- ((total_increase * (1.02)^30 - total_increase)/1.9662316753) * 30 + (total_increase * 30)
   # total_residents_affected <- if (undoc_to_citizen == "Yes") total_undoc + hs_grads + hs_to_assoc + assoc_to_bach + hs_to_bach else hs_grads + hs_to_assoc + assoc_to_bach + hs_to_bach
@@ -39,25 +52,35 @@ nu_future_server <- function(input, output, session) {
   
   # Per capita income
   
+  output$per_capita_income_number <- renderText({
+    
+    per_capita_income_future <- per_capita_income_df() %>%
+      filter(race_ethnicity == "Latinx" & category == "Your choice")
+    
+    # Population with commas
+    paste0("+$", formatC(per_capita_income_future$income - 19312, format="d", big.mark=","))
+    
+    
+  })
+  
   output$plot_per_cap_inc <- renderPlotly({
     
-    total_dollars_earned <- 996866128 + total_increase()
-    per_capita_income <- total_dollars_earned/51618
-    
-    p <- data.frame(race_ethnicity = race_ethnicity_vctr,
-                    income = c(per_capita_income, 39812)) %>%
-      mutate(text = paste0("$", formatC(round(income, 1), format="d", big.mark=","))) %>%
-      ggplot(aes(race_ethnicity, income/1000, text = text)) +
-      geom_bar(stat = "identity", width = 0.2, fill = hex_purple) +
+    p <- ggplot(per_capita_income_df(), aes(race_ethnicity, income/1000, text = text, fill = category)) +
+      geom_bar(stat = "identity", position = "dodge", width = 0.2) +
+      scale_fill_manual(values = c(hex_green, hex_purple)) +
       labs(#title = "Per Capita Income (in $1K)",
         x = "",
         y = "") +
       scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
-      project_ggtheme_y
+      project_ggtheme_y +
+      theme(axis.text.y = element_blank(),
+            axis.ticks.y = element_blank(),
+            legend.position = "none")
     
     ggplotly(p, tooltip = "text") %>%
       layout(font = list(family = "Karla"),
-             height = 200
+             height = 200#,
+             # legend = list(orientation = "h", x = 0.4, y = -0.25)
       ) %>%
       style(hoverlabel = list(bordercolor = "#172B4D",
                               font = list(family = "Karla", color = "white"))) %>% 
@@ -65,15 +88,30 @@ nu_future_server <- function(input, output, session) {
     
   })
   
+  attainment_df <- reactive({
+    
+    expand_grid(race_ethnicity = race_ethnicity_vctr,
+                edu_level = factor(c("< HS", "HS", "Associate's", "Bachelor's"), levels = c("< HS", "HS", "Associate's", "Bachelor's"))) %>%
+      mutate(attainment = c(edu_df()$pc_attain, 4.8, 46.5, 11, 37.7),
+             text = paste0(edu_level, ": ", round(attainment, 1), "%"))
+    
+  })
+  
+  output$attainment_number <- renderText({
+    
+    attainment_future <- attainment_df() %>%
+      filter(race_ethnicity == "Latinx" & edu_level != "< HS") %>%
+      summarize(at_or_above_hs = sum(attainment))
+    
+    paste0("+", round(attainment_future$at_or_above_hs - 64.6, 1), "%")
+    
+  })
+  
   # Attainment
   output$plot_attainment <- renderPlotly({
     
     # Educational attainment bar
-    p <- expand_grid(race_ethnicity = race_ethnicity_vctr,
-                     edu_level = factor(c("< HS", "HS", "Associate's", "Bachelor's"), levels = c("< HS", "HS", "Associate's", "Bachelor's"))) %>%
-      mutate(attainment = c(edu_df()$pc_attain, 4.8, 46.5, 11, 37.7),
-             text = paste0(edu_level, ": ", round(attainment, 1), "%")) %>%
-      ggplot(aes(race_ethnicity, attainment, fill = edu_level, text = text)) +
+    p <- ggplot(attainment_df(), aes(race_ethnicity, attainment, fill = edu_level, text = text)) +
       geom_bar(stat = "identity", width = 0.15) +
       scale_fill_manual(values = c(hex_pink, hex_purple, hex_blue_lt, hex_green)) +
       # scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
@@ -86,38 +124,60 @@ nu_future_server <- function(input, output, session) {
       coord_flip()
     
     ggplotly(p, tooltip = "text") %>%
-      layout(font = list(family = "Karla")
+      layout(font = list(family = "Karla"),
+             height = 200
       ) %>%
       style(hoverlabel = list(bordercolor = "#172B4D",
                               font = list(family = "Karla", color = "white"))) %>% 
       config(displayModeBar = F)
+    
+    
+  })
+  
+  
+  total_addtl_dollars <- reactive({
+    
+    # Total addtl dollars per year line graph
+    yrs_out <- 30
+    total_per_year <- c(total_increase(), total_increase() * cumprod(rep(1.02, yrs_out)))
+    
+    data.frame(year = seq.Date(ymd("2021-01-01"), ymd("2021-01-01") + years(yrs_out), by = "years"),
+               total_addtl = total_per_year) %>%
+      mutate(text = paste0(year(year), ": $", round(total_addtl/1000000, 1), "M"))
+    
+  })
+  
+  output$total_addtl_dollars_number <- renderText({
+    
+    total_dollars_future <- total_addtl_dollars() %>%
+      summarize(total_over_30 = sum(total_addtl))
+    
+    # Population with commas
+    paste0("$", format(round(total_dollars_future$total_over_30/1000000, 1), format = "d", big.mark = ","), "M")
     
     
   })
   
   output$plot_addtl_dollars <- renderPlotly({
     
-    # Total addtl dollars per year line graph
-    yrs_out <- 30
-    total_per_year <- c(total_increase(), total_increase() * cumprod(rep(1.02, yrs_out)))
     
-    total_yrly_df <- data.frame(year = seq.Date(ymd("2021-01-01"), ymd("2021-01-01") + years(yrs_out), by = "years"),
-                                total_addtl = total_per_year) %>%
-      mutate(text = paste0(year(year), ": $", round(total_addtl/1000000, 1), "M"))
-    
-    p <- ggplot(total_yrly_df, aes(year, total_addtl/1000000, text = text, group = 1)) +
+    p <- ggplot(total_addtl_dollars(), aes(year, total_addtl/1000000, text = text, group = 1)) +
       geom_area(alpha = 0.2, fill = hex_purple) +
       geom_line(color =  hex_purple, size = 1.2) +
-      labs(title = str_to_upper("Additional Latinx Earnings (in $M)"),
-           y = "",
-           x = "") +
-      scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
-      dk_ggtheme
+      labs(#title = str_to_upper("Additional Latinx Earnings (in $M)"),
+        y = "",
+        x = "") +
+      theme(axis.text = element_blank(),
+            axis.ticks = element_blank(),
+            legend.position = "none",
+            panel.background =  element_rect(fill = "white"))
+    #scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+    #dk_ggtheme
     
     ggplotly(p, tooltip = "text") %>%
       layout(font = list(family = "Karla"),
-             legend = list(orientation = "h", x = 0.4, y = -0.25),
-             height = 550
+             
+             height = 200
       ) %>%
       style(hoverlabel = list(bordercolor = "#172B4D",
                               font = list(family = "Karla", color = "white"))) %>% 
@@ -125,8 +185,8 @@ nu_future_server <- function(input, output, session) {
     
   })
   
-  output$plot_homeownership <- renderPlotly({
-
+  homeownership <- reactive({
+    
     homeowner_df <- current_hhs %>%
       mutate(edu_after_invest = case_when(level == "lt_hs" ~ n_latinx - input$hs_grads,
                                           level == "hs" ~ n_latinx + input$hs_grads - input$hs_to_assoc - input$hs_to_bach,
@@ -145,33 +205,51 @@ nu_future_server <- function(input, output, session) {
              renters_with_investments = sum(n_latinx) - homeowners_with_investments,
              homeowners_base = homeowners_with_investments/(homeowners_with_investments + renters_with_investments),
              homeownership_rate = ifelse(input$undoc_to_citizens, (homeowners_base + 0.087) * 100, homeowners_base * 100)) # 0.087 = undoc boost
-
-
-      homeowner_rate <- unique(homeowner_df$homeownership_rate)
-
-      p <- data.frame(race_ethnicity = race_ethnicity_vctr,
-                                 tenure = c(rep("Homeowners", 2), rep("Renters", 2)),
-                                 pc = c(homeowner_rate, 73.7, 100 - homeowner_rate, 26.3)) %>%
-        mutate(text = paste0(tenure, ": ", round(pc, 1), "%")) %>%
-        ggplot(aes(race_ethnicity, pc, fill = tenure, text = text)) +
-        geom_bar(stat = "identity", width = 0.2) +
-        scale_fill_manual(values = c(hex_blue_lt, hex_blue_dk)) +
-        scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
-        labs(#title = "Homeownership rates",
-             x = "",
-             y = "",
-             fill = "") +
-        project_ggtheme_y +
-        theme(legend.position = "none")
-
-      ggplotly(p, tooltip = "text") %>%
-        layout(font = list(family = "Karla"),
-               height = 200
-        ) %>%
-        style(hoverlabel = list(bordercolor = "#172B4D",
-                                font = list(family = "Karla", color = "white"))) %>% 
-        config(displayModeBar = F)
-      
+    
+    
+    homeowner_rate <- unique(homeowner_df$homeownership_rate)
+    
+    data.frame(race_ethnicity = c(race_ethnicity_vctr, "Latinx"),
+               category = c(rep("Your choice", 2), rep("Current state", 4)),
+               tenure = c(rep("Homeowners", 3), rep("Renters", 3)),
+               pc = c(homeowner_rate, 73.7, 48.2, 100 - homeowner_rate, 26.3, 100 - 48.2)) %>%
+      mutate(text = paste0(category, "\n", race_ethnicity, " ", tenure, ": ", round(pc, 1), "%")) %>%
+      filter(tenure == "Homeowners")
+    
+  })
+  
+  output$homeownership_number <- renderText({
+    
+    homeownership_future <- homeownership() %>%
+      filter(race_ethnicity == "Latinx" & category == "Your choice")
+    
+    paste0("+", round(homeownership_future$pc - 48.2, 1), "%")
+    
+  })
+  
+  output$plot_homeownership <- renderPlotly({
+    
+    
+    p <- ggplot(homeownership(), aes(race_ethnicity, pc, fill = category, text = text)) +
+      geom_bar(stat = "identity", position = "dodge", width = 0.2) +
+      scale_fill_manual(values = c(hex_blue_lt, hex_blue_dk)) +
+      scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+      labs(#title = "Homeownership rates",
+        x = "",
+        y = "",
+        fill = "") +
+      project_ggtheme_y +
+      theme(legend.position = "none")
+    
+    ggplotly(p, tooltip = "text") %>%
+      layout(font = list(family = "Karla"),
+             legend = list(orientation = "h", x = 0.4, y = -0.25),
+             height = 200
+      ) %>%
+      style(hoverlabel = list(bordercolor = "#172B4D",
+                              font = list(family = "Karla", color = "white"))) %>% 
+      config(displayModeBar = F)
+    
   })
   
   
