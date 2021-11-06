@@ -174,7 +174,7 @@ nu_comm_server <- function(input, output, session) {
     poverty_disp_plot <- poverty_disp %>%
       ggplot(aes(year, percent, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
-      scale_color_manual(values = c(hex_green, hex_purple),
+      scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
                          breaks = c("Latinx", "White Alone")) +
       labs(color = "",
            y = "",
