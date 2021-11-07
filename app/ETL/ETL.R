@@ -72,12 +72,12 @@ vars_list <- acs_vars %>%
                                   "C27001I"))
 
 # County stats from Census data
-ia_counties <- get_acs(geography = "county",
-                       variables = vars_list$name,
-                       state = "IA",
-                       survey = "acs5",
-                       year = acs_yr,
-                       geometry = FALSE)
+ia_counties <- tidycensus::get_acs(geography = "county",
+                                   variables = vars_list$name,
+                                   state = "IA",
+                                   survey = "acs5",
+                                   year = acs_yr,
+                                   geometry = FALSE)
 
 # Select Latinx variables needed for dashboard
 # Rejoin data with descriptions & create percentages
@@ -85,9 +85,17 @@ ia_counties_tidy <- ia_counties %>%
   left_join(acs_vars, by = c("variable" = "name")) %>%
   mutate(GEOID = as.character(GEOID)) %>%
   separate(variable, into = c("variable_group", "variable_index"), sep = "_", remove = F) %>%
-  group_by(NAME, variable_group) %>%
-  mutate(denom = ifelse(variable_index == "001", estimate, NA),
-         denom = max(denom, na.rm = T)) %>%
+  
+  mutate(denom = ifelse((variable_group == "B20005I" & variable_index %in% c("002", "049")), estimate,
+                        ifelse(variable_index == "001", estimate, NA)),
+         
+         # Denominator for employment by sex should be the respective sex, not the total pop, so disaggregate
+         gender = ifelse(variable_group == "B20005I" & variable_index %in% c("002", "003", "027", "028"), "Male",
+                         ifelse(variable_group == "B20005I" & variable_index %in% c("049","050", "074", "075"), "Female", "Across all"))) %>%
+  group_by(NAME, variable_group, gender) %>%
+  
+  # Get denominator
+  mutate(denom = max(denom, na.rm = T)) %>%
   ungroup() %>%
   mutate(prop = estimate/denom,
          percent = estimate/denom*100,
@@ -102,7 +110,7 @@ ia_counties_tidy <- ia_counties %>%
   ungroup() %>%
   mutate(moe_pc = ifelse(percent == 0, NA, 100*(1/denom)*sqrt(moe^2 - (percent/100)^2*denom_moe^2)))
 
-write_csv(ia_counties_tidy, glue("ia_counties_{acs_yr}.csv"))
+write_csv(ia_counties_tidy, glue("ETL/data/ia_counties_{acs_yr}.csv"))
 # st_write(ia_counties_tidy, glue("data/ia_counties_{acs_yr}.shp"))
 
 ia_county_shp <- counties("Iowa")

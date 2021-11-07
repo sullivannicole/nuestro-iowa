@@ -59,19 +59,19 @@ library(shinycssloaders)
 library(shinycustomloader)
 
 # # Aesthetics, data, constant UI elements
-# for (i in list.files("R/elements", pattern = "[.]R$")) {
-#   source(glue("R/elements/{i}", local = TRUE))
-# }
-# 
-# # # UI
-# for (i in list.files("R/ui", pattern = "[.]R$")) {
-#   source(glue("R/ui/{i}", local = TRUE))
-# }
-# 
-# # # Server
-# for (i in list.files("R/server", pattern = "[.]R$")) {
-#   source(glue("R/server/{i}", local = TRUE))
-# }
+for (i in list.files("R/elements", pattern = "[.]R$")) {
+  source(glue("R/elements/{i}", local = TRUE))
+}
+
+# # UI
+for (i in list.files("R/ui", pattern = "[.]R$")) {
+  source(glue("R/ui/{i}", local = TRUE))
+}
+
+# # Server
+for (i in list.files("R/server", pattern = "[.]R$")) {
+  source(glue("R/server/{i}", local = TRUE))
+}
 
 #--------------
 # Front-end

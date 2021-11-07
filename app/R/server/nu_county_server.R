@@ -366,7 +366,7 @@ nu_county_server <- function(input, output, session) {
     
     # Employment rate by gender
     ia_counties_tidy %>%
-      filter(variable_group == "B20005I" & county_name == input$county_choice2 & variable_index %in% c("005", "027", "028", "052", "074", "075") & percent > 0) %>%
+      filter(variable_group == "B20005I" & county_name == input$county_choice2 & variable_index %in% c("003", "027", "028", "050", "074", "075") & percent > 0) %>%
       mutate(label = str_remove(label, ", year-round in the past 12 months"),
              label = str_replace_all(label, "s:", "s"),
              label = str_replace_all(label, ":", ", "),
