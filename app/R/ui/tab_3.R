@@ -23,15 +23,13 @@ tab_3 <- argonTabItem(
     border_level = 0,
     width = 12,
     
-    argonRow(argonColumn(width = 1),
-             argonColumn(width = 10, 
-                         withLoader(plotlyOutput("time_income"), loader = "loader1")),
-             argonColumn(width = 1))
+    argonRow(argonColumn(width = 12, 
+                         withLoader(plotlyOutput("time_income"), loader = "loader1")))
     
   ), # Close Card 1
   
   argonCard(
-    title = "Homeownership",
+    title = "Homeownership rates",
     hover_lift = FALSE,
     shadow = TRUE,
     shadow_size = NULL,
@@ -55,14 +53,14 @@ tab_3 <- argonTabItem(
     width = 12,
     
     argonRow(div(style = "padding: 20px 0px 20px 50px",
-                 h3("Males employed full-time in last 12 months"))),
+                 h3("Males with earnings in previous 12 months"))),
     argonRow(argonColumn(width = 1),
              argonColumn(width = 10,
                          withLoader(plotlyOutput("time_employment_male"), loader = "loader1")),
              argonColumn(width = 1)),
     
     argonRow(div(style = "padding: 20px 0px 20px 50px",
-                 h3("Females employed full-time in last 12 months"))),
+                 h3("Females with earnings in previous 12 months"))),
     argonRow(argonColumn(width = 1),
              argonColumn(width = 10,
                          withLoader(plotlyOutput("time_employment_female"), loader = "loader1")),

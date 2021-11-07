@@ -5,8 +5,8 @@ tab_4 <- argonTabItem(
     
     argonColumn(width = 3,
                 div(style = "height: 50px;"), # spacer div
-                
-                argonH1("Nuestro choice", display = 2),
+                div(style = "line-height: 5px !important;",
+                    argonH1("Nuestro choice", display = 2)),
                 "Toggle the numbers below to reflect your program's expected educational and/or citizenship outcomes and see projections for the future (to the right) change.",
                 br(),
                 br(),
@@ -65,8 +65,9 @@ tab_4 <- argonTabItem(
                                          div(style = "color: #172B4D; font-size: 50px; font-weight: bold;", 
                                              textOutput("attainment_number")),
                                          "IN LATINX WITH HS ATTAINMENT OR MORE")
-                    ))
-    )
+                    ),
+                    div(style = "height: 100px;") # spacer div at bottom
+                ))
   )
 )
 

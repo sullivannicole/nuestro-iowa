@@ -2,27 +2,15 @@ nu_comm_server <- function(input, output, session) {
   
   output$time_income <- renderPlotly({
     
-    # income <- ia_counties_temporal_tidy %>%
-    #   filter(county_name %in% input$region_choice & substr(variable, 1, 6) == "B19013") %>%
-    #   mutate(concept = str_replace(concept,"\\(IN 2019 INFLATION-ADJUSTED DOLLARS\\)", "")) %>%
-    #   separate(concept, into = c("concept", "race_ethnicity"), sep = "\\(", remove = F) %>%
-    #   mutate(race_ethnicity = str_trim(str_to_title(str_remove_all(race_ethnicity, "HOUSEHOLDER|\\)"))),
-    #          race_ethnicity = ifelse(is.na(race_ethnicity), "All races", 
-    #                                  ifelse(race_ethnicity == "Hispanic Or Latino", "Latinx", race_ethnicity)),
-    #          text = str_wrap(paste0(race_ethnicity, ": $", formatC(estimate, format="d", big.mark=",")), 20),
-    #          year = lubridate::ymd(year, truncated = 2L)) %>%
-    #   filter(race_ethnicity %in% c("All races", "White Alone", "Latinx"))
-    
     p <- ia_counties_temporal_tidy %>%
       filter(county_name %in% input$region_choice & category == "income") %>%
       ggplot(aes(year, estimate/1000, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
-      # geom_point(size = 1.4, shape = 21, stroke = 1.4, fill = "white") +
       scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
                          breaks = c("All races", "Latinx", "White Alone")) +
       labs(color = "",
            x = "",
-           y = "Median household income (in thousands)") +
+           y = "Median household income (in $K)") +
       theme(legend.position = "bottom") +
       facet_wrap(~county_name, ncol = 2) +
       guides(color = guide_legend(ncol = 3,
@@ -33,6 +21,8 @@ nu_comm_server <- function(input, output, session) {
     ggplotly(p, tooltip = "text") %>%
       layout(font = list(family = "Karla"),
              legend = list(orientation = "h", x = 0.4, y = -0.25),
+             margin = list(b = 80, 
+                           l = 80), # otherwise the y axis label gets cut off
              hovermode = "x") %>%
       style(hoverlabel = list(bgcolor = hex_blue_dk,
                               font = list(family = "Karla", color = "white"))) %>% 
@@ -45,7 +35,6 @@ nu_comm_server <- function(input, output, session) {
       filter(county_name %in% input$region_choice & category == "homeownership" & disaggregation == "Owners") %>%
       ggplot(aes(year, estimate, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
-      # geom_point(size = 1.4, shape = 21, stroke = 1.4, fill = "white") +
       scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
                          breaks = c("All races", "Latinx", "White Alone")) +
       labs(color = "",
@@ -68,38 +57,13 @@ nu_comm_server <- function(input, output, session) {
       config(displayModeBar = F)
     
   })
-  # 
-  # employment <- reactive({
-  #   
-  #   employment <- ia_counties_temporal_tidy %>%
-  #     filter(county_name %in% input$region_choice & substr(variable, 1, 6) == "B20005" & variable_index %in% c("002", "003", "049", "050")) %>%
-  #     mutate(label = str_replace(label, ":", " "),
-  #            gender = word(label, start = 1, end = 1),
-  #            denom = ifelse((gender == "Male" & variable_index == "002") | (gender == "Female" & variable_index == "049"), estimate, NA)) %>%
-  #     group_by(variable_group, gender, county_name, year) %>%
-  #     tidyr::fill(denom, .direction = "down") %>%
-  #     ungroup() %>%
-  #     mutate(prop = estimate/denom,
-  #            percent = prop*100) %>%
-  #     filter(!(variable_index %in% c("002", "049"))) %>%
-  #     mutate(concept = str_replace(concept,"\\(IN 2019 INFLATION-ADJUSTED DOLLARS\\)", "")) %>%
-  #     separate(concept, into = c("concept", "race_ethnicity"), sep = "\\(", remove = F) %>%
-  #     mutate(race_ethnicity = str_trim(str_to_title(str_remove_all(race_ethnicity, "\\)"))),
-  #            race_ethnicity = ifelse(is.na(race_ethnicity), "All races",
-  #                                    ifelse(race_ethnicity == "Hispanic Or Latino", "Latinx", race_ethnicity)),
-  #            text = str_wrap(paste0(race_ethnicity, ": ", round(percent), "%")),
-  #            year = lubridate::ymd(year, truncated = 2L)) %>%
-  #     filter(race_ethnicity %in% c("All races", "White Alone", "Latinx"))
-  #   
-  # })
-  
+ 
   output$time_employment_female <- renderPlotly({
     
     p <- ia_counties_temporal_tidy %>%
       filter(county_name %in% input$region_choice & category == "employment" & disaggregation == "Female") %>%
       ggplot(aes(year, estimate, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
-      # geom_point(size = 1.4, shape = 21, stroke = 1.4, fill = "white") +
       scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
                          breaks = c("All races", "Latinx", "White Alone")) +
       labs(color = "",
@@ -154,15 +118,6 @@ nu_comm_server <- function(input, output, session) {
   
   output$time_poverty <- renderPlotly({
     
-    # poverty_disp <- ia_counties_temporal_tidy %>%
-    #   filter(county_name %in% input$region_choice & substr(variable, 1, 6) == "B17020" & variable_index == "002") %>%
-    #   separate(concept, into = c("concept", "race_ethnicity"), sep = "\\(", remove = F) %>%
-    #   mutate(race_ethnicity = str_remove(str_to_title(race_ethnicity), "\\)"),
-    #          race_ethnicity = ifelse(is.na(race_ethnicity), "All races",
-    #                                  ifelse(race_ethnicity == "Hispanic Or Latino", "Latinx", race_ethnicity)),
-    #          text = str_wrap(paste0(race_ethnicity, ": ", round(percent, 1), "%"), 20),
-    #          year = lubridate::ymd(year, truncated = 2L))
-    
     p <- ia_counties_temporal_tidy %>%
       filter(county_name %in% input$region_choice & category == "poverty") %>%
       ggplot(aes(year, estimate, color = race_ethnicity, group = race_ethnicity, text = text)) +
@@ -189,20 +144,6 @@ nu_comm_server <- function(input, output, session) {
     
     
   })
-  
-  # bachelors <- reactive({
-  #   
-  #   ia_counties_temporal_tidy %>%
-  #     filter(county_name %in% input$region_choice & substr(variable, 1, 6) == "C15002" & variable_index %in% c("006", "011")) %>%
-  #     separate(concept, into = c("concept", "race_ethnicity"), sep = "\\(", remove = F) %>%
-  #     mutate(label = str_replace(label, ":", ", "),
-  #            race_ethnicity = str_remove(str_to_title(race_ethnicity), "\\)"),
-  #            race_ethnicity = ifelse(is.na(race_ethnicity), "All races",
-  #                                    ifelse(race_ethnicity == "Hispanic Or Latino", "Latinx", race_ethnicity)),
-  #            text = str_wrap(paste0(race_ethnicity, ": ", round(percent, 1), "%"), 20),
-  #            year = lubridate::ymd(year, truncated = 2L))
-  #   
-  # })
   
   output$bachelors_male_disparities <- renderPlotly({
     
@@ -237,7 +178,7 @@ nu_comm_server <- function(input, output, session) {
     
     p <- ia_counties_temporal_tidy %>%
       filter(county_name %in% input$region_choice & category == "bachelors" & disaggregation == "Female") %>%
-      ggplot(aes(year, percent, color = race_ethnicity, group = race_ethnicity, text = text)) +
+      ggplot(aes(year, estimate, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
       scale_color_manual(values = c(hex_green, hex_purple),
                          breaks = c("Latinx", "White Alone")) +

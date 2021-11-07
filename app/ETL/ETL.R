@@ -26,7 +26,7 @@ library(janitor)
 
 acs_yr <- 2019
 # Variables and descriptions - pull all available variables
-acs_vars <- load_variables(acs_yr, "acs5", cache = TRUE)
+acs_vars <- tidycensus::load_variables(acs_yr, "acs5", cache = TRUE)
 
 #--------
 # State
@@ -141,12 +141,12 @@ temporal_variables_df <- acs_vars %>%
 
 get_county_data <- function(year) {
   
-  get_acs(geography = "county",
-          variables = temporal_variables_df$name,
-          state = "IA",
-          survey = "acs5",
-          year = year,
-          geometry = FALSE) %>%
+  tidycensus::get_acs(geography = "county",
+                      variables = temporal_variables_df$name,
+                      state = "IA",
+                      survey = "acs5",
+                      year = year,
+                      geometry = FALSE) %>%
     mutate(year = year)
   
 }
@@ -162,12 +162,12 @@ poverty_variables <- acs_vars %>%
 
 get_county_poverty <- function(year) {
   
-  get_acs(geography = "county",
-          variables = poverty_variables$name,
-          state = "IA",
-          survey = "acs5",
-          year = year,
-          geometry = FALSE) %>%
+  tidycensus::get_acs(geography = "county",
+                      variables = poverty_variables$name,
+                      state = "IA",
+                      survey = "acs5",
+                      year = year,
+                      geometry = FALSE) %>%
     mutate(year = year)
   
 }
@@ -270,7 +270,6 @@ poverty <- ia_counties_temporal_processed %>%
 bachelors <- ia_counties_temporal_processed %>%
   filter(substr(variable, 1, 6) == "C15002" & variable_index %in% c("002", "006", "007", "011")) %>%
   select(year, race_ethnicity, county_name, concept, label, estimate) %>%
-
   pivot_wider(names_from = label, values_from = estimate) %>%
   mutate(Male = `Male:Bachelor's degree or higher`/`Male:`*100,
          Female = `Female:Bachelor's degree or higher`/`Female:`*100) %>%
@@ -282,7 +281,7 @@ bachelors <- ia_counties_temporal_processed %>%
          category = "bachelors")
 
 # Stack all the subjects back together
-ia_counties_temporal_tidy <- rbind(employment, income, homeownership, poverty)
+ia_counties_temporal_tidy <- rbind(employment, income, homeownership, poverty, bachelors)
 
 write_csv(ia_counties_temporal_tidy, glue("ETL/data/ia_counties_{acs_yr-10}_{acs_yr}.csv"))
 # ia_counties_temporal_tidy <- read_csv(glue("ETL/data/ia_counties_{acs_yr-10}_{acs_yr}.csv"))
