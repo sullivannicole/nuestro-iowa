@@ -24,6 +24,7 @@ library(janitor)
 
 # options(tigris_use_cache = FALSE)
 
+acs_yr <- 2019
 # Variables and descriptions - pull all available variables
 acs_vars <- load_variables(acs_yr, "acs5", cache = TRUE)
 
@@ -82,9 +83,8 @@ ia_counties <- get_acs(geography = "county",
 # Rejoin data with descriptions & create percentages
 ia_counties_tidy <- ia_counties %>% 
   left_join(acs_vars, by = c("variable" = "name")) %>%
-  mutate(variable2 = variable,
-         GEOID = as.character(GEOID)) %>%
-  separate(variable2, into = c("variable_group", "variable_index"), sep = "_") %>%
+  mutate(GEOID = as.character(GEOID)) %>%
+  separate(variable, into = c("variable_group", "variable_index"), sep = "_", remove = F) %>%
   group_by(NAME, variable_group) %>%
   mutate(denom = ifelse(variable_index == "001", estimate, NA),
          denom = max(denom, na.rm = T)) %>%
@@ -115,7 +115,8 @@ st_write(ia_county_shp, "ia_county_shp.shp")
 # Some variables selected above were not disaggregated by race/ethnicity prior to 2017
 # So pull only all races, white alone, and Hispanic
 race_suffixes <- c('_', 'A', 'I')
-temporal_vars <- c(  
+
+temporal_variables <- c(  
   # Homeownership
   "B25003",
   
@@ -132,16 +133,16 @@ temporal_vars <- c(
   "C15002"
 )
 
-temp_vars_list <- map(temporal_vars, function(x) glue("{x}{race_suffixes}")) %>% unlist()
+temporal_variables_list <- map(temporal_variables, function(x) glue("{x}{race_suffixes}")) %>% unlist()
 
-temporal_vars <- acs_vars %>%
+temporal_variables_df <- acs_vars %>%
   distinct(name) %>%
-  filter(substr(name, 1, 7) %in% temp_vars_list)
+  filter(substr(name, 1, 7) %in% temporal_variables_list)
 
 get_county_data <- function(year) {
   
   get_acs(geography = "county",
-          variables = temporal_vars$name,
+          variables = temporal_variables_df$name,
           state = "IA",
           survey = "acs5",
           year = year,
@@ -156,13 +157,13 @@ ia_counties_temporal <- map_df(c(acs_yr-10):acs_yr, get_county_data)
 # looks to be due to how tidycensus pulls vars
 # so pull separately
 
-poverty_vars <- acs_vars %>%
+poverty_variables <- acs_vars %>%
   filter(substr(name, 1, 7) %in% c("B17020_", "B17020A", "B17020I"))
 
 get_county_poverty <- function(year) {
   
   get_acs(geography = "county",
-          variables = poverty_vars$name,
+          variables = poverty_variables$name,
           state = "IA",
           survey = "acs5",
           year = year,
@@ -171,27 +172,120 @@ get_county_poverty <- function(year) {
   
 }
 
-ia_counties_pov_temporal <- map_df(c(acs_yr-6):acs_yr, get_county_poverty)
+ia_counties_poverty_temporal <- map_df(c(acs_yr-6):acs_yr, get_county_poverty)
 
 # Select Latinx variables needed for dashboard
-# Rejoin data with descriptions & create percentages
-ia_counties_temporal_tidy <- ia_counties_temporal %>%
-  rbind(ia_counties_pov_temporal) %>%
+# 
+# ia_counties_temporal_tidy <- ia_counties_temporal %>%
+#   rbind(ia_counties_poverty_temporal) %>%
+#   left_join(acs_vars, by = c("variable" = "name")) %>%
+#   mutate(GEOID = as.character(GEOID)) %>%
+#   separate(variable, into = c("variable_group", "variable_index"), sep = "_", remove = F) %>%
+#   group_by(NAME, variable_group, year) %>%
+#   mutate(denom = ifelse(variable_index == "001", estimate, NA),
+#          denom = max(denom, na.rm = T)) %>%
+#   ungroup() %>%
+#   mutate(prop = estimate/denom,
+#          percent = estimate/denom*100,
+#          county_name = str_replace_all(NAME, " County, Iowa", ""),
+#          label = str_replace_all(label, "Estimate!!|Total:|!!", ""))
+
+# Temporal data is more nuanced by category (different denominators etc.)
+# so each category is treated on its own and then stacked back together
+
+# Clean up raw ACS data
+ia_counties_temporal_processed <- ia_counties_temporal %>%
+  rbind(ia_counties_poverty_temporal) %>%
   left_join(acs_vars, by = c("variable" = "name")) %>%
-  mutate(variable2 = variable,
-         GEOID = as.character(GEOID)) %>%
-  separate(variable2, into = c("variable_group", "variable_index"), sep = "_") %>%
-  group_by(NAME, variable_group, year) %>%
-  mutate(denom = ifelse(variable_index == "001", estimate, NA),
-         denom = max(denom, na.rm = T)) %>%
+  mutate(GEOID = as.character(GEOID)) %>%
+  separate(variable, into = c("variable_group", "variable_index"), sep = "_", remove = F) %>%
+  mutate(county_name = str_replace_all(NAME, " County, Iowa", ""),
+         label = str_replace_all(label, "Estimate!!|Total:|!!", ""),
+         concept = str_replace(concept,"\\(IN 2019 INFLATION-ADJUSTED DOLLARS\\)", "")) %>%
+  
+  separate(concept, into = c("concept", "race_ethnicity"), sep = "\\(", remove = F) %>%
+  mutate(race_ethnicity = str_trim(str_to_title(str_remove_all(race_ethnicity, "HOUSEHOLDER|\\)"))),
+         # race_ethnicity = str_trim(str_to_title(str_remove_all(race_ethnicity, "HOUSEHOLDER|\\)"))),
+         race_ethnicity = ifelse(is.na(race_ethnicity), "All races",
+                                 ifelse(race_ethnicity == "Hispanic Or Latino", "Latinx", race_ethnicity)),
+         year = lubridate::ymd(year, truncated = 2L)) %>%
+  filter(race_ethnicity %in% c("All races", "White Alone", "Latinx"))
+
+
+# Process data separately by subject matter
+employment <- ia_counties_temporal_processed %>%
+  filter(substr(variable, 1, 6) == "B20005" & variable_index %in% c("002", "003", "028", "049", "050", "075")) %>%
+  mutate(label = case_when(variable_index == "002" ~ "males",
+                           variable_index == "049" ~ "females",
+                           
+                           # Consider categories "full-time w/ earnings" and "other w/ earnings" the same
+                           variable_index %in% c("003", "028") ~ "males_with_earnings",
+                           variable_index %in% c("050", "075") ~ "females_with_earnings")) %>%
+  
+  group_by(year, race_ethnicity, county_name, label, concept) %>%
+  summarize(estimate = sum(estimate, na.rm = T))  %>%
   ungroup() %>%
-  mutate(prop = estimate/denom,
-         percent = estimate/denom*100,
-         county_name = str_replace_all(NAME, " County, Iowa", ""),
-         label = str_replace_all(label, "Estimate!!|Total:|!!", ""))
+  pivot_wider(names_from = label, values_from = estimate) %>%
+  mutate(Male = males_with_earnings/males*100,
+         Female = females_with_earnings/females*100) %>%
+  select(-c(males_with_earnings, males, females_with_earnings, females)) %>%
+  pivot_longer(cols = c(Male, Female), 
+               names_to = "disaggregation",
+               values_to = "estimate") %>%
+  mutate(text = str_wrap(paste0(race_ethnicity, ": ", round(estimate), "%")),
+         category = "employment")
 
-write_csv(ia_counties_temporal_tidy, glue("ia_counties_{acs_yr-10}_{acs_yr}.csv"))
+income <- ia_counties_temporal_processed %>%
+  filter(substr(variable, 1, 6) == "B19013") %>%
+  mutate(text = str_wrap(paste0(race_ethnicity, ": $", formatC(estimate, format = "d", big.mark = ",")), 20),
+         disaggregation = NA,
+         category = "income") %>%
+  select(year, race_ethnicity, county_name, concept, estimate, text, disaggregation, category)
 
+homeownership <- ia_counties_temporal_processed %>%
+  filter(substr(variable, 1, 6) == "B25003") %>%
+  mutate(label = ifelse(label == "", "Total_pop", label)) %>%
+  select(year, race_ethnicity, county_name, concept, label, estimate) %>%
+  pivot_wider(names_from = label, values_from = estimate) %>%
+  mutate(Owners = `Owner occupied`/Total_pop*100,
+         Renters = `Renter occupied`/Total_pop*100) %>%
+  select(-c(`Owner occupied`, `Renter occupied`, Total_pop)) %>%
+  pivot_longer(cols = c(Owners, Renters), 
+               names_to = "disaggregation",
+               values_to = "estimate") %>%
+  mutate(text = str_wrap(paste0(race_ethnicity, ": ", round(estimate, 1), "%")),
+         category = "homeownership")
+
+poverty <- ia_counties_temporal_processed %>%
+  filter(substr(variable, 1, 6) == "B17020" & variable_index %in% c("001", "002")) %>%
+  select(year, race_ethnicity, county_name, concept, label, estimate) %>%
+  mutate(label = ifelse(label == "", "Total_pop", "Income_below_poverty")) %>%
+  pivot_wider(names_from = label, values_from = estimate) %>%
+  mutate(estimate = Income_below_poverty/Total_pop*100) %>%
+  select(-c(Income_below_poverty, Total_pop)) %>%
+  mutate(text = str_wrap(paste0(race_ethnicity, ": ", round(estimate, 1), "%"), 20),
+         category = "poverty",
+         disaggregation = NA)
+
+bachelors <- ia_counties_temporal_processed %>%
+  filter(substr(variable, 1, 6) == "C15002" & variable_index %in% c("002", "006", "007", "011")) %>%
+  select(year, race_ethnicity, county_name, concept, label, estimate) %>%
+
+  pivot_wider(names_from = label, values_from = estimate) %>%
+  mutate(Male = `Male:Bachelor's degree or higher`/`Male:`*100,
+         Female = `Female:Bachelor's degree or higher`/`Female:`*100) %>%
+  select(-c(`Female:Bachelor's degree or higher`,`Female:`, `Male:Bachelor's degree or higher`,`Male:`)) %>%
+  pivot_longer(cols = c(Male, Female), 
+               names_to = "disaggregation",
+               values_to = "estimate") %>%
+  mutate(text = str_wrap(paste0(race_ethnicity, ": ", round(estimate), "%")),
+         category = "bachelors")
+
+# Stack all the subjects back together
+ia_counties_temporal_tidy <- rbind(employment, income, homeownership, poverty)
+
+write_csv(ia_counties_temporal_tidy, glue("ETL/data/ia_counties_{acs_yr-10}_{acs_yr}.csv"))
+# ia_counties_temporal_tidy <- read_csv(glue("ETL/data/ia_counties_{acs_yr-10}_{acs_yr}.csv"))
 #-------------------------
 # Pull from data.iowa.gov
 #-------------------------
