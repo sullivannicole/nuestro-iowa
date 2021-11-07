@@ -1,4 +1,10 @@
 /* Sidebar */
+#app_sidebar {
+  
+  background-color: #f04e25 !important;
+  
+}
+
 .navbar-vertical.navbar-expand-md {
                           overflow-y: hidden !important;
                           padding-left: 40px !important; 
@@ -20,6 +26,7 @@
                     bottom:0;
                     right:0; 
                     left:0;
+                    background-image: linear-gradient(to right, #f04e25 , #fdcc0e) !important;
 }
 
 .tab-1-about-container {
@@ -56,7 +63,7 @@
                     left:0;
                     top:0;
                     overflow-x: hidden;
-                    background-image: linear-gradient(to right, #EA445B,  #EC603E);
+                    background-image: linear-gradient(to right, #f04e25,  #9e1d23);
                     }
                     
  #region_pop {
