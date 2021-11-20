@@ -74,7 +74,7 @@ tab_1_alt_a <- argonTabItem(
                                                    This dashboard provides a data snapshot of the Latinx community in the Des Moines Metropolitan Area. 
                                                    Users can learn about Nuestro Iowa: Demographic trends, economic contributions, housing, education, and health. 
                                                    These baseline data show community strengths and opportunities. 
-                                                   The six-county Des Moines metropolitan region includes Dallas, Guthrie, Jasper, Madison, Polk, and Warren Counties. 
+                                                   This dashboard includes all counties in the region with Latinx populations large enough to present useful data: Dallas, Jasper, Polk, and Warren Counties.
                                                    The dashboard highlights adjacent Marshall County because of its large Latinx population and direct proximity to the metro.
                                                    <br><br>
                                                    
@@ -91,8 +91,8 @@ esencial para su futuro. Este tablero nos da una síntesis de datos sobre la com
 latina en la zona metropolitana de Des Moines. Los usuarios pueden aprender más
 acerca de las tendencias demográficas, contribuciones económicas, situación de
 vivienda, educación y salud. Estos datos de referencia muestran las fortalezas y
-oportunidades de la comunidad. La región metropolitana de Des Moines abarca seis
-condados: Dallas, Guthrie, Jasper, Madison, Polk y Warren. El tablero destaca al
+oportunidades de la comunidad. 
+Este tablero incluye datos de cuatro condados de la zona metropolitana con población latina significativa: Dallas, Jasper, Madison y Warren. El tablero destaca al
 condado aledaño de Marshall, debido a su numerosa población latina y proximidad
 directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
                                    # actionButton(inputId = 'jumpToP2', label = 'Jump to Second Tab',
