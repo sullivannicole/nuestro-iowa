@@ -67,7 +67,9 @@ tab_2_alt_a <- argonTabItem(
                                       color: #172B4D; 
                                       font-size: 15px; 
                                       /*font-weight: bold;*/",
-                             withLoader(htmlOutput("fast_facts"), loader = "loader1")))
+                             withLoader(htmlOutput("fast_facts"), loader = "loader1"),
+                             "The +/- are called margins of error, and express the uncertainty about these estimates.
+                             They're smaller in large areas and bigger in small areas."))
                
       ) # End row
       

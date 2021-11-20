@@ -223,7 +223,11 @@ nu_county_server <- function(input, output, session) {
       mutate(ymax = cumsum(prop),
              ymin = lag(ymax),
              ymin = ifelse(is.na(ymin), 0, ymin),
-             label = str_replace_all(label, "Estimate!!Total:!!", "")) %>%
+             label = str_replace_all(label, "Estimate!!Total:!!", ""),
+             label = case_when(label == "Native; born outside the United States" ~ "Born abroad to US citizens",
+                               label == "Foreign born" ~ "Born abroad",
+                               label == "Born in state of residence" ~ "Born in Iowa",
+                               TRUE ~ label)) %>%
       mutate_at(c("ymin", "ymax"), rescale, to = pi*c(-.5, .5), from = 0:1)
     
   })
@@ -246,10 +250,10 @@ nu_county_server <- function(input, output, session) {
   
   output$arcplot_origin_text2 <- renderText({ 
     
-    born_ia <- if(origin_df()$percent[origin_df()$label == "Born in state of residence"] > 0)  glue("{round(origin_df()$percent[origin_df()$label == 'Born in state of residence'], 1)}%  of the county's Latinx are Iowa-born. ") else NULL
+    born_ia <- if(origin_df()$percent[origin_df()$label == "Born in Iowa"] > 0)  glue("{round(origin_df()$percent[origin_df()$label == 'Born in state of residence'], 1)}%  of the county's Latinx are Iowa-born. ") else NULL
     born_other_state <- if(origin_df()$percent[substr(origin_df()$label, 9, 13) == "other"] > 0)  glue("Another {round(origin_df()$percent[substr(origin_df()$label, 9, 13) == 'other'], 1)}% of the county's Latinx Iowans were born in another state in the US. ") else NULL
-    native_born <- if(origin_df()$percent[substr(origin_df()$label, 1, 6) == "Native"] > 0) glue("Of the rest of the Latinx in {input$county_choice2}, {round(origin_df()$percent[substr(origin_df()$label, 1, 6) == 'Native'], 1)}% are native, born outside the US. ") else NULL
-    foreign_born <- if(origin_df()$percent[substr(origin_df()$label, 1, 7) == "Foreign"] > 0) glue("An estimated {round(origin_df()$percent[substr(origin_df()$label, 1, 7) == 'Foreign'], 1)}% of the county's Latinx were foreign born. ") else NULL
+    native_born <- if(origin_df()$percent[origin_df()$label == "Born abroad to US citizens"] > 0)  glue("Of the rest of the Latinx in {input$county_choice2}, {round(origin_df()$percent[origin_df()$label == 'Born abroad to US citizens'], 1)}% are native, born outside the US. ") else NULL
+    foreign_born <- if(origin_df()$percent[origin_df()$label == "Born abroad"] > 0) glue("An estimated {round(origin_df()$percent[origin_df()$label == 'Born abroad'], 1)}% of the county's Latinx were foreign born. ") else NULL
     
     paste0(born_ia, born_other_state, native_born, foreign_born)
     
