@@ -379,6 +379,20 @@ grad_rates <- map2(docs, c(2010:2020), function(x, y) {
     filter(!is.na(row_ind)) %>%
     select(-row_ind)
   
+  # col_names <- tf_head %>%
+  #   mutate(id = row_number()) %>%
+  #   slice((n()-1):n()) %>%
+  #   gather(everything(), key = "col", value = "value", -id) %>%
+  #   mutate(race_ethnicity = ifelse(value %in% c("White",
+  #                                               "Hispanic", 
+  #                                               "American Indian", 
+  #                                               "African American", 
+  #                                               "Two or More Races",
+  #                                               "Asian"), value, NA)) %>%
+  #   fill(race_ethnicity, .direction = "down") %>%
+  #   mutate(value = paste(value, race_ethnicity, sep = "_")) %>%
+  #   filter(id == max(id))
+  
   col_names <- tf_head %>%
     mutate(id = row_number()) %>%
     slice((n()-1):n()) %>%
@@ -390,6 +404,10 @@ grad_rates <- map2(docs, c(2010:2020), function(x, y) {
                                                 "Two or More Races",
                                                 "Asian"), value, NA)) %>%
     fill(race_ethnicity, .direction = "down") %>%
+    group_by(race_ethnicity) %>%
+    mutate(race_id = row_number()) %>%
+    ungroup() %>%
+    mutate(race_ethnicity = ifelse(race_id <= 6, race_ethnicity, "Other")) %>%
     mutate(value = paste(value, race_ethnicity, sep = "_")) %>%
     filter(id == max(id))
   
@@ -406,18 +424,17 @@ hs_grad_rates <- grad_rates %>%
   filter(!(county_na %in% c("county", "County"))) %>%
   mutate(county = as.numeric(county_na)) %>%
   left_join(county_fips, by = "county") %>%
-  rename(Latinx = rate_hispanic,
-         White = rate_white) %>%
-  select(NAME, year, Latinx, White) %>%
-  gather(Latinx, White, key = "race_ethnicity", value = "rate") %>%
-  mutate(rate = as.numeric(ifelse(rate %like% "%\\*%", NA, rate))) %>%
-  group_by(NAME, race_ethnicity, year) %>%
-  summarize(average_rate = mean(rate, na.rm = T)) %>%
+  select(NAME, year, ends_with("hispanic"), ends_with("white"), -starts_with("rate")) %>%
+  group_by(NAME, year) %>%
+  summarize(Hispanic = sum(as.numeric(numerator_hispanic), na.rm = T) / sum(as.numeric(denominator_hispanic), na.rm = T)*100,
+            White = sum(as.numeric(numerator_white), na.rm = T) / sum(as.numeric(denominator_white), na.rm = T)* 100) %>%
+  ungroup() %>%
+  gather(Hispanic, White, key = "race_ethnicity", value = "average_rate") %>%
   ungroup() %>%
   mutate(year = lubridate::ymd(year, truncated = 2L),
-         text = paste(race_ethnicity, ": ", round(average_rate, 1), "%"))
+         text = paste0(race_ethnicity, ": ", round(average_rate, 1), "%"))
 
-write_csv(hs_grad_rates, "ia_county_hs_rates_2010_2020.csv")
+write_csv(hs_grad_rates, "ETL/data/ia_county_hs_rates_2010_2020.csv")
 
 #-------------------------
 # State & county combined
