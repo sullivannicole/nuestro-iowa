@@ -51,25 +51,28 @@ write_csv(ia_state, glue("ia_state_{acs_yr-10}_{acs_yr}.csv"))
 vars_list <- acs_vars %>%
   distinct(name) %>%
   filter(substr(name, 1, 7) %in% c(# Demographics & hh-level
-                                   "B01001_", "B01001I", "B01002I", "B01002_", "B12002I", "B11001I", "B10051I", "B16006_",
-                                   
-                                   # Latinx birth/migration
-                                   "B03003_", "B06004I", "B03001_",
-                                   
-                                   # Employment, income, poverty status
-                                   "B20005I", "B19013I", "B19013_", "B17020I", 
-                                   
-                                  # Means of transportation
-                                  "B08105I",
-                                   
-                                   # Homeownership
-                                   "B25003I",
-                                   
-                                   # Education
-                                   "B14007I", "C15010I", "C15002I", "B28009I",
-                                  
-                                  # Health insurance
-                                  "C27001I"))
+    "B01001_", "B01001I", "B01002I", "B01002_", "B12002I", "B11001I", "B10051I", "B16006_",
+    
+    # Latinx birth/migration
+    "B03003_", "B06004I", "B03001_",
+    
+    # Employment, income, poverty status
+    "B20005I", "B19013I", "B19013_", "B17020I", 
+    
+    # Means of transportation
+    "B08105I",
+    
+    # Homeownership
+    "B25003I",
+    
+    # Education (Enrollment, Bachelor's field, Attainment by sex)
+    "B14007I", "C15010I", "C15002I", 
+    
+    # Computer
+    "B28009I",
+    
+    # Health insurance
+    "C27001I"))
 
 # County stats from Census data
 ia_counties <- tidycensus::get_acs(geography = "county",
@@ -88,18 +91,23 @@ ia_counties_tidy <- ia_counties %>%
   
   mutate(denom = ifelse((variable_group == "B20005I" & variable_index %in% c("002", "049")), estimate,
                         ifelse((variable_group == "C27001I" & variable_index %in% c("002", "005", "008")), estimate,
-                        ifelse(variable_index == "001", estimate, NA))),
+                               ifelse((variable_group == "C15002I" & variable_index %in% c("002", "007")), estimate,
+                                      ifelse(variable_index == "001", estimate, NA)))),
          
          # Denominator for employment by sex should be the respective sex, not the total pop, so disaggregate
-         gender = ifelse(variable_group == "B20005I" & variable_index %in% c("002", "003", "027", "028"), "Male",
-                         ifelse(variable_group == "B20005I" & variable_index %in% c("049","050", "074", "075"), "Female", "Across all")),
+         gender_employ = ifelse(variable_group == "B20005I" & variable_index %in% c("002", "003", "027", "028"), "Men",
+                                ifelse(variable_group == "B20005I" & variable_index %in% c("049","050", "074", "075"), "Women", "Across all")),
          
          # Denominator for insured by age group should be the respective age group, not the total pop, so disaggregate
          age_group = ifelse(variable_group == "C27001I" & variable_index %in% c("002", "003", "004"), "Under 19",
                             ifelse(variable_group == "C27001I" & variable_index %in% c("005", "006", "007"), "19 to 64",
-                                   ifelse(variable_group == "C27001I" & variable_index %in% c("008", "009", "010"), "Over 64", "Across all")))
-         ) %>%
-  group_by(NAME, variable_group, gender, age_group) %>%
+                                   ifelse(variable_group == "C27001I" & variable_index %in% c("008", "009", "010"), "Over 64", "Across all"))),
+         
+         # Denominator for edu attainment by sex should be the respective sex, not the total pop, so disaggregate
+         gender_edu = ifelse(variable_group == "C15002I" & variable_index %in% c("002", "003", "004", "005", "006"), "Men",
+                             ifelse(variable_group == "C15002I" & variable_index %in% c("007", "008", "009", "010", "011"), "Women", "Across all"))
+  ) %>%
+  group_by(NAME, variable_group, gender_employ, gender_edu, age_group) %>%
   
   # Get denominator
   mutate(denom = max(denom, na.rm = T)) %>%
