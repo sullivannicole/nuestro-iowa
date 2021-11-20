@@ -97,7 +97,11 @@ condado aledaño de Marshall, debido a su numerosa población latina y proximida
 directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
                                    # actionButton(inputId = 'jumpToP2', label = 'Jump to Second Tab',
                                    #              onclick ="window.open('http://google.com', '_blank')")),
-                                   argonColumn(width = 4, argonImage(src = "latam.svg", floating = TRUE) %>% argonBlur() %>% argonPersp(side = "right") ))),
+                                   argonColumn(width = 4, 
+                                               argonImage(src = "latam_dk_blue.svg", floating = TRUE) %>% argonBlur() %>% argonPersp(side = "right"),
+                                               div(style = "height: 195px !important;"),
+                                               argonImage(src = "iowa_dk_blue.svg", floating = TRUE) %>% argonBlur() %>% argonPersp(side = "right")
+                                               ))),
                       br(),
                       br(),
                       br(),
@@ -105,7 +109,7 @@ directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
       )),
   
   # Row 1: info cards
-  div(style = "margin-top: 1500px !important;",
+  div(style = "margin-top: 1400px !important;",
       argonRow(
         
         # Horizontal Tabset 1
