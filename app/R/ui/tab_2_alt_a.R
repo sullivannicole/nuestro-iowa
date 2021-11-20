@@ -52,17 +52,16 @@ tab_2_alt_a <- argonTabItem(
   
   # # Row 1: Cards
   div(style = "padding: 650px 15px 0px 45px;
-               margin-bottom: 125px",
+               margin-bottom: 100px",
       
-      argonRow(argonColumn(width = 8,
+      argonRow(argonColumn(width = 7,
+                           br(),
+                           br(),
+                           br(),
                            argonH1("Overview", display = 3),
-                           # htmlOutput("overview")),
-                           "Placeholder text.
-                            Placeholder text.
-                            Placeholder text.
-                            Placeholder text."),
+                           textOutput("county_overview")),
                
-               argonCard(width = 4,
+               argonCard(width = 5,
                          title = "Fast Facts",
                          div(style = "display: inline-block; 
                                       color: #172B4D; 
