@@ -5,7 +5,7 @@ tab_3 <- argonTabItem(
   argonRow(argonColumn(br(), h1("County:")) %>% argonTextColor(color = "primary") %>% argonMargin(orientation = 'l', value = 2),
            argonColumn(width = 10, pickerInput("region_choice", width = "100%", # Make it span the entire column, resizing automatically
                                                label = "", 
-                                               choices = c( "Dallas","Guthrie", "Jasper", "Madison","Marshall", "Polk", "Warren"),
+                                               choices = c( "Dallas", "Jasper", "Marshall", "Polk", "Warren"),
                                                # When ready to go to whole state, delete line above and un-comment line below:
                                                # choices = county_names$county_name, 
                                                selected = c("Marshall", "Polk"),
@@ -53,14 +53,14 @@ tab_3 <- argonTabItem(
     width = 12,
     
     argonRow(div(style = "padding: 20px 0px 20px 50px",
-                 h3("Males with earnings in previous 12 months"))),
+                 h3("Men with earnings in previous 12 months"))),
     argonRow(argonColumn(width = 1),
              argonColumn(width = 10,
                          withLoader(plotlyOutput("time_employment_male"), loader = "loader1")),
              argonColumn(width = 1)),
     
     argonRow(div(style = "padding: 20px 0px 20px 50px",
-                 h3("Females with earnings in previous 12 months"))),
+                 h3("Women with earnings in previous 12 months"))),
     argonRow(argonColumn(width = 1),
              argonColumn(width = 10,
                          withLoader(plotlyOutput("time_employment_female"), loader = "loader1")),
@@ -98,14 +98,14 @@ tab_3 <- argonTabItem(
     width = 12,
     
     argonRow(div(style = "padding: 20px 0px 20px 50px",
-                 h3("Males 25 and over with Bachelor's degree or higher"))),
+                 h3("Men 25 and over with Bachelor's degree or higher"))),
     argonRow(argonColumn(width = 1),
              argonColumn(width = 10,
                          withLoader(plotlyOutput("bachelors_male_disparities"), loader = "loader1")),
              argonColumn(width = 1)),
     
     argonRow(div(style = "padding: 20px 0px 20px 50px",
-                 h3("Females 25 and over with Bachelor's degree or higher"))),
+                 h3("Women 25 and over with Bachelor's degree or higher"))),
     argonRow(argonColumn(width = 1),
              argonColumn(width = 10,
                          withLoader(plotlyOutput("bachelors_female_disparities"), loader = "loader1")),
