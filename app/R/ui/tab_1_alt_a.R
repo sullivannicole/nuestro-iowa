@@ -8,9 +8,15 @@ card1_english <- argonColumn(h4("Latinx Community Highlights"),
                              br(),
                              HTML("<li>Latinx community turned around over a decade of pop. decline in Marshall County</li>"))
 
-card1_spanish <- "Cosby sweater eu banh mi, qui irure terry richardson ex squid. 
-            Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan 
-            american apparel, butcher voluptate nisi qui."
+card1_spanish <- argonColumn(h4("Aspectos destacados de la comunidad latina"),
+                          br(),
+                          div(HTML("<li>Hay 1,544 negocios latinos que generan <b>$159.6 millones</b> de dólares en ingresos anuales</li>")),
+                          br(),
+                          div(HTML("<li>Hay <b>52 mil residentes latinos </b> en el área metropolitana, una cifra que se duplicará para el año 2050 e impulsará el crecimiento de la población general de la zona metropolitana.</li>")),
+                          br(),
+                          div(HTML("<li>Hay <b>22 mil trabajadores latinos </b> que, colectivamente, generan mil millones de dólares en ingresos anuales, lo que representa una contribución importante a la economía de la región central de Iowa.</li>")),
+                          br(),
+                          HTML("<li>La comunidad latina transformó más de una década de pérdida de población en el condado de Marshall.</li>"))
 
 card2_english <- argonColumn(h4("Disparities (Compared with Whites)"),
                              div(HTML("<li>Average household income is <b>33% lower</b></li>")),
@@ -20,9 +26,13 @@ card2_english <- argonColumn(h4("Disparities (Compared with Whites)"),
                              div(HTML("<li><b>25 percentage point gap</b> in Bachelor's degree or higher completion</li>")),
                              div(HTML("<li><b>33 percentage point gap</b> in high school completion</li>")))
 
-card2_spanish <- "Cosby sweater eu banh mi, qui irure terry richardson ex squid. 
-            Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan 
-            american apparel, butcher voluptate nisi qui."
+card2_spanish <- argonColumn(h4("Disparidades (en comparación con los blancos)"),
+                             div(HTML("<li>Los ingresos familiares promedio son <b>33% más bajos</b></li>")),
+                             div(HTML("<li>La tasa de pobreza es <b>13 puntos porcentuales más alta</b></li>")),
+                             div(HTML("<li>La tasa de propiedad de vivienda es <b>24 puntos porcentuales más baja</b></li>")),
+                             div(HTML("<li>Existe una brecha de <b>21 puntos porcentuales</b> en la cobertura médica para las personas de entre 19 y 64 años.</li>")),
+                             div(HTML("<li>Existe una brecha de <b>25 puntos porcentuales </b>en la culminación de estudios universitarios a nivel de licenciatura o postgrado </li>")),
+                             div(HTML("<li>Existe una brecha de <b>33 puntos porcentuales</b> en la culminación de estudios de preparatoria </li>")))
 
 card3_english <- argonColumn(h4("Root causes of disparities"),
                              div(HTML("<li><b>Eliminating education disparities</b> will largely close the income and poverty gap</li>")),
@@ -31,9 +41,10 @@ card3_english <- argonColumn(h4("Root causes of disparities"),
                              # br(),
                              div(HTML("<li>Latinx households face <b>additional barriers</b> to homeownership</li>")))
 
-card3_spanish <- "Cosby sweater eu banh mi, qui irure terry richardson ex squid. 
-            Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan 
-            american apparel, butcher voluptate nisi qui."
+card3_spanish <- argonColumn(h4("Causas fundamentales de las disparidades"),
+                             div(HTML("<li><b>La eliminación de las disparidades educativas</b> reducirá, en gran medida, las en ingresos y pobreza.</li>")),
+                             div(HTML("<li><b>La eliminación de las disparidades en ingresos y educación</b> reducirá, en gran medida, la brecha en la tasa de propiedad de vivienda.</li>")),
+                             div(HTML("<li>Las familias latinas enfrentan <b>obstáculos adicionales</b> para comprar sus viviendas propias.</li>")))
 
 tab_1_alt_a <- argonTabItem(
   tabName = "tab_1_alt_a",
@@ -57,9 +68,29 @@ tab_1_alt_a <- argonTabItem(
                                    argonColumn(width = 1),
                                    argonColumn(argonH1(display = 3, "A deep dive into la riqueza de Latinx-Iowan culture") %>% argonTextColor(color = "white"),
                                                br(),
-                                               div("Latinx Iowans represent a youthful, highly entrepeneurial, collective-minded subset of the Iowa population - 
-                  an invaluable part of the school system, workforce, and community. Latinx Iowans are also a fast-growing subpopulation, 
-                  and our contributions to Central Iowa make us a force to be reckoned with. Scroll on to learn more.") %>% argonTextColor(color = "white")),
+                                               div(HTML("Latinx Iowans represent a youthful, highly entrepeneurial, collective-minded subset of the Iowa population - an invaluable part of the school system, workforce, and community. 
+                                                   Latinx Iowans are also a fast-growing subpopulation, and our contributions to the state make us essential to Iowa’s future. 
+                                                   This dashboard provides a data snapshot of the Latinx community in the Des Moines Metropolitan Area. 
+                                                   Users can learn about Nuestro Iowa: Demographic trends, economic contributions, housing, education, and health. 
+                                                   These baseline data show community strengths and opportunities. 
+                                                   The six-county Des Moines metropolitan region includes Dallas, Guthrie, Jasper, Madison, Polk, and Warren Counties. 
+                                                   The dashboard highlights adjacent Marshall County because of its large Latinx population and direct proximity to the metro.
+                                                   <br><br>
+                                                   <h1 style = 'color: white; font-size: 35px;'>Análisis a fondo sobre la riqueza de los latinos en Iowa</h3>
+                                                   <br>
+                                                   Los latinos en Iowa representan un subconjunto de la población en Iowa que se
+caracteriza por ser joven, con un gran espíritu de emprendimiento y mentalidad
+colectivista, lo que los hace una parte invaluable del sistema escolar, la fuerza laboral y
+la comunidad en general. Como conjunto poblacional también estamos creciendo
+aceleradamente y nuestros aportes a la región central de Iowa nos hacen un elemento
+esencial para su futuro. Este tablero nos da una síntesis de datos sobre la comunidad
+latina en la zona metropolitana de Des Moines. Los usuarios pueden aprender más
+acerca de las tendencias demográficas, contribuciones económicas, situación de
+vivienda, educación y salud. Estos datos de referencia muestran las fortalezas y
+oportunidades de la comunidad. La región metropolitana de Des Moines abarca seis
+condados: Dallas, Guthrie, Jasper, Madison, Polk y Warren. El tablero destaca al
+condado aledaño de Marshall, debido a su numerosa población latina y proximidad
+directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
                                    # actionButton(inputId = 'jumpToP2', label = 'Jump to Second Tab',
                                    #              onclick ="window.open('http://google.com', '_blank')")),
                                    argonColumn(width = 4, argonImage(src = "latam.svg", floating = TRUE) %>% argonBlur() %>% argonPersp(side = "right") ))),
@@ -70,7 +101,7 @@ tab_1_alt_a <- argonTabItem(
       )),
   
   # Row 1: info cards
-  div(style = "margin-top: 550px !important;",
+  div(style = "margin-top: 1100px !important;",
       argonRow(
         
         # Horizontal Tabset 1
@@ -84,7 +115,7 @@ tab_1_alt_a <- argonTabItem(
             circle = FALSE,
             size = "sm",
             width = 12,
-            iconList = lapply(X = 1:2, FUN = icon, name = "hands-helping"),
+            # iconList = lapply(X = 1:2, FUN = icon, name = "hands-helping"),
             # iconList = lapply(X = 1:3, FUN = argonIcon, name = "atom"),
             argonTab(
               tabName = "Highlights",
@@ -110,7 +141,7 @@ tab_1_alt_a <- argonTabItem(
             circle = FALSE,
             size = "sm",
             width = 12,
-            iconList = lapply(X = 1:2, FUN = icon, name = "users"),
+            # iconList = lapply(X = 1:2, FUN = icon, name = "users"),
             argonTab(
               tabName = "Disparities",
               active = TRUE,
@@ -134,7 +165,7 @@ tab_1_alt_a <- argonTabItem(
             circle = FALSE,
             size = "sm",
             width = 12,
-            iconList = lapply(X = 1:2, FUN = icon, name = "key"),
+            # iconList = lapply(X = 1:2, FUN = icon, name = "key"),
             argonTab(
               tabName = "Causes of disparities",
               active = FALSE,
@@ -152,20 +183,27 @@ tab_1_alt_a <- argonTabItem(
   # Spacer div,
   div(style = "height: 75px;"),
   
-  # Row 2: About (short)
-  
+  # Row 2: Vision/mission
   div(class = "tab-1-about-container",
       argonH1("Nuestra Visión", display = 3) %>% argonTextColor("white"),
       div(style = "font-size: 35px; color: #172B4D;", HTML("A welcoming state where everyone thrives.<br>
-                                                            Un estado acogedor donde todes prosperen."))),
-  # Spacer div,
-  div(style = "margin-top: 500px;",
-      argonRow(argonColumn(
-        argonH1("About", display = 3),
-        br(),
-        "This dashboard..."))),
+                                                            Un estado acogedor donde todes prosperen.")),
+      br(),
+      argonH1("Nuestra Misión", display = 3) %>% argonTextColor("white"),
+      div(style = "font-size: 35px; color: #172B4D;", HTML("To accelerate Latinx collective impact by advancing representation, nurturing community development, 
+                                                            and fostering intercultural understanding through research and collaborations.<br><br>
+                                                            Acelerar el impacto colectivo de les latines al impulsar la representación, estimular el desarrollo comunitario y 
+                                                           fomentar el entendimiento intercultural mediante la investigación y las colaboraciones."))
+      ),
   
-  div(style = "height: 450px !important;")
+  # Get rid of "About" section - keep code for now, just in case
+  # div(style = "margin-top: 500px;",
+  #     argonRow(argonColumn(
+  #       argonH1("About", display = 3),
+  #       br(),
+  #       "This dashboard..."))),
+  # Spacer div
+  div(style = "height: 1000px !important;")
   
   
 )
