@@ -50,7 +50,8 @@ write_csv(ia_state, glue("ia_state_{acs_yr-10}_{acs_yr}.csv"))
 # If new plots or tables need to be added, simply add the variable to the list below
 vars_list <- acs_vars %>%
   distinct(name) %>%
-  filter(substr(name, 1, 7) %in% c(# Demographics & hh-level
+  filter(substr(name, 1, 7) %in% c(
+    # Demographics & hh-level (Sex by age - total and hispanic, Median age - total and hispanic, Marital status, Household type, Grandparent reponsible, Language spoken)
     "B01001_", "B01001I", "B01002I", "B01002_", "B12002I", "B11001I", "B10051I", "B16006_",
     
     # Latinx birth/migration
@@ -92,7 +93,8 @@ ia_counties_tidy <- ia_counties %>%
   mutate(denom = ifelse((variable_group == "B20005I" & variable_index %in% c("002", "049")), estimate,
                         ifelse((variable_group == "C27001I" & variable_index %in% c("002", "005", "008")), estimate,
                                ifelse((variable_group == "C15002I" & variable_index %in% c("002", "007")), estimate,
-                                      ifelse(variable_index == "001", estimate, NA)))),
+                                      ifelse((variable_group == "B12002I" & variable_index %in% c("002", "008")), estimate,
+                                             ifelse(variable_index == "001", estimate, NA))))),
          
          # Denominator for employment by sex should be the respective sex, not the total pop, so disaggregate
          gender_employ = ifelse(variable_group == "B20005I" & variable_index %in% c("002", "003", "027", "028"), "Men",
@@ -105,7 +107,11 @@ ia_counties_tidy <- ia_counties %>%
          
          # Denominator for edu attainment by sex should be the respective sex, not the total pop, so disaggregate
          gender_edu = ifelse(variable_group == "C15002I" & variable_index %in% c("002", "003", "004", "005", "006"), "Men",
-                             ifelse(variable_group == "C15002I" & variable_index %in% c("007", "008", "009", "010", "011"), "Women", "Across all"))
+                             ifelse(variable_group == "C15002I" & variable_index %in% c("007", "008", "009", "010", "011"), "Women", "Across all")),
+         
+         # Denominator for marital status sex should be the respective sex, not the total pop, so disaggregate
+         gender_marital = ifelse(variable_group == "B12002I" & variable_index %in% c("002", "003", "004", "005", "006", "007"), "Men",
+                             ifelse(variable_group == "B12002I" & variable_index %in% c("008", "009", "010", "011", "012", "013"), "Women", "Across all"))
   ) %>%
   group_by(NAME, variable_group, gender_employ, gender_edu, age_group) %>%
   
