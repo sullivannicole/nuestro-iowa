@@ -1,7 +1,8 @@
 # setwd("/Users/nicolesullivan/Documents/Professional/VandegriftHuting_consulting/nuestro-iowa/app")
 
 # # Only needs to be done once to load fonts into www folder
-
+# library(gfonts)
+#
 # setup_font(
 #   id = "karla",
 #   output_dir = "www/"
