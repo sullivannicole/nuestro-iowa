@@ -113,7 +113,7 @@ ia_counties_tidy <- ia_counties %>%
          gender_marital = ifelse(variable_group == "B12002I" & variable_index %in% c("002", "003", "004", "005", "006", "007"), "Men",
                              ifelse(variable_group == "B12002I" & variable_index %in% c("008", "009", "010", "011", "012", "013"), "Women", "Across all"))
   ) %>%
-  group_by(NAME, variable_group, gender_employ, gender_edu, age_group) %>%
+  group_by(NAME, variable_group, gender_employ, gender_edu, gender_marital, age_group) %>%
   
   # Get denominator
   mutate(denom = max(denom, na.rm = T)) %>%
