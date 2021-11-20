@@ -1,5 +1,6 @@
 argonFooter <- argonDashFooter(
-  copyrights = "Latinx Iowa Project, 2021",
+  copyrights = "Iowa Latinx Project, 2021",
+  "joel@vandegrifthuting.com"
   # src = "https://www.alexitoiowa.org",
   # argonFooterMenu(
   #   argonFooterItem("RinteRface", src = "https://github.com/RinteRface"),
