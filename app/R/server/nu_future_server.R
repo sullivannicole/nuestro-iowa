@@ -37,7 +37,7 @@ nu_future_server <- function(input, output, session) {
     
     data.frame(race_ethnicity = c(race_ethnicity_vctr, "Latinx"),
                category = c("Your choice", rep("Current state", 2)),
-               income = c(per_capita_income, 39812, 19312)) %>%
+               income = c(per_capita_income, 53071, 19312)) %>%
       mutate(text = paste0(category, "\n", race_ethnicity, ": $", formatC(round(income, 1), format="d", big.mark=",")))
     
     
