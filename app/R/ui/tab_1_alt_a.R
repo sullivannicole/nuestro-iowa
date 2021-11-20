@@ -41,9 +41,12 @@ card3_english <- argonColumn(h4("Root causes of disparities"),
                              # br(),
                              div(HTML("<li>Latinx households face <b>additional barriers</b> to homeownership</li>")))
 
-card3_spanish <- "Cosby sweater eu banh mi, qui irure terry richardson ex squid. 
-            Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan 
-            american apparel, butcher voluptate nisi qui."
+card3_spanish <- argonColumn(h4("Causas fundamentales de las disparidades"),
+                             div(HTML("<li><b>La eliminación de las disparidades educativas</b> reducirá, en gran medida, las en ingresos y pobreza.</li>")),
+                             # br(),
+                             div(HTML("<li><b>La eliminación de las disparidades en ingresos y educación</b> reducirá, en gran medida, la brecha en la tasa de propiedad de vivienda.</li>")),
+                             # br(),
+                             div(HTML("<li>Las familias latinas enfrentan <b>obstáculos adicionales</b> para comprar sus viviendas propias.</li>")))
 
 tab_1_alt_a <- argonTabItem(
   tabName = "tab_1_alt_a",
