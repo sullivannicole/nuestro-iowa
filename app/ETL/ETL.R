@@ -87,12 +87,19 @@ ia_counties_tidy <- ia_counties %>%
   separate(variable, into = c("variable_group", "variable_index"), sep = "_", remove = F) %>%
   
   mutate(denom = ifelse((variable_group == "B20005I" & variable_index %in% c("002", "049")), estimate,
-                        ifelse(variable_index == "001", estimate, NA)),
+                        ifelse((variable_group == "C27001I" & variable_index %in% c("002", "005", "008")), estimate,
+                        ifelse(variable_index == "001", estimate, NA))),
          
          # Denominator for employment by sex should be the respective sex, not the total pop, so disaggregate
          gender = ifelse(variable_group == "B20005I" & variable_index %in% c("002", "003", "027", "028"), "Male",
-                         ifelse(variable_group == "B20005I" & variable_index %in% c("049","050", "074", "075"), "Female", "Across all"))) %>%
-  group_by(NAME, variable_group, gender) %>%
+                         ifelse(variable_group == "B20005I" & variable_index %in% c("049","050", "074", "075"), "Female", "Across all")),
+         
+         # Denominator for insured by age group should be the respective age group, not the total pop, so disaggregate
+         age_group = ifelse(variable_group == "C27001I" & variable_index %in% c("002", "003", "004"), "Under 19",
+                            ifelse(variable_group == "C27001I" & variable_index %in% c("005", "006", "007"), "19 to 64",
+                                   ifelse(variable_group == "C27001I" & variable_index %in% c("008", "009", "010"), "Over 64", "Across all")))
+         ) %>%
+  group_by(NAME, variable_group, gender, age_group) %>%
   
   # Get denominator
   mutate(denom = max(denom, na.rm = T)) %>%
