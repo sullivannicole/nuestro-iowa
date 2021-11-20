@@ -12,7 +12,7 @@ tab_2_alt_a <- argonTabItem(
                argonColumn(width = 1),
                argonColumn(width = 4,
                            div(style = "height: 45px"),
-                           argonRow(argonH1(display = 3, "County") %>% argonTextColor("white")),
+                           argonRow(HTML("<h3 style = 'font-size: 35px;'>County</h3>")),
                            argonRow(pickerInput("county_choice2",
                                                 # width = "100%", # Make it span the entire column, resizing automatically
                                                 label = "",
@@ -22,8 +22,8 @@ tab_2_alt_a <- argonTabItem(
                                                 selected = "Polk",
                                                 multiple = FALSE,
                                                 options = list(create = FALSE,
-                                                               style = "btn-default",
-                                                               `live-search` = TRUE))),
+                                                               `live-search` = TRUE,
+                                                               style = 'btn-default'))),
                            br(),
                            div(style = "padding-left: 40px;",
                                argonRow(
@@ -58,7 +58,7 @@ tab_2_alt_a <- argonTabItem(
                            br(),
                            br(),
                            br(),
-                           argonH1("Overview", display = 3),
+                           argonH1("Overview", display = 1),
                            textOutput("county_overview")),
                
                argonCard(width = 5,
@@ -83,7 +83,7 @@ tab_2_alt_a <- argonTabItem(
                                              "the estimated number of Latinx people in the tract" = "as a raw num"),
                                            selected = "as a %"))),
            div(class = "map-container", 
-               div(style = "margin-left: 50px;", h1("Latinx population in county"), h3("Click on the dropdown to toggle the units shown on the map.")),
+               div(style = "margin-left: 50px;", HTML("<h2 style = 'font-size: 50px !important;'>Latinx population in county</h2>"), h3("Click on the dropdown to toggle the units shown on the map.")),
                br(),
                withLoader(leafletOutput("map2"), loader = "loader1"))),
   br(),
@@ -92,7 +92,7 @@ tab_2_alt_a <- argonTabItem(
   
   
   # Div around everything under map to push items down
-  div(style = "padding-top: 480px;",
+  div(style = "padding-top: 530px;",
       
       # Card 1: Demographics--------------------------------------------------------
       argonCard(
