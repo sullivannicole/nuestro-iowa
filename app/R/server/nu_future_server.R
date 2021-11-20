@@ -167,10 +167,14 @@ nu_future_server <- function(input, output, session) {
       labs(#title = str_to_upper("Additional Latinx Earnings (in $M)"),
         y = "",
         x = "") +
-      theme(axis.text = element_blank(),
-            axis.ticks = element_blank(),
-            legend.position = "none",
-            panel.background =  element_rect(fill = "white"))
+      project_ggtheme_y +
+      theme(axis.text.x = element_blank(),
+            axis.ticks.x = element_blank(),
+            axis.line.x = element_blank())
+      # theme(axis.text = element_blank(),
+      #       axis.ticks = element_blank(),
+      #       panel.background =  element_rect(fill = "white"))
+      
     #scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
     #dk_ggtheme
     
