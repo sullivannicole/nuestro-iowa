@@ -8,8 +8,8 @@ nu_county_server <- function(input, output, session) {
     ia_county_shp %>%
       mutate(input_status = ifelse(NAME == input$county_choice2, "1", "0")) %>%
       ggplot(aes(fill = input_status)) +
-      geom_sf(color = "#172B4D") +
-      scale_fill_manual(values = c("#172B4D", "#5E72E4")) +
+      geom_sf(color = hex_blue_contrast) +
+      scale_fill_manual(values = c(hex_blue_contrast, hex_purple)) +
       theme_void() +
       theme(legend.position = "none",
             panel.background = element_rect(fill = "transparent", color = "transparent"),
