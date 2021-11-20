@@ -5,6 +5,19 @@ h1, h2 {
   font-family: 'EB Garamond', serif;
 }
 
+/* Buttons throughout */
+.btn-danger {
+  background: #0b62ab !important;
+  border: #0b62ab !important;
+  
+}
+
+.selected {
+  background: #0b62ab !important;
+  border: #0b62ab !important;
+  color: white !important;
+}
+
 /* Sidebar */
 #app_sidebar {
   
@@ -102,7 +115,7 @@ h1, h2 {
 .map-btn-container {
                     position: absolute; 
                     z-index: 1; 
-                    padding-top: 115px
+                    padding-top: 155px;
 }
 
 /* Tab 4*/                    
