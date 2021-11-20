@@ -381,8 +381,10 @@ nu_county_server <- function(input, output, session) {
     
     gender_plot <- ggplot(gender_work_df(), aes(percent, label, fill = gender, text = text)) +
       geom_bar(stat = "identity", width = 0.4, position = position_dodge()) +
-      geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent + moe_pc), 
-                    width = 0.1, color = "#4f515c", position = position_dodge(0.4)) +
+      
+      # Don't include MOE's for now since we don't have them on everything
+      # geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent + moe_pc), 
+      #               width = 0.1, color = "#4f515c", position = position_dodge(0.4)) +
       scale_fill_manual(values = c(hex_green, hex_purple)) +
       labs(y = "", 
            x = glue("% of Latinx pop. in {unique(gender_work_df()$county_name)}")) +
@@ -621,8 +623,9 @@ nu_county_server <- function(input, output, session) {
     
     internet_bar <- ggplot(internet, aes(percent, label, text = text)) +
       geom_bar(stat = "identity", width = 0.4, fill = hex_orange) +
-      geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent+moe_pc), 
-                    width = 0.1, color = "#4f515c") +
+      # Don't include MOEs for now since we don't have them on everything
+      # geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent+moe_pc), 
+      #               width = 0.1, color = "#4f515c") +
       labs(y = "", 
            x = glue("% of Latinx pop. in {unique(internet$county_name)}")) +
       labs(fill = "") +
