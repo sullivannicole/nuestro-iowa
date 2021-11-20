@@ -60,7 +60,7 @@ tab_4 <- argonTabItem(
                                          #argonH1("20000", display = 2),
                                          div(style = "color: #172B4D; font-size: 50px; font-weight: bold;", 
                                              textOutput("per_capita_income_number")),
-                                         "IN ANNUAL INCOME PER LATINX IOWAN",
+                                         "IN AVERAGE ANNUAL INCOME PER LATINX-IOWAN",
                                          withLoader(plotlyOutput("plot_attainment", height = 200), loader = "loader1"),
                                          div(style = "color: #172B4D; font-size: 50px; font-weight: bold;", 
                                              textOutput("attainment_number")),
