@@ -67,7 +67,10 @@ tab_2_alt_a <- argonTabItem(
                                       color: #172B4D; 
                                       font-size: 15px; 
                                       /*font-weight: bold;*/",
-                             withLoader(htmlOutput("fast_facts"), loader = "loader1")))
+                             withLoader(htmlOutput("fast_facts"), loader = "loader1"),
+                             br(),
+                             "The +/- are called margins of error, and express the uncertainty about these estimates.
+                             They're smaller in large areas and bigger in small areas."))
                
       ) # End row
       
@@ -85,14 +88,14 @@ tab_2_alt_a <- argonTabItem(
            div(class = "map-container", 
                div(style = "margin-left: 50px;", HTML("<h2 style = 'font-size: 50px !important;'>Latinx population in county</h2>"), h3("Click on the dropdown to toggle the units shown on the map.")),
                br(),
-               withLoader(leafletOutput("map2"), loader = "loader1"))),
+               withLoader(leafletOutput("map2", height = 600), loader = "loader1"))),
   br(),
   br(),
   br(),
   
   
   # Div around everything under map to push items down
-  div(style = "padding-top: 530px;",
+  div(style = "padding-top: 770px;",
       
       # Card 1: Demographics--------------------------------------------------------
       argonCard(

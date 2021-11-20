@@ -38,7 +38,7 @@ nu_comm_server <- function(input, output, session) {
       scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
                          breaks = c("All races", "Latinx", "White Alone")) +
       labs(color = "",
-           y = "",
+           y = "Homeownership rate (%)",
            x = "") + #str_wrap("% of households in race/ethnicity that are home-owning", width = 35)) +
       theme(legend.position = "bottom") +
       facet_wrap(~county_name, ncol = 2) +
@@ -51,13 +51,15 @@ nu_comm_server <- function(input, output, session) {
     ggplotly(p, tooltip = "text") %>%
       layout(font = list(family = "Karla"),
              legend = list(orientation = "h", x = 0.4, y = -0.25),
+             margin = list(b = 80, 
+                           l = 80),
              hovermode = "x") %>%
       style(hoverlabel = list(bgcolor = hex_blue_dk,
                               font = list(family = "Karla", color = "white"))) %>%
       config(displayModeBar = F)
     
   })
- 
+  
   output$time_employment_female <- renderPlotly({
     
     p <- ia_counties_temporal_tidy %>%
@@ -215,7 +217,7 @@ nu_comm_server <- function(input, output, session) {
       scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
                          breaks = c("All races", "Latinx", "White")) +
       labs(color = "",
-           y = "",
+           y = "High school graduation rate (%)",
            x = "") +
       theme(legend.position = "bottom") +
       facet_wrap(~NAME, ncol = 2) +
@@ -225,6 +227,8 @@ nu_comm_server <- function(input, output, session) {
     ggplotly(grad_rates_plot, tooltip = "text") %>%
       layout(font = list(family = "Karla"),
              legend = list(orientation = "h", x = 0.4, y = -0.25),
+             margin = list(b = 80, 
+                           l = 80),
              hovermode = "x") %>%
       style(hoverlabel = list(#bgcolor = hex_blue_dk,
         font = list(family = "Karla", color = "white"))) %>%
