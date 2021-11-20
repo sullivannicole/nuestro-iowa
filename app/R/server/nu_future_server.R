@@ -33,7 +33,7 @@ nu_future_server <- function(input, output, session) {
   per_capita_income_df <- reactive({
     
     total_dollars_earned <- 996866128 + total_increase()
-    per_capita_income <- total_dollars_earned/51618
+    per_capita_income <- total_dollars_earned/28455
     
     data.frame(race_ethnicity = c(race_ethnicity_vctr, "Latinx"),
                category = c("Your choice", rep("Current state", 2)),
