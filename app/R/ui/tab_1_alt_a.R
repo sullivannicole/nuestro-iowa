@@ -26,9 +26,13 @@ card2_english <- argonColumn(h4("Disparities (Compared with Whites)"),
                              div(HTML("<li><b>25 percentage point gap</b> in Bachelor's degree or higher completion</li>")),
                              div(HTML("<li><b>33 percentage point gap</b> in high school completion</li>")))
 
-card2_spanish <- "Cosby sweater eu banh mi, qui irure terry richardson ex squid. 
-            Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan 
-            american apparel, butcher voluptate nisi qui."
+card2_spanish <- argonColumn(h4("Disparidades (en comparación con los blancos)"),
+                             div(HTML("<li>Los ingresos familiares promedio son <b>33% más bajos</b></li>")),
+                             div(HTML("<li>La tasa de pobreza es <b>13 puntos porcentuales más alta</b></li>")),
+                             div(HTML("<li>La tasa de propiedad de vivienda es <b>24 puntos porcentuales más baja</b></li>")),
+                             div(HTML("<li>Existe una brecha de <b>21 puntos porcentuales</b> en la cobertura médica para las personas de entre 19 y 64 años.</li>")),
+                             div(HTML("<li>Existe una brecha de <b>25 puntos porcentuales </b>en la culminación de estudios universitarios a nivel de licenciatura o postgrado </li>")),
+                             div(HTML("<li>Existe una brecha de <b>33 puntos porcentuales</b> en la culminación de estudios de preparatoria </li>")))
 
 card3_english <- argonColumn(h4("Root causes of disparities"),
                              div(HTML("<li><b>Eliminating education disparities</b> will largely close the income and poverty gap</li>")),
