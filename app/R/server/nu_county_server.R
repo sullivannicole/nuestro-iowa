@@ -234,8 +234,8 @@ nu_county_server <- function(input, output, session) {
       ggplot() +
       ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
       coord_fixed() +
-      scale_fill_manual(values = c("#5E72E4", "#172B4D", "#63CF89", "#5DCEF0")) +
-      scale_color_manual(values = c("#5E72E4", "#172B4D", "#63CF89", "#5DCEF0")) +
+      scale_fill_manual(values = c(hex_purple, hex_blue_dk, hex_green, hex_blue_lt)) +
+      scale_color_manual(values = c(hex_purple, hex_blue_dk, hex_green, hex_blue_lt)) +
       labs(color = "",
            fill = "") +
       arc_ggtheme +
@@ -272,8 +272,8 @@ nu_county_server <- function(input, output, session) {
     
     status_plot <- ggplot(status_df(), aes(percent, label, fill = gender, text = text)) +
       geom_bar(stat = "identity", width = 0.4, position = position_dodge()) +
-      geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent+moe_pc), 
-                    width = 0.05, color = "#4f515c", position = position_dodge(0.4)) +
+      # geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent+moe_pc), 
+      #               width = 0.05, color = "#4f515c", position = position_dodge(0.4)) +
       scale_fill_manual(values = c(hex_green, hex_purple)) +
       labs(y = "", 
            x = "", #glue("% of Latinx pop. in {unique(status_df()$county_name)}"),
@@ -351,13 +351,12 @@ nu_county_server <- function(input, output, session) {
   })
   
   output$arcplot_heritage2 <- renderPlot({
-    
-    
+
     ggplot(heritage_df()) +
       ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
       coord_fixed() +
-      scale_fill_manual(values = c("#5E72E4",  "#172B4D","#EC603E", "#EA445B", "#63CF89", "#5DCEF0")) +
-      scale_color_manual(values = c("#5E72E4",  "#172B4D","#EC603E", "#EA445B", "#63CF89", "#5DCEF0")) +
+      scale_fill_manual(values = c(hex_purple, hex_blue_dk, hex_orange, hex_pink, hex_green, hex_blue_lt)) +
+      scale_color_manual(values = c(hex_purple, hex_blue_dk, hex_orange, hex_pink, hex_green, hex_blue_lt)) +
       labs(color = "",
            fill = "") +
       arc_ggtheme +
@@ -478,8 +477,8 @@ nu_county_server <- function(input, output, session) {
       ggplot() +
       ggforce::geom_arc_bar(aes(x0 = 0, y0 = 0, r0 = 0.9, r = 1, start = ymin, end = ymax, fill = label, color = label)) +
       coord_fixed() +
-      scale_fill_manual(values = c("#5E72E4", "#172B4D")) +
-      scale_color_manual(values = c("#5E72E4", "#172B4D")) +
+      scale_fill_manual(values = c(hex_purple, hex_blue_dk)) +
+      scale_color_manual(values = c(hex_purple, hex_blue_dk)) +
       labs(color = "",
            fill = "") +
       arc_ggtheme

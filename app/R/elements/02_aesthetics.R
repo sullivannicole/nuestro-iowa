@@ -3,12 +3,21 @@
 #---------------------
 
 # Hex codes
+# hex_purple <- "#5E72E4" #primary
+# hex_blue_lt <- "#5DCEF0" #info
+# hex_green <- "#63CF89" #success
+# hex_pink <- "#EA445B" #danger
+# hex_orange <- "#EC603E" #warning
+# hex_blue_dk <- "#172B4D" #default
+# hex_grey <- "#51535e"
+
+# New hex codes from Miguel
 hex_purple <- "#5E72E4" #primary
-hex_blue_lt <- "#5DCEF0" #info
-hex_green <- "#63CF89" #success
-hex_pink <- "#EA445B" #danger
-hex_orange <- "#EC603E" #warning
-hex_blue_dk <- "#172B4D" #default
+hex_blue_lt <- "#1cb3e8" #info
+hex_green <- "#86c240" #success
+hex_pink <- "#f17922" #danger
+hex_orange <- "#f04e25" #warning
+hex_blue_dk <- "#0b62ab" #default
 hex_grey <- "#51535e"
 
 project_ggtheme <- theme(panel.background = element_blank(),

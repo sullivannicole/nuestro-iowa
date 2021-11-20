@@ -104,7 +104,7 @@ server <- function(input, output, session) {
   
   nu_county_server(input, output, session)
   
-  nu_comm_server(input, output, ssession)
+  nu_comm_server(input, output, session)
   
   nu_future_server(input, output, session)
   
