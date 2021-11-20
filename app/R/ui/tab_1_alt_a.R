@@ -66,7 +66,8 @@ tab_1_alt_a <- argonTabItem(
                       div(style = "margin-right: 40px;",
                           argonRow(width = 12,
                                    argonColumn(width = 1),
-                                   argonColumn(argonH1(display = 3, "A deep dive into la riqueza de Latinx-Iowan culture") %>% argonTextColor(color = "white"),
+                                   argonColumn(#div(style = "line-height: 1px !important;", argonH1(display = 2, "A deep dive into la riqueza de Latinx-Iowan culture") %>% argonTextColor(color = "white")),
+                                               div(style = "line-height: 25px !important; color: white !important; family: 'EB Garamond' !important;", HTML("<b style = 'font-size: 25px !important;'>A deep dive into la riqueza de</b><br><h1 style = 'font-size: 120px !important; color: white !important; line-height: 85px !important;'>Latinx-Iowan culture</h1>")),
                                                br(),
                                                div(HTML("Latinx Iowans represent a youthful, highly entrepeneurial, collective-minded subset of the Iowa population - an invaluable part of the school system, workforce, and community. 
                                                    Latinx Iowans are also a fast-growing subpopulation, and our contributions to the state make us essential to Iowa’s future. 
@@ -76,7 +77,10 @@ tab_1_alt_a <- argonTabItem(
                                                    The six-county Des Moines metropolitan region includes Dallas, Guthrie, Jasper, Madison, Polk, and Warren Counties. 
                                                    The dashboard highlights adjacent Marshall County because of its large Latinx population and direct proximity to the metro.
                                                    <br><br>
-                                                   <h1 style = 'color: white; font-size: 35px;'>Análisis a fondo sobre la riqueza de los latinos en Iowa</h3>
+                                                   
+                                                   <b style = 'font-size: 25px !important; line-height: 25px !important; color: white !important;'>Análisis a fondo sobre la riqueza de</b>
+                                                   <br>
+                                                   <h1 style = 'font-size: 120px !important; color: white !important; line-height: 85px !important;'>los latinos en Iowa</h1>
                                                    <br>
                                                    Los latinos en Iowa representan un subconjunto de la población en Iowa que se
 caracteriza por ser joven, con un gran espíritu de emprendimiento y mentalidad
@@ -101,7 +105,7 @@ directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
       )),
   
   # Row 1: info cards
-  div(style = "margin-top: 1100px !important;",
+  div(style = "margin-top: 1500px !important;",
       argonRow(
         
         # Horizontal Tabset 1
@@ -185,11 +189,11 @@ directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
   
   # Row 2: Vision/mission
   div(class = "tab-1-about-container",
-      argonH1("Nuestra Visión", display = 3) %>% argonTextColor("white"),
+      HTML("<h1 style = 'color: white !important; font-size: 60px !important;'>Nuestra Visión</h1>"),
       div(style = "font-size: 35px; color: #172B4D;", HTML("A welcoming state where everyone thrives.<br>
                                                             Un estado acogedor donde todes prosperen.")),
       br(),
-      argonH1("Nuestra Misión", display = 3) %>% argonTextColor("white"),
+      HTML("<h1 style = 'color: white !important; font-size: 60px !important;'>Nuestra Misión</h1>"),
       div(style = "font-size: 35px; color: #172B4D;", HTML("To accelerate Latinx collective impact by advancing representation, nurturing community development, 
                                                             and fostering intercultural understanding through research and collaborations.<br><br>
                                                             Acelerar el impacto colectivo de les latines al impulsar la representación, estimular el desarrollo comunitario y 

@@ -4,9 +4,9 @@ tab_4 <- argonTabItem(
   argonRow(
     
     argonColumn(width = 3,
-                div(style = "height: 50px;"), # spacer div
-                div(style = "line-height: 5px !important;",
-                    argonH1("Nuestro choice", display = 2)),
+                div(style = "height: 100px;"), # spacer div
+                HTML("<h1 style = 'font-size: 60px !important; line-height: 50px !important;'>Nuestro choice</h1>"),
+                br(),
                 "Toggle the numbers below to reflect your program's expected educational and/or citizenship outcomes and see projections for the future (to the right) change.",
                 br(),
                 br(),
@@ -41,8 +41,8 @@ tab_4 <- argonTabItem(
                 div(style = "height: 50px;"), # spacer div
                 div(style = "text-align: center; 
                              background-color: white;
-                             padding: 25px 50px;",
-                    argonH1("Nuestra futura", display = 2),
+                             padding: 50px 50px;",
+                    HTML("<h1 style = 'font-size: 60px !important;'>Nuestro future</h1>"),
                     "Based on your choices (at left), in the future, we'd see:",
                     argonRow(argonColumn(width = 6,
                                          withLoader(plotlyOutput("plot_addtl_dollars", height = 200), loader = "loader1"),
