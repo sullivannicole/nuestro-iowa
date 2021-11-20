@@ -341,7 +341,7 @@ ia_school_districts <- read.socrata(
   
 )
 
-county_df <- counties("Iowa")
+county_df <- tigris::counties("Iowa")
 
 county_fips <- county_df %>%
   select(COUNTYFP, NAME) %>%
@@ -426,10 +426,10 @@ hs_grad_rates <- grad_rates %>%
   left_join(county_fips, by = "county") %>%
   select(NAME, year, ends_with("hispanic"), ends_with("white"), -starts_with("rate")) %>%
   group_by(NAME, year) %>%
-  summarize(Hispanic = sum(as.numeric(numerator_hispanic), na.rm = T) / sum(as.numeric(denominator_hispanic), na.rm = T)*100,
+  summarize(Latinx = sum(as.numeric(numerator_hispanic), na.rm = T) / sum(as.numeric(denominator_hispanic), na.rm = T)*100,
             White = sum(as.numeric(numerator_white), na.rm = T) / sum(as.numeric(denominator_white), na.rm = T)* 100) %>%
   ungroup() %>%
-  gather(Hispanic, White, key = "race_ethnicity", value = "average_rate") %>%
+  gather(Latinx, White, key = "race_ethnicity", value = "average_rate") %>%
   ungroup() %>%
   mutate(year = lubridate::ymd(year, truncated = 2L),
          text = paste0(race_ethnicity, ": ", round(average_rate, 1), "%"))
