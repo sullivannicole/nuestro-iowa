@@ -12,6 +12,7 @@
 # hex_grey <- "#51535e"
 
 # New hex codes from Miguel
+hex_blue_contrast <- "#172B4D"
 hex_purple <- "#5E72E4" #primary
 hex_blue_lt <- "#1cb3e8" #info
 hex_green <- "#86c240" #success
