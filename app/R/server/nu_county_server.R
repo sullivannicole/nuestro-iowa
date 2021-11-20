@@ -54,6 +54,47 @@ nu_county_server <- function(input, output, session) {
     
   })
   
+  # County overviews
+  output$county_overview <- renderText({
+    
+    if (input$county_choice2 == "Polk") {
+      
+      "Polk County is home to the City of Des Moines and the largest population within the Metro, including the largest Latinx population with over 40,000 residents. 
+      On average, Latinx household incomes and homeownership rates are lower in Polk County when compared with Marshall and Dallas County. 
+      There are notable disparities in income, homeownership, poverty, and educational attainment between Latinx residents and non-Latinx white residents in Polk County."
+      
+    } else if(input$county_choice2 == "Dallas") {
+      
+      "Within Dallas County, a significant number of Latinx residents live in the City of Perry and the Western Des Moines suburbs. 
+      On average, Dallas County Latinx residents have higher incomes and higher homeownership rates compared with the metro overall. There are more residents with origins in Central America as a proportion of overall Latinx residents compared with the overall metro. 
+      While Latinx incomes in Dallas County are higher on average, there are disparities when comparing incomes to white, non-Latinx residents."
+      
+    } else if(input$county_choice2 == "Marshall") {
+      
+      "Marshall County is home to a large population of Latinx residents, mostly centered in and around the City of Marshalltown. 
+      There are more Mexicans as a proportion of the total Latinx population compared with the rest of the metro. Latinx incomes and homeownership rates are higher on average than the overall metro. There are no disparities in income, homeownership rates, and high school graduation rates between Latinx and non-Latinx white residents in Marshall County; the gap has closed entirely in recent years. 
+      However, there continue to be gaps in health insurance coverage, educational attainment, and poverty rates."
+      
+    } else if(input$county_choice2 == "Warren") {
+      
+      "Warren County is to the south of Polk County and has a relatively small Latinx population, with some living just south of the airport, in the City of Norwalk, and in and near the City of Indianola. 
+      In general, Latinx residents living in Warren County have similar outcomes compared with the overall metro."
+      
+    } else if(input$county_choice2 == "Jasper") {
+      
+      "Jasper County lies just to the east of Polk County and has a relatively small Latinx population, with most living in or south of the city of Newton. 
+      In general, residents living in Jasper County have similar outcomes compared with the overall metro."
+      
+    } else {
+      
+      "Counties outside the Des Moines metro area enjoy the rich contributions of their own respective Latinx communities.
+      The demographic, economic, and health profiles of each county's Latinx are each unique in their own rights.
+      Scroll on to learn more."
+    }
+    
+    
+  })
+  
   # Fact cards
   # County ages
   median_age_df <- reactive({
