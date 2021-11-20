@@ -8,7 +8,7 @@ card1_english <- argonColumn(h4("Latinx Community Highlights"),
                              br(),
                              HTML("<li>Latinx community turned around over a decade of pop. decline in Marshall County</li>"))
 
-card1_spanish <- rgonColumn(h4("Aspectos destacados de la comunidad latina"),
+card1_spanish <- argonColumn(h4("Aspectos destacados de la comunidad latina"),
                             br(),
                             div(HTML("<li><b>Hay 1,544 negocios latinos que generan <b>$159.6 millones</b> de dólares en ingresos anuales</li>")),
                             br(),
