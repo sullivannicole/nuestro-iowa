@@ -50,26 +50,30 @@ write_csv(ia_state, glue("ia_state_{acs_yr-10}_{acs_yr}.csv"))
 # If new plots or tables need to be added, simply add the variable to the list below
 vars_list <- acs_vars %>%
   distinct(name) %>%
-  filter(substr(name, 1, 7) %in% c(# Demographics & hh-level
-                                   "B01001_", "B01001I", "B01002I", "B01002_", "B12002I", "B11001I", "B10051I", "B16006_",
-                                   
-                                   # Latinx birth/migration
-                                   "B03003_", "B06004I", "B03001_",
-                                   
-                                   # Employment, income, poverty status
-                                   "B20005I", "B19013I", "B19013_", "B17020I", 
-                                   
-                                  # Means of transportation
-                                  "B08105I",
-                                   
-                                   # Homeownership
-                                   "B25003I",
-                                   
-                                   # Education
-                                   "B14007I", "C15010I", "C15002I", "B28009I",
-                                  
-                                  # Health insurance
-                                  "C27001I"))
+  filter(substr(name, 1, 7) %in% c(
+    # Demographics & hh-level (Sex by age - total and hispanic, Median age - total and hispanic, Marital status, Household type, Grandparent reponsible, Language spoken)
+    "B01001_", "B01001I", "B01002I", "B01002_", "B12002I", "B11001I", "B10051I", "B16006_",
+    
+    # Latinx birth/migration
+    "B03003_", "B06004I", "B03001_",
+    
+    # Employment, income, poverty status
+    "B20005I", "B19013I", "B19013_", "B17020I", 
+    
+    # Means of transportation
+    "B08105I",
+    
+    # Homeownership
+    "B25003I",
+    
+    # Education (Enrollment, Bachelor's field, Attainment by sex)
+    "B14007I", "C15010I", "C15002I", 
+    
+    # Computer
+    "B28009I",
+    
+    # Health insurance
+    "C27001I"))
 
 # County stats from Census data
 ia_counties <- tidycensus::get_acs(geography = "county",
@@ -88,18 +92,28 @@ ia_counties_tidy <- ia_counties %>%
   
   mutate(denom = ifelse((variable_group == "B20005I" & variable_index %in% c("002", "049")), estimate,
                         ifelse((variable_group == "C27001I" & variable_index %in% c("002", "005", "008")), estimate,
-                        ifelse(variable_index == "001", estimate, NA))),
+                               ifelse((variable_group == "C15002I" & variable_index %in% c("002", "007")), estimate,
+                                      ifelse((variable_group == "B12002I" & variable_index %in% c("002", "008")), estimate,
+                                             ifelse(variable_index == "001", estimate, NA))))),
          
          # Denominator for employment by sex should be the respective sex, not the total pop, so disaggregate
-         gender = ifelse(variable_group == "B20005I" & variable_index %in% c("002", "003", "027", "028"), "Male",
-                         ifelse(variable_group == "B20005I" & variable_index %in% c("049","050", "074", "075"), "Female", "Across all")),
+         gender_employ = ifelse(variable_group == "B20005I" & variable_index %in% c("002", "003", "027", "028"), "Men",
+                                ifelse(variable_group == "B20005I" & variable_index %in% c("049","050", "074", "075"), "Women", "Across all")),
          
          # Denominator for insured by age group should be the respective age group, not the total pop, so disaggregate
          age_group = ifelse(variable_group == "C27001I" & variable_index %in% c("002", "003", "004"), "Under 19",
                             ifelse(variable_group == "C27001I" & variable_index %in% c("005", "006", "007"), "19 to 64",
-                                   ifelse(variable_group == "C27001I" & variable_index %in% c("008", "009", "010"), "Over 64", "Across all")))
-         ) %>%
-  group_by(NAME, variable_group, gender, age_group) %>%
+                                   ifelse(variable_group == "C27001I" & variable_index %in% c("008", "009", "010"), "Over 64", "Across all"))),
+         
+         # Denominator for edu attainment by sex should be the respective sex, not the total pop, so disaggregate
+         gender_edu = ifelse(variable_group == "C15002I" & variable_index %in% c("002", "003", "004", "005", "006"), "Men",
+                             ifelse(variable_group == "C15002I" & variable_index %in% c("007", "008", "009", "010", "011"), "Women", "Across all")),
+         
+         # Denominator for marital status sex should be the respective sex, not the total pop, so disaggregate
+         gender_marital = ifelse(variable_group == "B12002I" & variable_index %in% c("002", "003", "004", "005", "006", "007"), "Men",
+                             ifelse(variable_group == "B12002I" & variable_index %in% c("008", "009", "010", "011", "012", "013"), "Women", "Across all"))
+  ) %>%
+  group_by(NAME, variable_group, gender_employ, gender_edu, age_group) %>%
   
   # Get denominator
   mutate(denom = max(denom, na.rm = T)) %>%
@@ -327,7 +341,7 @@ ia_school_districts <- read.socrata(
   
 )
 
-county_df <- counties("Iowa")
+county_df <- tigris::counties("Iowa")
 
 county_fips <- county_df %>%
   select(COUNTYFP, NAME) %>%
@@ -365,6 +379,20 @@ grad_rates <- map2(docs, c(2010:2020), function(x, y) {
     filter(!is.na(row_ind)) %>%
     select(-row_ind)
   
+  # col_names <- tf_head %>%
+  #   mutate(id = row_number()) %>%
+  #   slice((n()-1):n()) %>%
+  #   gather(everything(), key = "col", value = "value", -id) %>%
+  #   mutate(race_ethnicity = ifelse(value %in% c("White",
+  #                                               "Hispanic", 
+  #                                               "American Indian", 
+  #                                               "African American", 
+  #                                               "Two or More Races",
+  #                                               "Asian"), value, NA)) %>%
+  #   fill(race_ethnicity, .direction = "down") %>%
+  #   mutate(value = paste(value, race_ethnicity, sep = "_")) %>%
+  #   filter(id == max(id))
+  
   col_names <- tf_head %>%
     mutate(id = row_number()) %>%
     slice((n()-1):n()) %>%
@@ -376,6 +404,10 @@ grad_rates <- map2(docs, c(2010:2020), function(x, y) {
                                                 "Two or More Races",
                                                 "Asian"), value, NA)) %>%
     fill(race_ethnicity, .direction = "down") %>%
+    group_by(race_ethnicity) %>%
+    mutate(race_id = row_number()) %>%
+    ungroup() %>%
+    mutate(race_ethnicity = ifelse(race_id <= 6, race_ethnicity, "Other")) %>%
     mutate(value = paste(value, race_ethnicity, sep = "_")) %>%
     filter(id == max(id))
   
@@ -392,18 +424,17 @@ hs_grad_rates <- grad_rates %>%
   filter(!(county_na %in% c("county", "County"))) %>%
   mutate(county = as.numeric(county_na)) %>%
   left_join(county_fips, by = "county") %>%
-  rename(Latinx = rate_hispanic,
-         White = rate_white) %>%
-  select(NAME, year, Latinx, White) %>%
-  gather(Latinx, White, key = "race_ethnicity", value = "rate") %>%
-  mutate(rate = as.numeric(ifelse(rate %like% "%\\*%", NA, rate))) %>%
-  group_by(NAME, race_ethnicity, year) %>%
-  summarize(average_rate = mean(rate, na.rm = T)) %>%
+  select(NAME, year, ends_with("hispanic"), ends_with("white"), -starts_with("rate")) %>%
+  group_by(NAME, year) %>%
+  summarize(Latinx = sum(as.numeric(numerator_hispanic), na.rm = T) / sum(as.numeric(denominator_hispanic), na.rm = T)*100,
+            White = sum(as.numeric(numerator_white), na.rm = T) / sum(as.numeric(denominator_white), na.rm = T)* 100) %>%
+  ungroup() %>%
+  gather(Latinx, White, key = "race_ethnicity", value = "average_rate") %>%
   ungroup() %>%
   mutate(year = lubridate::ymd(year, truncated = 2L),
-         text = paste(race_ethnicity, ": ", round(average_rate, 1), "%"))
+         text = paste0(race_ethnicity, ": ", round(average_rate, 1), "%"))
 
-write_csv(hs_grad_rates, "ia_county_hs_rates_2010_2020.csv")
+write_csv(hs_grad_rates, "ETL/data/ia_county_hs_rates_2010_2020.csv")
 
 #-------------------------
 # State & county combined

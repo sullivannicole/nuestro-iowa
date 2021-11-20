@@ -37,7 +37,7 @@ nu_future_server <- function(input, output, session) {
     
     data.frame(race_ethnicity = c(race_ethnicity_vctr, "Latinx"),
                category = c("Your choice", rep("Current state", 2)),
-               income = c(per_capita_income, 53071, 19312)) %>%
+               income = c(per_capita_income, 53071, 35033)) %>%
       mutate(text = paste0(category, "\n", race_ethnicity, ": $", formatC(round(income, 1), format="d", big.mark=",")))
     
     
@@ -58,7 +58,7 @@ nu_future_server <- function(input, output, session) {
       filter(race_ethnicity == "Latinx" & category == "Your choice")
     
     # Population with commas
-    paste0("+$", formatC(per_capita_income_future$income - 19312, format="d", big.mark=","))
+    paste0("+$", formatC(per_capita_income_future$income - 35033, format="d", big.mark=","))
     
     
   })
@@ -143,7 +143,7 @@ nu_future_server <- function(input, output, session) {
     
     data.frame(year = seq.Date(ymd("2021-01-01"), ymd("2021-01-01") + years(yrs_out), by = "years"),
                total_addtl = total_per_year) %>%
-      mutate(text = paste0(year(year), ": $", round(total_addtl/1000000, 1), "M"))
+      mutate(text = paste0(year(year), ": $", round(total_addtl/1000000, 2), "M"))
     
   })
   
@@ -153,7 +153,7 @@ nu_future_server <- function(input, output, session) {
       summarize(total_over_30 = sum(total_addtl))
     
     # Population with commas
-    paste0("$", format(round(total_dollars_future$total_over_30/1000000, 1), format = "d", big.mark = ","), "M")
+    paste0("$", format(round(total_dollars_future$total_over_30/1000000, 2), format = "d", big.mark = ","), "M")
     
     
   })

@@ -209,6 +209,7 @@ nu_comm_server <- function(input, output, session) {
       filter(NAME %in% input$region_choice) %>%
       mutate(year = as_date(ymd(year)),
              text = paste(year, ", ", text)) %>%
+      filter(year(year) < 2020) %>%
       ggplot(aes(year, average_rate, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
       scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
