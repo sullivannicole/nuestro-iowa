@@ -35,7 +35,7 @@ nu_future_server <- function(input, output, session) {
     total_dollars_earned <- 996866128 + total_increase()
     per_capita_income <- total_dollars_earned/28455
     
-    data.frame(race_ethnicity = c(race_ethnicity_vctr, "Latinx"),
+    data.frame(race_ethnicity = c(race_ethnicity_vctr, "Latino"),
                category = c("Your choice", rep("Current state", 2)),
                income = c(per_capita_income, 53071, 35033)) %>%
       mutate(text = paste0(category, "\n", race_ethnicity, ": $", formatC(round(income, 1), format="d", big.mark=",")))
@@ -55,7 +55,7 @@ nu_future_server <- function(input, output, session) {
   output$per_capita_income_number <- renderText({
     
     per_capita_income_future <- per_capita_income_df() %>%
-      filter(race_ethnicity == "Latinx" & category == "Your choice")
+      filter(race_ethnicity == "Latino" & category == "Your choice")
     
     # Population with commas
     paste0("+$", formatC(per_capita_income_future$income - 35033, format="d", big.mark=","))
@@ -100,7 +100,7 @@ nu_future_server <- function(input, output, session) {
   output$attainment_number <- renderText({
     
     attainment_future <- attainment_df() %>%
-      filter(race_ethnicity == "Latinx" & edu_level != "< HS") %>%
+      filter(race_ethnicity == "Latino" & edu_level != "< HS") %>%
       summarize(at_or_above_hs = sum(attainment))
     
     paste0("+", round(attainment_future$at_or_above_hs - 64.6, 1), "%")
@@ -213,7 +213,7 @@ nu_future_server <- function(input, output, session) {
     
     homeowner_rate <- unique(homeowner_df$homeownership_rate)
     
-    data.frame(race_ethnicity = c(race_ethnicity_vctr, "Latinx"),
+    data.frame(race_ethnicity = c(race_ethnicity_vctr, "Latino"),
                category = c(rep("Your choice", 2), rep("Current state", 4)),
                tenure = c(rep("Homeowners", 3), rep("Renters", 3)),
                pc = c(homeowner_rate, 73.7, 48.2, 100 - homeowner_rate, 26.3, 100 - 48.2)) %>%
@@ -225,7 +225,7 @@ nu_future_server <- function(input, output, session) {
   output$homeownership_number <- renderText({
     
     homeownership_future <- homeownership() %>%
-      filter(race_ethnicity == "Latinx" & category == "Your choice")
+      filter(race_ethnicity == "Latino" & category == "Your choice")
     
     paste0("+", round(homeownership_future$pc - 48.2, 1), "%")
     

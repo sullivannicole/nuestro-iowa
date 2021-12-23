@@ -32,11 +32,11 @@ tab_2_alt_a <- argonTabItem(
                                  div(style = "display: inline-block;", 
                                      textOutput("region_pop"))),
                                argonRow(div(style = "display: inline-block; color: #172B4D; font-size: 25px; font-weight: bold; margin-right: 7px",
-                                            "LATINX POP:"),
+                                            "LATINO POP:"),
                                         div(style = "display: inline-block;", 
                                             textOutput("region_latinx_pop"))),
                                argonRow(div(style = "display: inline-block; color: #172B4D; font-size: 25px; font-weight: bold; margin-right: 7px",
-                                            "% LATINX:"),
+                                            "% LATINO:"),
                                         div(style = "display: inline-block;", 
                                             textOutput("region_pc_latinx")))),
                            br(),
@@ -81,12 +81,12 @@ tab_2_alt_a <- argonTabItem(
   argonRow(width = 12,
            div(class = "map-btn-container",
                dropdownButton(radioButtons("unit2",
-                                           "See Latinx pop. as:",
+                                           "See Latino pop. as:",
                                            c("a percent of the tract pop." = "as a %",
-                                             "the estimated number of Latinx people in the tract" = "as a raw num"),
+                                             "the estimated number of Latino people in the tract" = "as a raw num"),
                                            selected = "as a %"))),
            div(class = "map-container", 
-               div(style = "margin-left: 50px;", HTML("<h2 style = 'font-size: 50px !important;'>Latinx population in county</h2>"), h3("Click on the dropdown to toggle the units shown on the map.")),
+               div(style = "margin-left: 50px;", HTML("<h2 style = 'font-size: 50px !important;'>Latino population in county</h2>"), h3("Click on the dropdown to toggle the units shown on the map.")),
                br(),
                withLoader(leafletOutput("map2", height = 600), loader = "loader1"))),
   br(),
@@ -130,20 +130,20 @@ tab_2_alt_a <- argonTabItem(
                    div(style = "height: 85px;"), # spacer div
                    h3("Language spoken at home"),
                    "English proficiency levels vary amongst
-                        the county's Latinx community. While
+                        the county's Latino community. While
                         some households speak predominantly English
                         at home, other households communicate wholesale
                         en español. Hover over the graph to see the
                         breakdowns.")),
         
-        # Arcplot of heritage of county's Latinx
+        # Arcplot of heritage of county's Latino
         argonRow(argonColumn(width = 8,
                              withLoader(plotOutput("arcplot_heritage2"), loader = "loader1")),
                  argonColumn(br(),
                              h3("Ancestral origin"),
                              withLoader(textOutput("heritage_text"), loader = "loader1")))
         
-        # Row 4: arcplot showing % of county that's Latinx - not necessary anymore since it's in header
+        # Row 4: arcplot showing % of county that's Latino - not necessary anymore since it's in header
         #   argonRow(argonColumn(width = 8,
         #                        plotOutput("arcplot2")),
         #            argonColumn(style = "height: 85px;",
@@ -183,7 +183,7 @@ tab_2_alt_a <- argonTabItem(
                              "Having proper means of transportation to work is
                              integral to maintaining employment. Hover over the
                              graph at level to explore the predominant means
-                             of transportation to work for the Latinx pop.")),
+                             of transportation to work for the Latino pop.")),
         argonRow(argonColumn(width = 8,
                              withLoader(plotlyOutput("chicklet_poverty2"), loader = "loader1")),
                  argonColumn(div(style = "height: 45px;"),

@@ -111,7 +111,7 @@ ia_counties_tidy <- ia_counties %>%
          
          # Denominator for marital status sex should be the respective sex, not the total pop, so disaggregate
          gender_marital = ifelse(variable_group == "B12002I" & variable_index %in% c("002", "003", "004", "005", "006", "007"), "Men",
-                             ifelse(variable_group == "B12002I" & variable_index %in% c("008", "009", "010", "011", "012", "013"), "Women", "Across all"))
+                                 ifelse(variable_group == "B12002I" & variable_index %in% c("008", "009", "010", "011", "012", "013"), "Women", "Across all"))
   ) %>%
   group_by(NAME, variable_group, gender_employ, gender_edu, gender_marital, age_group) %>%
   
@@ -236,9 +236,9 @@ ia_counties_temporal_processed <- ia_counties_temporal %>%
   mutate(race_ethnicity = str_trim(str_to_title(str_remove_all(race_ethnicity, "HOUSEHOLDER|\\)"))),
          # race_ethnicity = str_trim(str_to_title(str_remove_all(race_ethnicity, "HOUSEHOLDER|\\)"))),
          race_ethnicity = ifelse(is.na(race_ethnicity), "All races",
-                                 ifelse(race_ethnicity == "Hispanic Or Latino", "Latinx", race_ethnicity)),
+                                 ifelse(race_ethnicity == "Hispanic Or Latino", "Latino", race_ethnicity)),
          year = lubridate::ymd(year, truncated = 2L)) %>%
-  filter(race_ethnicity %in% c("All races", "White Alone", "Latinx"))
+  filter(race_ethnicity %in% c("All races", "White Alone", "Latino"))
 
 
 # Process data separately by subject matter
@@ -426,10 +426,10 @@ hs_grad_rates <- grad_rates %>%
   left_join(county_fips, by = "county") %>%
   select(NAME, year, ends_with("hispanic"), ends_with("white"), -starts_with("rate")) %>%
   group_by(NAME, year) %>%
-  summarize(Latinx = sum(as.numeric(numerator_hispanic), na.rm = T) / sum(as.numeric(denominator_hispanic), na.rm = T)*100,
+  summarize(Latino = sum(as.numeric(numerator_hispanic), na.rm = T) / sum(as.numeric(denominator_hispanic), na.rm = T)*100,
             White = sum(as.numeric(numerator_white), na.rm = T) / sum(as.numeric(denominator_white), na.rm = T)* 100) %>%
   ungroup() %>%
-  gather(Latinx, White, key = "race_ethnicity", value = "average_rate") %>%
+  gather(Latino, White, key = "race_ethnicity", value = "average_rate") %>%
   ungroup() %>%
   mutate(year = lubridate::ymd(year, truncated = 2L),
          text = paste0(race_ethnicity, ": ", round(average_rate, 1), "%"))
@@ -524,4 +524,4 @@ disparities <- read_excel("eliminating_disparities.xlsx") %>%
          latinx_dollars_earned = latinx_dollars_earned_5,
          dollars_earned_eliminate_disparities = dollars_earned_eliminate_disparities_6)
 
-write_csv(disparities, glue("ia_disparities_{acs_yr}.csv"))
+write_csv(disparities, glue("data/ia_disparities_{acs_yr}.csv"))

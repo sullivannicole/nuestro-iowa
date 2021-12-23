@@ -1,12 +1,12 @@
-card1_english <- argonColumn(h4("Latinx Community Highlights"),
+card1_english <- argonColumn(h4("Latino Community Highlights"),
                              br(),
-                             div(HTML("<li><b>1,544 Latinx businesses</b> generating <b>$159.6M</b> in annual revenue</li>")),
+                             div(HTML("<li><b>1,544 Latino businesses</b> generating <b>$159.6M</b> in annual revenue</li>")),
                              br(),
-                             div(HTML("<li><b>52K Latinx residents</b> in the metro, which will more than double by 2050 and drive overall metro pop. growth</li>")),
+                             div(HTML("<li><b>52K Latino residents</b> in the metro, which will more than double by 2050 and drive overall metro pop. growth</li>")),
                              br(),
-                             div(HTML("<li><b>22K Latinx workers</b> collectively earning <b>$1B in annual income</b>, contributing significantly to the overall central IA economy</li>")),
+                             div(HTML("<li><b>22K Latino workers</b> collectively earning <b>$1B in annual income</b>, contributing significantly to the overall central IA economy</li>")),
                              br(),
-                             HTML("<li>Latinx community turned around over a decade of pop. decline in Marshall County</li>"))
+                             HTML("<li>Latino community turned around over a decade of pop. decline in Marshall County</li>"))
 
 card1_spanish <- argonColumn(h4("Aspectos destacados de la comunidad latina"),
                           br(),
@@ -39,7 +39,7 @@ card3_english <- argonColumn(h4("Root causes of disparities"),
                              # br(),
                              div(HTML("<li><b>Eliminating income and education disparities</b> will mostly close the homeownership gap</li>")),
                              # br(),
-                             div(HTML("<li>Latinx households face <b>additional barriers</b> to homeownership</li>")))
+                             div(HTML("<li>Latino households face <b>additional barriers</b> to homeownership</li>")))
 
 card3_spanish <- argonColumn(h4("Causas fundamentales de las disparidades"),
                              div(HTML("<li><b>La eliminación de las disparidades educativas</b> reducirá, en gran medida, las en ingresos y pobreza.</li>")),
@@ -66,16 +66,16 @@ tab_1_alt_a <- argonTabItem(
                       div(style = "margin-right: 40px;",
                           argonRow(width = 12,
                                    argonColumn(width = 1),
-                                   argonColumn(#div(style = "line-height: 1px !important;", argonH1(display = 2, "A deep dive into la riqueza de Latinx-Iowan culture") %>% argonTextColor(color = "white")),
-                                               div(style = "line-height: 25px !important; color: white !important; family: 'EB Garamond' !important;", HTML("<b style = 'font-size: 25px !important;'>A deep dive into la riqueza de</b><br><h1 style = 'font-size: 120px !important; color: white !important; line-height: 85px !important;'>Latinx-Iowan culture</h1>")),
+                                   argonColumn(#div(style = "line-height: 1px !important;", argonH1(display = 2, "A deep dive into la riqueza de Latino-Iowan culture") %>% argonTextColor(color = "white")),
+                                               div(style = "line-height: 25px !important; color: white !important; family: 'EB Garamond' !important;", HTML("<b style = 'font-size: 25px !important;'>A deep dive into la riqueza de</b><br><h1 style = 'font-size: 120px !important; color: white !important; line-height: 85px !important;'>Latinos in Iowa</h1>")),
                                                br(),
-                                               div(HTML("Latinx Iowans represent a youthful, highly entrepeneurial, collective-minded subset of the Iowa population - an invaluable part of the school system, workforce, and community. 
-                                                   Latinx Iowans are also a fast-growing subpopulation, and our contributions to the state make us essential to Iowa’s future. 
-                                                   This dashboard provides a data snapshot of the Latinx community in the Des Moines Metropolitan Area. 
-                                                   Users can learn about Nuestro Iowa: Demographic trends, economic contributions, housing, education, and health. 
-                                                   These baseline data show community strengths and opportunities. 
-                                                   This dashboard includes all counties in the region with Latinx populations large enough to present useful data: Dallas, Jasper, Polk, and Warren Counties.
-                                                   The dashboard highlights adjacent Marshall County because of its large Latinx population and direct proximity to the metro.
+                                               div(HTML("Latino Iowans represent a youthful, highly entrepreneurial, collective-minded subset of the Iowa population - an invaluable part of the school system, workforce, and community. 
+                                               Latino/a/x Iowans are also a fast-growing population and our contributions to the state make us essential to Iowa’s future. 
+                                               This dashboard provides a data snapshot of the Latino community in the Des Moines Metropolitan Area. 
+                                               Users can learn about Nuestro Iowa: Demographic trends, economic contributions, housing, education, and health. 
+                                               These baseline data show community strengths and opportunities. 
+                                               This dashboard includes all counties in the region with Latino populations large enough to present useful data: Dallas, Jasper, Polk, and Warren Counties. 
+                                               The dashboard highlights adjacent Marshall County because of its large Latino population and direct proximity to the metro.
                                                    <br><br>
                                                    
                                                    <b style = 'font-size: 25px !important; line-height: 25px !important; color: white !important;'>Análisis a fondo sobre la riqueza de</b>
@@ -131,7 +131,7 @@ directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
               card1_english
             ),
             argonTab(
-              tabName = "Positivos",
+              tabName = "Datos clave",
               active = TRUE,
               card1_spanish
             )
@@ -198,7 +198,7 @@ directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
                                                             Un estado acogedor donde todes prosperen.")),
       br(),
       HTML("<h1 style = 'color: white !important; font-size: 60px !important;'>Nuestra Misión</h1>"),
-      div(style = "font-size: 35px; color: #172B4D;", HTML("To accelerate Latinx collective impact by advancing representation, nurturing community development, 
+      div(style = "font-size: 35px; color: #172B4D;", HTML("To accelerate Latino collective impact by advancing representation, nurturing community development, 
                                                             and fostering intercultural understanding through research and collaborations.<br><br>
                                                             Acelerar el impacto colectivo de les latines al impulsar la representación, estimular el desarrollo comunitario y 
                                                            fomentar el entendimiento intercultural mediante la investigación y las colaboraciones."))
@@ -215,7 +215,7 @@ directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
   
   
 )
-# argonCard(title = "Latinx Community Highlights",
+# argonCard(title = "Latino Community Highlights",
 #           icon = icon("hands-helping"),#users
 #           status = "warning",
 #           width = 4,
@@ -224,13 +224,13 @@ directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
 #           hover_shadow = TRUE,
 #           hover_lift = TRUE,
 #           center = TRUE,
-#           div(HTML("<li><b>1,544 Latinx businesses</b> generating <b>$159.6M</b> in annual revenue</li>")),
+#           div(HTML("<li><b>1,544 Latino businesses</b> generating <b>$159.6M</b> in annual revenue</li>")),
 #           # br(),
-#           div(HTML("<li><b>52K Latinx residents</b> in the metro, which will more than double by 2050 and drive overall metro pop. growth</li>")),
+#           div(HTML("<li><b>52K Latino residents</b> in the metro, which will more than double by 2050 and drive overall metro pop. growth</li>")),
 #           # br(),
-#           div(HTML("<li><b>22K Latinx workers</b> collectively earning <b>$1B in annual income</b>, contributing significantly to the overall central IA economy</li>")),
+#           div(HTML("<li><b>22K Latino workers</b> collectively earning <b>$1B in annual income</b>, contributing significantly to the overall central IA economy</li>")),
 #           # br(),
-#           HTML("<li>Latinx community turned around over a decade of pop. decline in Marshall County</li>")
+#           HTML("<li>Latino community turned around over a decade of pop. decline in Marshall County</li>")
 # ),
 # argonCard(title = "Disparities (compared with Whites)",
 #           icon = icon("users"),
@@ -266,7 +266,7 @@ directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
 #             # br(),
 #             div(HTML("<li><b>Eliminating income and education disparities</b> will mostly close the homeownership gap</li>")),
 #             # br(),
-#             div(HTML("<li>Latinx households face <b>additional barriers</b> to homeownership</li>"))
+#             div(HTML("<li>Latino households face <b>additional barriers</b> to homeownership</li>"))
 #   )
 #   
 # )), # End row 1
@@ -274,7 +274,7 @@ directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
 # Row 3: Our Team
 # div(style = "margin-top: 500px;",
 #     argonH1("Nuestro Team", display = 4),
-#     h3("Latinx Leaders"),
+#     h3("Latino Leaders"),
 #     argonRow(
 #       argonColumn(
 #         width = 3,
@@ -309,7 +309,7 @@ directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
 #         )
 #       )
 #     ),
-#     # Latinx Leaders Row 2
+#     # Latino Leaders Row 2
 #     argonRow(
 #       argonColumn(
 #         width = 3,
@@ -345,7 +345,7 @@ directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
 #       )
 #     ),
 #     
-#     # Latinx Leaders Row 3
+#     # Latino Leaders Row 3
 #     argonRow(
 #       argonColumn(
 #         width = 3,
@@ -381,7 +381,7 @@ directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
 #       )
 #     ),
 #     
-#     # Row 4 Latinx Leaders
+#     # Row 4 Latino Leaders
 #     argonRow(
 #       argonColumn(
 #         width = 3,

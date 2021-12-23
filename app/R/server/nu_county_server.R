@@ -59,36 +59,36 @@ nu_county_server <- function(input, output, session) {
     
     if (input$county_choice2 == "Polk") {
       
-      "Polk County is home to the City of Des Moines and the largest population within the Metro, including the largest Latinx population with over 40,000 residents. 
-      On average, Latinx household incomes and homeownership rates are lower in Polk County when compared with Marshall and Dallas County. 
-      There are notable disparities in income, homeownership, poverty, and educational attainment between Latinx residents and non-Latinx white residents in Polk County."
+      "Polk County is home to the City of Des Moines and the largest population within the Metro, including the largest Latino population with over 40,000 residents. 
+      On average, Latino household incomes and homeownership rates are lower in Polk County when compared with Marshall and Dallas County. 
+      There are notable disparities in income, homeownership, poverty, and educational attainment between Latino residents and non-Latino white residents in Polk County."
       
     } else if(input$county_choice2 == "Dallas") {
       
-      "Within Dallas County, a significant number of Latinx residents live in the City of Perry and the Western Des Moines suburbs. 
-      On average, Dallas County Latinx residents have higher incomes and higher homeownership rates compared with the metro overall. There are more residents with origins in Central America as a proportion of overall Latinx residents compared with the overall metro. 
-      While Latinx incomes in Dallas County are higher on average, there are disparities when comparing incomes to white, non-Latinx residents."
+      "Within Dallas County, a significant number of Latino residents live in the City of Perry and the Western Des Moines suburbs. 
+      On average, Dallas County Latino residents have higher incomes and higher homeownership rates compared with the metro overall. There are more residents with origins in Central America as a proportion of overall Latino residents compared with the overall metro. 
+      While Latino incomes in Dallas County are higher on average, there are disparities when comparing incomes to white, non-Latino residents."
       
     } else if(input$county_choice2 == "Marshall") {
       
-      "Marshall County is home to a large population of Latinx residents, mostly centered in and around the City of Marshalltown. 
-      There are more Mexicans as a proportion of the total Latinx population compared with the rest of the metro. Latinx incomes and homeownership rates are higher on average than the overall metro. There are no disparities in income, homeownership rates, and high school graduation rates between Latinx and non-Latinx white residents in Marshall County; the gap has closed entirely in recent years. 
+      "Marshall County is home to a large population of Latino residents, mostly centered in and around the City of Marshalltown. 
+      There are more Mexicans as a proportion of the total Latinx population compared with the rest of the metro. Latino incomes and homeownership rates are higher on average than the overall metro. There are no disparities in income, homeownership rates, and high school graduation rates between Latino and non-Latino white residents in Marshall County; the gap has closed entirely in recent years. 
       However, there continue to be gaps in health insurance coverage, educational attainment, and poverty rates."
       
     } else if(input$county_choice2 == "Warren") {
       
-      "Warren County is to the south of Polk County and has a relatively small Latinx population, with some living just south of the airport, in the City of Norwalk, and in and near the City of Indianola. 
-      In general, Latinx residents living in Warren County have similar outcomes compared with the overall metro."
+      "Warren County is to the south of Polk County and has a relatively small Latino population, with some living just south of the airport, in the City of Norwalk, and in and near the City of Indianola. 
+      In general, Latino residents living in Warren County have similar outcomes compared with the overall metro."
       
     } else if(input$county_choice2 == "Jasper") {
       
-      "Jasper County lies just to the east of Polk County and has a relatively small Latinx population, with most living in or south of the city of Newton. 
+      "Jasper County lies just to the east of Polk County and has a relatively small Latino population, with most living in or south of the city of Newton. 
       In general, residents living in Jasper County have similar outcomes compared with the overall metro."
       
     } else {
       
-      "Counties outside the Des Moines metro area enjoy the rich contributions of their own respective Latinx communities.
-      The demographic, economic, and health profiles of each county's Latinx are each unique in their own rights.
+      "Counties outside the Des Moines metro area enjoy the rich contributions of their own respective Latino communities.
+      The demographic, economic, and health profiles of each county's Latino are each unique in their own rights.
       Scroll on to learn more."
     }
     
@@ -134,13 +134,13 @@ nu_county_server <- function(input, output, session) {
     
     glue("<b>Median age</b>
          <li>Overall: <b>{median_age$estimate[median_age$variable_index == '001']} (± {median_age$moe[median_age$variable_index == '001']})</b></li>
-         <li>Latinx: <b>{median_age_hisp$estimate[median_age_hisp$variable_index == '001']} (± {median_age_hisp$moe[median_age$variable_index == '001']})</b></li>
-         <li>Latinos: <b>{median_age_hisp$estimate[median_age_hisp$variable_index == '002']} (± {median_age_hisp$moe[median_age$variable_index == '002']})</b></li>
+         <li>All Latinos: <b>{median_age_hisp$estimate[median_age_hisp$variable_index == '001']} (± {median_age_hisp$moe[median_age$variable_index == '001']})</b></li>
+         <li>Male Latinos: <b>{median_age_hisp$estimate[median_age_hisp$variable_index == '002']} (± {median_age_hisp$moe[median_age$variable_index == '002']})</b></li>
          <li>Latinas: <b>{median_age_hisp$estimate[median_age_hisp$variable_index == '003']} (± {median_age_hisp$moe[median_age$variable_index == '003']})</b></li>
          <br>
          <b>Median income</b>
          <li>Overall: <b>${format(hh_income$estimate, big.mark = ',')} (± ${format(hh_income$moe, big.mark = ',')})</b></li>
-         <li>Latinx: <b>${format(hh_income_hisp$estimate, big.mark = ',')} (± ${format(hh_income_hisp$moe, big.mark = ',')})</b></li>")
+         <li>Latinos: <b>${format(hh_income_hisp$estimate, big.mark = ',')} (± ${format(hh_income_hisp$moe, big.mark = ',')})</b></li>")
     
   })
   
@@ -202,7 +202,7 @@ nu_county_server <- function(input, output, session) {
                   fillOpacity = 0.15, 
                   smoothFactor = 0.3,
                   fillColor = ~pal(var),
-                  label = ~paste0("Latinx pop.: ", formatC(var, big.mark = ","), map_symbol2())) %>% # use NAME variable for county
+                  label = ~paste0("Latino pop.: ", formatC(var, big.mark = ","), map_symbol2())) %>% # use NAME variable for county
       addPolygons(data = selected_county_zips_shp, fill = F, weight = 2, color = hex_blue_lt, group = "Zip codes") %>%
       # Layers control
       addLayersControl(
@@ -250,10 +250,10 @@ nu_county_server <- function(input, output, session) {
   
   output$arcplot_origin_text2 <- renderText({ 
     
-    born_ia <- if(origin_df()$percent[origin_df()$label == "Born in Iowa"] > 0)  glue("{round(origin_df()$percent[origin_df()$label == 'Born in state of residence'], 1)}%  of the county's Latinx are Iowa-born. ") else NULL
-    born_other_state <- if(origin_df()$percent[substr(origin_df()$label, 9, 13) == "other"] > 0)  glue("Another {round(origin_df()$percent[substr(origin_df()$label, 9, 13) == 'other'], 1)}% of the county's Latinx Iowans were born in another state in the US. ") else NULL
-    native_born <- if(origin_df()$percent[origin_df()$label == "Born abroad to US citizens"] > 0)  glue("Of the rest of the Latinx in {input$county_choice2}, {round(origin_df()$percent[origin_df()$label == 'Born abroad to US citizens'], 1)}% are native, born outside the US. ") else NULL
-    foreign_born <- if(origin_df()$percent[origin_df()$label == "Born abroad"] > 0) glue("An estimated {round(origin_df()$percent[origin_df()$label == 'Born abroad'], 1)}% of the county's Latinx were foreign born. ") else NULL
+    born_ia <- if(origin_df()$percent[origin_df()$label == "Born in Iowa"] > 0)  glue("{round(origin_df()$percent[origin_df()$label == 'Born in Iowa'], 1)}%  of the county's Latinos are Iowa-born. ") else NULL
+    born_other_state <- if(origin_df()$percent[substr(origin_df()$label, 9, 13) == "other"] > 0)  glue("Another {round(origin_df()$percent[substr(origin_df()$label, 9, 13) == 'other'], 1)}% of the county's Latino Iowans were born in another state in the US. ") else NULL
+    native_born <- if(origin_df()$percent[origin_df()$label == "Born abroad to US citizens"] > 0)  glue("Of the rest of the Latinos in {input$county_choice2}, {round(origin_df()$percent[origin_df()$label == 'Born abroad to US citizens'], 1)}% are native, born outside the US. ") else NULL
+    foreign_born <- if(origin_df()$percent[origin_df()$label == "Born abroad"] > 0) glue("An estimated {round(origin_df()$percent[origin_df()$label == 'Born abroad'], 1)}% of the county's Latinos were foreign born. ") else NULL
     
     paste0(born_ia, born_other_state, native_born, foreign_born)
     
@@ -290,7 +290,8 @@ nu_county_server <- function(input, output, session) {
       layout(font = list(family = "Karla")) %>%
       style(hoverlabel = list(bgcolor = "#172B4D",
                               bordercolor = "#172B4D",
-                              font = list(family = "Karla", color = "white"))) %>% config(displayModeBar = F)
+                              font = list(family = "Karla", color = "white"))) %>% 
+      plotly::config(displayModeBar = F)
     
   })
   
@@ -319,7 +320,7 @@ nu_county_server <- function(input, output, session) {
       ggplot(aes(text = glue("{round(percent, 1)}% \n {label}"))) +
       geom_segment(aes(x=label, xend=label, y=0, yend=percent), color=hex_purple, size = 0.8) +
       geom_point(aes(label, percent), color=hex_purple, size=3.5) +
-      labs(y = "% of Latinx pop.",
+      labs(y = "% of Latino pop.",
            x = "") +
       coord_flip() +
       theme_minimal() +
@@ -371,13 +372,13 @@ nu_county_server <- function(input, output, session) {
   output$heritage_text <- renderText({
     
     mexican <- if(heritage_df()$percent[heritage_df()$label == "Mexican"] > 0)  glue("{round(heritage_df()$percent[heritage_df()$label == 'Mexican'], 1)}%  identify as Mexican. ") else NULL
-    puerto_rican <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 3) == "Pue"] > 0)  glue("Another {round(heritage_df()$percent[substr(heritage_df()$label, 1, 3) == 'Pue'], 1)}% of the county's Latinx are Puerto Rican. ") else NULL
-    cuban <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == "Cuban"] > 0) glue("In contrast, {round(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == 'Cuban'], 1)}% Latinx in the county identify as Cuban. ") else NULL
-    central <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 7) == "Central"] > 0) glue("Of the rest of the Latinx in {input$county_choice2}, {round(heritage_df()$percent[substr(heritage_df()$label, 1, 7) == 'Central'], 1)}% are Central American. ") else NULL
-    south <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == "South"] > 0) glue("An estimated {round(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == 'South'], 1)}% of the county's Latinx are of South American descent. ") else NULL
+    puerto_rican <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 3) == "Pue"] > 0)  glue("Another {round(heritage_df()$percent[substr(heritage_df()$label, 1, 3) == 'Pue'], 1)}% of the county's Latinos are Puerto Rican. ") else NULL
+    cuban <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == "Cuban"] > 0) glue("In contrast, {round(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == 'Cuban'], 1)}% of Latinos in the county identify as Cuban. ") else NULL
+    central <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 7) == "Central"] > 0) glue("Of the rest of the Latinx in {input$county_choice2}, {round(heritage_df()$percent[substr(heritage_df()$label, 1, 7) == 'Central'], 1)}% are Central American (from El Salvador, Guatemala, Honduras, Costa Rica and Panama). ") else NULL
+    south <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == "South"] > 0) glue("An estimated {round(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == 'South'], 1)}% of the county's Latinos are of South American descent, the largest proportion of which are Ecuadoran. ") else NULL
     
     
-    paste0("The county's Latinx community hails from diverse heritages. ", mexican, puerto_rican, cuban, central, south)
+    paste0("The county's Latino community hails from diverse heritages. ", mexican, puerto_rican, cuban, central, south)
     
   })
   
@@ -431,7 +432,7 @@ nu_county_server <- function(input, output, session) {
       #               width = 0.1, color = "#4f515c", position = position_dodge(0.4)) +
       scale_fill_manual(values = c(hex_green, hex_purple)) +
       labs(y = "", 
-           x = glue("% of Latinx pop. in {unique(gender_work_df()$county_name)}")) +
+           x = glue("% of Latino pop. in {unique(gender_work_df()$county_name)}")) +
       labs(fill = "") +
       theme_minimal() +
       scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
@@ -457,7 +458,7 @@ nu_county_server <- function(input, output, session) {
     max_male <- max(gender_work_df()$percent[gender_work_df()$gender == "Male"])
     max_male_lab <- gender_work_df()$label[gender_work_df()$percent == max_male]
     
-    glue("The employment status with the largest share among Latinas ({round(max_fem, 1)}%) is '{str_to_lower(max_fem_lab)}'; amongst Latino males, the status with largest share ({round(max_male, 1)}%) is '{str_to_lower(max_male_lab)}'.")
+    glue("The employment status with the largest share among Latinas ({round(max_fem, 1)}%) is '{str_replace(str_to_lower(max_fem_lab), 'full-time, ', 'full-time')}'; amongst Latino males, the status with largest share ({round(max_male, 1)}%) is '{str_replace(str_to_lower(max_male_lab), 'full-time, ', 'full-time')}'.")
     
     
   })
@@ -551,7 +552,7 @@ nu_county_server <- function(input, output, session) {
       geom_bar(stat = "identity", width = 0.1, fill = "#5E72E4", color = "#5E72E4") +
       coord_flip() +
       labs(x = "",
-           y = "% of Latinx pop. in county") +
+           y = "% of Latino pop. in county") +
       theme_minimal() +
       scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
       project_ggtheme
@@ -569,7 +570,7 @@ nu_county_server <- function(input, output, session) {
   output$poverty_text <- renderText({
     
     
-    above <- if("At or above poverty" %in% poverty_df()$poverty_group)  glue("{round(poverty_df()$percent[substr(poverty_df()$poverty_group, 1, 2) == 'At'], 1)}% of the county's Latinx live at or above the federal poverty level. ") else NULL
+    above <- if("At or above poverty" %in% poverty_df()$poverty_group)  glue("{round(poverty_df()$percent[substr(poverty_df()$poverty_group, 1, 2) == 'At'], 1)}% of the county's Latinos live at or above the federal poverty level. ") else NULL
     below_59_under <- if("Below poverty, \naged 59 & under" %in% poverty_df()$poverty_group)  glue("In contrast, {round(poverty_df()$percent[substr(poverty_df()$poverty_group, 22, 23) == '59'], 1)}% live below federal poverty level and are under the age of 60. ") else NULL
     below_60_over <- if("Below poverty, aged 60+" %in% poverty_df()$poverty_group) glue("Those over 60 and living below poverty form the remaining {round(poverty_df()$percent[substr(poverty_df()$poverty_group, 21, 22) == '60'], 1)}%. ") else NULL
     
@@ -592,7 +593,7 @@ nu_county_server <- function(input, output, session) {
       geom_point(aes(x = label, y = percent, color = gender),
                  position = position_dodge(width = 0.3)) +
       scale_color_manual(values = c(hex_green, hex_purple)) +
-      labs(y = "% of Latinx pop.",
+      labs(y = "% of Latino pop.",
            x = "",
            color = "") +
       coord_flip() +
@@ -641,9 +642,9 @@ nu_county_server <- function(input, output, session) {
   
   output$disciplines_text <- renderText({
     
-    stem <- if(disciplines_df()$percent[disciplines_df()$label == "Science and Engineering"] > 0)  glue("{round(disciplines_df()$percent[disciplines_df()$label == 'Science and Engineering'], 1)}%  of Latinx college students are currently majoring in a STEM field. ") else NULL
-    business <- if(disciplines_df()$percent[substr(disciplines_df()$label, 1, 3) == "Bus"] > 0)  glue("Another {round(disciplines_df()$percent[substr(disciplines_df()$label, 1, 3) == 'Bus'], 1)}% of those Latinx students have selected Business as their major. ") else NULL
-    education <- if(disciplines_df()$percent[substr(disciplines_df()$label, 1, 3) == "Edu"] > 0) glue("An estimated {round(disciplines_df()$percent[substr(disciplines_df()$label, 1, 3) == 'Edu'], 1)}% of the county's Latinx students are expecting to graduate with an Education degree. ") else NULL
+    stem <- if(disciplines_df()$percent[disciplines_df()$label == "Science and Engineering"] > 0)  glue("{round(disciplines_df()$percent[disciplines_df()$label == 'Science and Engineering'], 1)}%  of Latino college students are currently majoring in a STEM field. ") else NULL
+    business <- if(disciplines_df()$percent[substr(disciplines_df()$label, 1, 3) == "Bus"] > 0)  glue("Another {round(disciplines_df()$percent[substr(disciplines_df()$label, 1, 3) == 'Bus'], 1)}% of those Latino students have selected Business as their major. ") else NULL
+    education <- if(disciplines_df()$percent[substr(disciplines_df()$label, 1, 3) == "Edu"] > 0) glue("An estimated {round(disciplines_df()$percent[substr(disciplines_df()$label, 1, 3) == 'Edu'], 1)}% of the county's Latino students are expecting to graduate with an Education degree. ") else NULL
     arts <- if(disciplines_df()$percent[substr(disciplines_df()$label, 1, 4) == "Arts"] > 0) glue("{round(disciplines_df()$percent[substr(disciplines_df()$label, 1, 4) == 'Arts'], 1)}% are currently pursuing degrees in Arts, Humanities and related disciplines. ") else NULL
     # south <- if(disciplines_df()$percent[substr(disciplines_df()$label, 1, 5) == "South"] > 0) glue("An estimated {round(disciplines_df()$percent[substr(disciplines_df()$label, 1, 5) == 'South'], 1)}% of the county's Latinx are of South American descent. ") else NULL
     
@@ -671,7 +672,7 @@ nu_county_server <- function(input, output, session) {
       # geom_errorbar(aes(xmin = percent-moe_pc, xmax = percent+moe_pc), 
       #               width = 0.1, color = "#4f515c") +
       labs(y = "", 
-           x = glue("% of Latinx pop. in {unique(internet$county_name)}")) +
+           x = glue("% of Latino pop. in {unique(internet$county_name)}")) +
       labs(fill = "") +
       theme_minimal() +
       scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
@@ -725,7 +726,7 @@ nu_county_server <- function(input, output, session) {
   
   output$enrollment_text <- renderText({
     
-    college <- if(enrollment_df()$percent[substr(enrollment_df()$label, 1, 7) == "College"] > 0)  glue("{round(enrollment_df()$percent[substr(enrollment_df()$label, 1, 7) == 'College'], 1)}%  of the county's Latinx are in college degree program. ") else NULL
+    college <- if(enrollment_df()$percent[substr(enrollment_df()$label, 1, 7) == "College"] > 0)  glue("{round(enrollment_df()$percent[substr(enrollment_df()$label, 1, 7) == 'College'], 1)}%  of the county's Latinos are in college degree program. ") else NULL
     grad <- if(enrollment_df()$percent[substr(enrollment_df()$label, 1,4) == "Grad"] > 0)  glue("Meanwhile, {round(enrollment_df()$percent[substr(enrollment_df()$label, 1, 4) == 'Grad'], 1)}% are in graduate or professional school. ") else NULL
     not_enrolled <- if(enrollment_df()$percent[substr(enrollment_df()$label, 1, 3) == "Not"] > 0) glue("An estimated {round(enrollment_df()$percent[substr(enrollment_df()$label, 1, 3) == 'Not'], 1)}% are not enrolled in school. ") else NULL
     prek_12 <- if(enrollment_df()$percent[substr(enrollment_df()$label, 1, 4) == "Pre-"] > 0) glue("{round(enrollment_df()$percent[substr(enrollment_df()$label, 1, 4) == 'Pre-'], 1)}% are in preschool through grade 12. ") else NULL
@@ -755,7 +756,7 @@ nu_county_server <- function(input, output, session) {
       geom_bar(stat = "identity", width = 0.3) +
       scale_fill_manual(values = c(hex_green, hex_pink)) +
       coord_flip() +
-      labs(y = "% of county's Latinx pop.",
+      labs(y = "% of county's Latino pop.",
            x = "",
            fill = "") +
       theme(panel.background = element_rect(fill = "transparent")) +
@@ -780,7 +781,8 @@ nu_county_server <- function(input, output, session) {
     min_cov <- max(insurance_df()$percent[insurance_df()$coverage_category == "no coverage"])
     min_cov_group <- insurance_df()$age_group[insurance_df()$percent == min_cov]
     
-    glue("Having health insurance provides support for necessary medical care in both planned and unplanned circumstances. Amongst the Latinx community in the county, {round(max_cov, 1)}% are in the {max_cov_group} age group and have coverage. Conversely, the {min_cov_group} age group represent the largest group with no coverage ({round(min_cov, 1)}%).")
+    glue("Having health insurance provides support for necessary medical care in both planned and unplanned circumstances. 
+         Amongst the Latino community in the county, {round(max_cov, 1)}% in the {max_cov_group} age group have coverage. Conversely, the {min_cov_group} age group represent the largest group with no coverage ({round(min_cov, 1)}%).")
     
     
   })
