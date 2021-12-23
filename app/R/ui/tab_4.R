@@ -13,19 +13,19 @@ tab_4 <- argonTabItem(
                 br(),
                 argonH1("Education", display = 4),
                 numericInput(inputId = "hs_grads",
-                             label = "Additional Latinx high school graduates",
+                             label = "Additional Latino high school graduates",
                              min = 0,
                              value = 15),
                 numericInput(inputId = "hs_to_assoc",
-                             label = "Additional Latinx with associate's degrees (current education: high school)",
+                             label = "Additional Latino with associate's degrees (current education: high school)",
                              min = 0,
                              value = 0),
                 numericInput(inputId = "assoc_to_bach",
-                             label = "Additional Latinx with Bachelor's degrees (current education: associate's)",
+                             label = "Additional Latino with Bachelor's degrees (current education: associate's)",
                              min = 0,
                              value = 0),
                 numericInput(inputId = "hs_to_bach",
-                             label = "Additional Latinx with Bachelor's degrees (current education: high school)",
+                             label = "Additional Latino with Bachelor's degrees (current education: high school)",
                              min = 0,
                              value = 0),
                 
@@ -48,23 +48,23 @@ tab_4 <- argonTabItem(
                                          withLoader(plotlyOutput("plot_addtl_dollars", height = 200), loader = "loader1"),
                                          div(style = "color: #172B4D; font-size: 50px; font-weight: bold;", 
                                              textOutput("total_addtl_dollars_number")),
-                                         "TOTAL ADDITIONAL LATINX EARNINGS OVER THE NEXT 30 YEARS",
+                                         "TOTAL ADDITIONAL LATINO EARNINGS OVER THE NEXT 30 YEARS",
                                          
                                          withLoader(plotlyOutput("plot_homeownership", height = 200), loader = "loader1"),
                                          div(style = "color: #172B4D; font-size: 50px; font-weight: bold;", 
                                              textOutput("homeownership_number")),
-                                         "LATINX HOMEOWNERSHIP"),
+                                         "LATINO HOMEOWNERSHIP"),
                              
                              argonColumn(width = 6, 
                                          withLoader(plotlyOutput("plot_per_cap_inc", height = 200), loader = "loader1"),
                                          #argonH1("20000", display = 2),
                                          div(style = "color: #172B4D; font-size: 50px; font-weight: bold;", 
                                              textOutput("per_capita_income_number")),
-                                         "IN AVERAGE ANNUAL INCOME PER LATINX-IOWAN",
+                                         "IN AVERAGE ANNUAL INCOME PER LATINO-IOWAN",
                                          withLoader(plotlyOutput("plot_attainment", height = 200), loader = "loader1"),
                                          div(style = "color: #172B4D; font-size: 50px; font-weight: bold;", 
                                              textOutput("attainment_number")),
-                                         "IN LATINX WITH HS ATTAINMENT OR MORE")
+                                         "IN LATINO WITH HS ATTAINMENT OR MORE")
                     ),
                     div(style = "height: 100px;") # spacer div at bottom
                 ))
@@ -84,8 +84,8 @@ tab_4 <- argonTabItem(
 #         
 #         h1(strong("NUESTRO FUTURE")),
 #         div(style = "color: #172B4d;",
-#             "Eliminating disparities would bring economic benefits to the Latinx population as well as the rest of the Central Iowa population.
-#         Toggle the inputs below to test how new programs or policies aimed at education or citizenship within Latinx communities would affect household incomes,
+#             "Eliminating disparities would bring economic benefits to the Latino population as well as the rest of the Central Iowa population.
+#         Toggle the inputs below to test how new programs or policies aimed at education or citizenship within Latino communities would affect household incomes,
 #         population earnings, homeownership, and educational attainment."),
 #         br(),
 #         br(),
