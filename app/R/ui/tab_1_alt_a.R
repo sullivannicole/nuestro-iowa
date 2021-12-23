@@ -69,13 +69,13 @@ tab_1_alt_a <- argonTabItem(
                                    argonColumn(#div(style = "line-height: 1px !important;", argonH1(display = 2, "A deep dive into la riqueza de Latino-Iowan culture") %>% argonTextColor(color = "white")),
                                                div(style = "line-height: 25px !important; color: white !important; family: 'EB Garamond' !important;", HTML("<b style = 'font-size: 25px !important;'>A deep dive into la riqueza de</b><br><h1 style = 'font-size: 120px !important; color: white !important; line-height: 85px !important;'>Latinos in Iowa</h1>")),
                                                br(),
-                                               div(HTML("Latino Iowans represent a youthful, highly entrepeneurial, collective-minded subset of the Iowa population - an invaluable part of the school system, workforce, and community. 
-                                                   Latino Iowans are also a fast-growing subpopulation, and our contributions to the state make us essential to Iowa’s future. 
-                                                   This dashboard provides a data snapshot of the Latino community in the Des Moines Metropolitan Area. 
-                                                   Users can learn about Nuestro Iowa: Demographic trends, economic contributions, housing, education, and health. 
-                                                   These baseline data show community strengths and opportunities. 
-                                                   This dashboard includes all counties in the region with Latino populations large enough to present useful data: Dallas, Jasper, Polk, and Warren Counties.
-                                                   The dashboard highlights adjacent Marshall County because of its large Latino population and direct proximity to the metro.
+                                               div(HTML("Latino Iowans represent a youthful, highly entrepreneurial, collective-minded subset of the Iowa population - an invaluable part of the school system, workforce, and community. 
+                                               Latino/a/x Iowans are also a fast-growing population and our contributions to the state make us essential to Iowa’s future. 
+                                               This dashboard provides a data snapshot of the Latino community in the Des Moines Metropolitan Area. 
+                                               Users can learn about Nuestro Iowa: Demographic trends, economic contributions, housing, education, and health. 
+                                               These baseline data show community strengths and opportunities. 
+                                               This dashboard includes all counties in the region with Latino populations large enough to present useful data: Dallas, Jasper, Polk, and Warren Counties. 
+                                               The dashboard highlights adjacent Marshall County because of its large Latino population and direct proximity to the metro.
                                                    <br><br>
                                                    
                                                    <b style = 'font-size: 25px !important; line-height: 25px !important; color: white !important;'>Análisis a fondo sobre la riqueza de</b>
@@ -131,7 +131,7 @@ directa con esta zona metropolitana.")) %>% argonTextColor(color = "white")),
               card1_english
             ),
             argonTab(
-              tabName = "Positivos",
+              tabName = "Datos clave",
               active = TRUE,
               card1_spanish
             )
