@@ -781,7 +781,8 @@ nu_county_server <- function(input, output, session) {
     min_cov <- max(insurance_df()$percent[insurance_df()$coverage_category == "no coverage"])
     min_cov_group <- insurance_df()$age_group[insurance_df()$percent == min_cov]
     
-    glue("Having health insurance provides support for necessary medical care in both planned and unplanned circumstances. Amongst the Latino community in the county, {round(max_cov, 1)}% are in the {max_cov_group} age group and have coverage. Conversely, the {min_cov_group} age group represent the largest group with no coverage ({round(min_cov, 1)}%).")
+    glue("Having health insurance provides support for necessary medical care in both planned and unplanned circumstances. 
+         Amongst the Latino community in the county, {round(max_cov, 1)}% in the {max_cov_group} age group have coverage. Conversely, the {min_cov_group} age group represent the largest group with no coverage ({round(min_cov, 1)}%).")
     
     
   })
