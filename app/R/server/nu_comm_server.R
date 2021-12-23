@@ -7,7 +7,7 @@ nu_comm_server <- function(input, output, session) {
       ggplot(aes(year, estimate/1000, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
       scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
-                         breaks = c("All races", "Latinx", "White Alone")) +
+                         breaks = c("All races", "Latino", "White Alone")) +
       labs(color = "",
            x = "",
            y = "Median household income (in $K)") +
@@ -36,7 +36,7 @@ nu_comm_server <- function(input, output, session) {
       ggplot(aes(year, estimate, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
       scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
-                         breaks = c("All races", "Latinx", "White Alone")) +
+                         breaks = c("All races", "Latino", "White Alone")) +
       labs(color = "",
            y = "Homeownership rate (%)",
            x = "") + #str_wrap("% of households in race/ethnicity that are home-owning", width = 35)) +
@@ -67,7 +67,7 @@ nu_comm_server <- function(input, output, session) {
       ggplot(aes(year, estimate, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
       scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
-                         breaks = c("All races", "Latinx", "White Alone")) +
+                         breaks = c("All races", "Latino", "White Alone")) +
       labs(color = "",
            # y = str_wrap("% of women that were employed full-time in the last 12 months", width = 35)) +
            y = "",
@@ -96,7 +96,7 @@ nu_comm_server <- function(input, output, session) {
       ggplot(aes(year, estimate, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
       scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
-                         breaks = c("All races", "Latinx", "White Alone")) +
+                         breaks = c("All races", "Latino", "White Alone")) +
       labs(color = "",
            y = "",
            x = "") +
@@ -125,7 +125,7 @@ nu_comm_server <- function(input, output, session) {
       ggplot(aes(year, estimate, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
       scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
-                         breaks = c("Latinx", "White Alone")) +
+                         breaks = c("Latino", "White Alone")) +
       labs(color = "",
            y = "",
            x = "") +
@@ -154,7 +154,7 @@ nu_comm_server <- function(input, output, session) {
       ggplot(aes(year, estimate, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
       scale_color_manual(values = c(hex_green, hex_purple),
-                         breaks = c("Latinx", "White Alone")) +
+                         breaks = c("Latino", "White Alone")) +
       labs(color = "",
            y = "",
            x = "") +
@@ -183,7 +183,7 @@ nu_comm_server <- function(input, output, session) {
       ggplot(aes(year, estimate, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
       scale_color_manual(values = c(hex_green, hex_purple),
-                         breaks = c("Latinx", "White Alone")) +
+                         breaks = c("Latino", "White Alone")) +
       labs(color = "",
            y = "",
            x = "") +
@@ -215,7 +215,7 @@ nu_comm_server <- function(input, output, session) {
       ggplot(aes(year, average_rate, color = race_ethnicity, group = race_ethnicity, text = text)) +
       geom_line(size = 0.8) +
       scale_color_manual(values = c(hex_grey, hex_green, hex_purple),
-                         breaks = c("All races", "Latinx", "White")) +
+                         breaks = c("All races", "Latino", "White")) +
       labs(color = "",
            y = "High school graduation rate (%)",
            x = "") +
