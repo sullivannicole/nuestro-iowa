@@ -458,7 +458,7 @@ nu_county_server <- function(input, output, session) {
     max_male <- max(gender_work_df()$percent[gender_work_df()$gender == "Male"])
     max_male_lab <- gender_work_df()$label[gender_work_df()$percent == max_male]
     
-    glue("The employment status with the largest share among Latinas ({round(max_fem, 1)}%) is '{str_to_lower(max_fem_lab)}'; amongst Latino males, the status with largest share ({round(max_male, 1)}%) is '{str_to_lower(max_male_lab)}'.")
+    glue("The employment status with the largest share among Latinas ({round(max_fem, 1)}%) is '{str_replace(str_to_lower(max_fem_lab), 'full-time, ', 'full-time')}'; amongst Latino males, the status with largest share ({round(max_male, 1)}%) is '{str_replace(str_to_lower(max_male_lab), 'full-time, ', 'full-time')}'.")
     
     
   })
