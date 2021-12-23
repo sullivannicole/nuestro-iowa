@@ -374,8 +374,8 @@ nu_county_server <- function(input, output, session) {
     mexican <- if(heritage_df()$percent[heritage_df()$label == "Mexican"] > 0)  glue("{round(heritage_df()$percent[heritage_df()$label == 'Mexican'], 1)}%  identify as Mexican. ") else NULL
     puerto_rican <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 3) == "Pue"] > 0)  glue("Another {round(heritage_df()$percent[substr(heritage_df()$label, 1, 3) == 'Pue'], 1)}% of the county's Latinos are Puerto Rican. ") else NULL
     cuban <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == "Cuban"] > 0) glue("In contrast, {round(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == 'Cuban'], 1)}% of Latinos in the county identify as Cuban. ") else NULL
-    central <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 7) == "Central"] > 0) glue("Of the rest of the Latinx in {input$county_choice2}, {round(heritage_df()$percent[substr(heritage_df()$label, 1, 7) == 'Central'], 1)}% are Central American. ") else NULL
-    south <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == "South"] > 0) glue("An estimated {round(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == 'South'], 1)}% of the county's Latinos are of South American descent. ") else NULL
+    central <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 7) == "Central"] > 0) glue("Of the rest of the Latinx in {input$county_choice2}, {round(heritage_df()$percent[substr(heritage_df()$label, 1, 7) == 'Central'], 1)}% are Central American (from El Salvador, Guatemala, Honduras, Costa Rica and Panama). ") else NULL
+    south <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == "South"] > 0) glue("An estimated {round(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == 'South'], 1)}% of the county's Latinos are of South American descent, the largest proportion of which are Ecuadoran. ") else NULL
     
     
     paste0("The county's Latino community hails from diverse heritages. ", mexican, puerto_rican, cuban, central, south)
