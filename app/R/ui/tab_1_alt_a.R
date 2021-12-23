@@ -67,7 +67,7 @@ tab_1_alt_a <- argonTabItem(
                           argonRow(width = 12,
                                    argonColumn(width = 1),
                                    argonColumn(#div(style = "line-height: 1px !important;", argonH1(display = 2, "A deep dive into la riqueza de Latino-Iowan culture") %>% argonTextColor(color = "white")),
-                                               div(style = "line-height: 25px !important; color: white !important; family: 'EB Garamond' !important;", HTML("<b style = 'font-size: 25px !important;'>A deep dive into la riqueza de</b><br><h1 style = 'font-size: 120px !important; color: white !important; line-height: 85px !important;'>Latino-Iowan culture</h1>")),
+                                               div(style = "line-height: 25px !important; color: white !important; family: 'EB Garamond' !important;", HTML("<b style = 'font-size: 25px !important;'>A deep dive into la riqueza de</b><br><h1 style = 'font-size: 120px !important; color: white !important; line-height: 85px !important;'>Latinos in Iowa</h1>")),
                                                br(),
                                                div(HTML("Latino Iowans represent a youthful, highly entrepeneurial, collective-minded subset of the Iowa population - an invaluable part of the school system, workforce, and community. 
                                                    Latino Iowans are also a fast-growing subpopulation, and our contributions to the state make us essential to Iowa’s future. 
