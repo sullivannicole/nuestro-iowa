@@ -72,7 +72,7 @@ nu_county_server <- function(input, output, session) {
     } else if(input$county_choice2 == "Marshall") {
       
       "Marshall County is home to a large population of Latino residents, mostly centered in and around the City of Marshalltown. 
-      There are more Mexicans as a proportion of the total Latinx population compared with the rest of the metro. Latino incomes and homeownership rates are higher on average than the overall metro. There are no disparities in income, homeownership rates, and high school graduation rates between Latino and non-Latino white residents in Marshall County; the gap has closed entirely in recent years. 
+      There are more Mexicans as a proportion of the total Latino population compared with the rest of the metro. Latino incomes and homeownership rates are higher on average than the overall metro. There are no disparities in income, homeownership rates, and high school graduation rates between Latino and non-Latino white residents in Marshall County; the gap has closed entirely in recent years. 
       However, there continue to be gaps in health insurance coverage, educational attainment, and poverty rates."
       
     } else if(input$county_choice2 == "Warren") {
@@ -374,7 +374,7 @@ nu_county_server <- function(input, output, session) {
     mexican <- if(heritage_df()$percent[heritage_df()$label == "Mexican"] > 0)  glue("{round(heritage_df()$percent[heritage_df()$label == 'Mexican'], 1)}%  identify as Mexican. ") else NULL
     puerto_rican <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 3) == "Pue"] > 0)  glue("Another {round(heritage_df()$percent[substr(heritage_df()$label, 1, 3) == 'Pue'], 1)}% of the county's Latinos are Puerto Rican. ") else NULL
     cuban <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == "Cuban"] > 0) glue("In contrast, {round(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == 'Cuban'], 1)}% of Latinos in the county identify as Cuban. ") else NULL
-    central <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 7) == "Central"] > 0) glue("Of the rest of the Latinx in {input$county_choice2}, {round(heritage_df()$percent[substr(heritage_df()$label, 1, 7) == 'Central'], 1)}% are Central American (from El Salvador, Guatemala, Honduras, Costa Rica and Panama). ") else NULL
+    central <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 7) == "Central"] > 0) glue("Of the rest of the Latinos in {input$county_choice2}, {round(heritage_df()$percent[substr(heritage_df()$label, 1, 7) == 'Central'], 1)}% are Central American (from El Salvador, Guatemala, Honduras, Costa Rica and Panama). ") else NULL
     south <- if(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == "South"] > 0) glue("An estimated {round(heritage_df()$percent[substr(heritage_df()$label, 1, 5) == 'South'], 1)}% of the county's Latinos are of South American descent, the largest proportion of which are Ecuadoran. ") else NULL
     
     
@@ -510,7 +510,7 @@ nu_county_server <- function(input, output, session) {
       ggplot(aes(text = glue("{round(percent)}% \n {label}"))) +
       geom_segment(aes(x=label, xend=label, y=0, yend=percent), color="#EC603E", size = 0.8) +
       geom_point(aes(label, percent), color="#EC603E", size=3.5) +
-      labs(y = "% of Latinx pop.",
+      labs(y = "% of Latino pop.",
            x = "") +
       coord_flip() +
       theme_minimal() +
