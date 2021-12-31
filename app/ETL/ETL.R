@@ -517,7 +517,7 @@ st_write(ia_metro_tidy, glue("data/ia_metro_tracts_{acs_yr}.shp"))
 # Eliminating disparities data
 #-------------------------------
 
-disparities <- read_excel("eliminating_disparities.xlsx") %>%
+disparities <- read_excel("data/eliminating_disparities.xlsx") %>%
   clean_names() %>%
   select(-c(x7, x14, x15, x18, year_8, year_11, latinx_dollars_earned_9, dollars_earned_eliminate_disparities_10)) %>%
   rename(year = year_1,
