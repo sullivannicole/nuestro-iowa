@@ -71,4 +71,4 @@ current_hhs <- data.frame(level = c("lt_hs", "hs", "assoc", "bach"),
                           prob_of_home_assoc = 0.602, 
                           prob_of_home_bach = 0.6447)
 
-race_ethnicity_vctr <- c("Latinx", "White")
+race_ethnicity_vctr <- c("Latino", "White")
